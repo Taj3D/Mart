@@ -358,3 +358,182 @@
     print-color-adjust: exact;
   }
 }
+
+/* ===== DateTime Picker Styles - Deep Navy Blue Theme ===== */
+/* Replaces bootstrap-datetimepicker with Navy Blue active color (#337ab7 → Navy) */
+
+/* Calendar day selected - Deep Navy Blue */
+.rdp-day_selected,
+.rdp-day_button[data-selected-single="true"] {
+  background-color: var(--navy-600) !important;
+  color: white !important;
+}
+
+.rdp-day_selected:hover,
+.rdp-day_button[data-selected-single="true"]:hover {
+  background-color: var(--navy-700) !important;
+  color: white !important;
+}
+
+/* Today indicator - Navy Blue triangle */
+.rdp-today:not(.rdp-day_selected) {
+  position: relative;
+  color: var(--navy-600);
+  font-weight: 700;
+}
+
+.rdp-today:not(.rdp-day_selected)::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 6px 6px;
+  border-color: transparent transparent var(--navy-500) transparent;
+}
+
+/* Date range selection - Navy Blue */
+.rdp-range_start {
+  background-color: var(--navy-600) !important;
+}
+
+.rdp-range_end {
+  background-color: var(--navy-600) !important;
+}
+
+.rdp-range_middle {
+  background-color: var(--navy-100) !important;
+  color: var(--navy-700) !important;
+}
+
+.dark .rdp-range_middle {
+  background-color: rgba(30, 58, 95, 0.3) !important;
+  color: var(--navy-200) !important;
+}
+
+/* Calendar navigation hover */
+.rdp-nav button:hover {
+  background-color: var(--navy-50);
+  color: var(--navy-600);
+}
+
+.dark .rdp-nav button:hover {
+  background-color: rgba(30, 58, 95, 0.2);
+  color: var(--navy-200);
+}
+
+/* Calendar weekday header */
+.rdp-weekday {
+  color: var(--navy-500);
+  font-weight: 600;
+}
+
+.dark .rdp-weekday {
+  color: var(--navy-300);
+}
+
+/* Outside days (prev/next month) */
+.rdp-outside {
+  color: var(--navy-300);
+  opacity: 0.5;
+}
+
+.dark .rdp-outside {
+  color: var(--navy-500);
+  opacity: 0.4;
+}
+
+/* Disabled days */
+.rdp-disabled {
+  color: var(--navy-200);
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dark .rdp-disabled {
+  color: var(--navy-600);
+  opacity: 0.3;
+}
+
+/* Time picker input focus ring - Navy Blue */
+.ims-time-input:focus {
+  border-color: var(--navy-500);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.15);
+}
+
+/* Picker switch (month/year selector) hover */
+.rdp-caption_label:hover {
+  background-color: var(--navy-50);
+  border-radius: 4px;
+}
+
+.dark .rdp-caption_label:hover {
+  background-color: rgba(30, 58, 95, 0.2);
+}
+
+/* Month/year dropdown - Navy themed */
+.rdp-dropdowns select:focus {
+  border-color: var(--navy-500);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.15);
+}
+
+/* Popover calendar container */
+[data-slot="popover-content"] .rdp-root {
+  --rdp-accent-color: var(--navy-600);
+}
+
+/* DateTime picker time separator */
+.ims-time-separator {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--navy-600);
+}
+
+.dark .ims-time-separator {
+  color: var(--navy-300);
+}
+
+/* Time spinner buttons */
+.ims-time-spinner button:hover {
+  background-color: var(--navy-50);
+  color: var(--navy-600);
+}
+
+.dark .ims-time-spinner button:hover {
+  background-color: rgba(30, 58, 95, 0.2);
+  color: var(--navy-200);
+}
+
+/* AM/PM Toggle button - Navy themed */
+.ims-period-toggle {
+  background-color: var(--navy-600);
+  color: white;
+  border-color: var(--navy-600);
+}
+
+.ims-period-toggle:hover {
+  background-color: var(--navy-700);
+  border-color: var(--navy-700);
+}
+
+/* "Now" button in time picker */
+.ims-now-button {
+  color: var(--navy-600);
+  font-weight: 600;
+}
+
+.ims-now-button:hover {
+  background-color: var(--navy-50);
+  color: var(--navy-700);
+}
+
+.dark .ims-now-button {
+  color: var(--navy-300);
+}
+
+.dark .ims-now-button:hover {
+  background-color: rgba(30, 58, 95, 0.2);
+  color: var(--navy-200);
+}
