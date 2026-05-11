@@ -537,3 +537,239 @@
   background-color: rgba(30, 58, 95, 0.2);
   color: var(--navy-200);
 }
+
+/* ===== Select / Combobox Styles - Deep Navy Blue Theme ===== */
+/* Replaces Select2 Bootstrap Theme with Navy Blue (#337ab7 → Navy, #66afe9 → Navy focus) */
+
+/* Combobox/Select trigger focus state - Navy Blue ring */
+[data-slot="popover-trigger"][aria-expanded="true"],
+[data-slot="popover-trigger"]:focus-visible {
+  border-color: var(--navy-400);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.15);
+}
+
+.dark [data-slot="popover-trigger"][aria-expanded="true"],
+.dark [data-slot="popover-trigger"]:focus-visible {
+  border-color: var(--navy-500);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.25);
+}
+
+/* Select dropdown - Navy Blue border */
+[data-slot="command"] {
+  border-color: var(--navy-300);
+}
+
+.dark [data-slot="command"] {
+  border-color: var(--navy-600);
+}
+
+/* Command item highlighted (hover) - Navy Blue instead of #337ab7 */
+[data-slot="command-item"][data-selected="true"] {
+  background-color: var(--navy-50);
+  color: var(--navy-700);
+}
+
+.dark [data-slot="command-item"][data-selected="true"] {
+  background-color: rgba(30, 58, 95, 0.2);
+  color: var(--navy-200);
+}
+
+/* Command item selected (active) - Deep Navy Blue */
+[data-slot="command-item"][aria-selected="true"] {
+  background-color: var(--navy-600);
+  color: white;
+}
+
+.dark [data-slot="command-item"][aria-selected="true"] {
+  background-color: var(--navy-500);
+  color: white;
+}
+
+/* Command search input focus - Navy Blue */
+[data-slot="command-input"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Select group heading - Navy themed */
+[data-slot="command-group"] [cmdk-group-heading] {
+  color: var(--navy-500);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dark [data-slot="command-group"] [cmdk-group-heading] {
+  color: var(--navy-300);
+}
+
+/* Select option disabled - muted */
+[data-slot="command-item"][data-disabled="true"] {
+  color: var(--navy-300);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dark [data-slot="command-item"][data-disabled="true"] {
+  color: var(--navy-500);
+  opacity: 0.4;
+}
+
+/* Multi-Select badge/chip - Navy Blue theme */
+.ims-select-badge {
+  background-color: var(--navy-100);
+  color: var(--navy-700);
+  border: 1px solid var(--navy-200);
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 0 6px;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dark .ims-select-badge {
+  background-color: rgba(30, 58, 95, 0.3);
+  color: var(--navy-200);
+  border-color: var(--navy-600);
+}
+
+.ims-select-badge-remove {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  margin-right: 2px;
+  color: var(--navy-400);
+  transition: color 0.15s;
+}
+
+.ims-select-badge-remove:hover {
+  color: var(--navy-700);
+}
+
+.dark .ims-select-badge-remove:hover {
+  color: var(--navy-200);
+}
+
+/* Select clear button */
+.ims-select-clear {
+  color: var(--navy-300);
+  cursor: pointer;
+  font-weight: 700;
+  transition: color 0.15s;
+}
+
+.ims-select-clear:hover {
+  color: var(--navy-600);
+}
+
+.dark .ims-select-clear:hover {
+  color: var(--navy-200);
+}
+
+/* Select placeholder */
+.ims-select-placeholder {
+  color: var(--navy-300);
+}
+
+.dark .ims-select-placeholder {
+  color: var(--navy-500);
+}
+
+/* Select validation states - replaces .has-warning, .has-error, .has-success */
+
+/* Warning state */
+.ims-select-warning [data-slot="popover-trigger"] {
+  border-color: #8a6d3b;
+}
+
+.ims-select-warning [data-slot="popover-trigger"]:focus,
+.ims-select-warning [data-slot="popover-trigger"][aria-expanded="true"] {
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px rgba(138, 109, 59, 0.5);
+  border-color: #66512c;
+}
+
+/* Error state */
+.ims-select-error [data-slot="popover-trigger"] {
+  border-color: #a94442;
+}
+
+.ims-select-error [data-slot="popover-trigger"]:focus,
+.ims-select-error [data-slot="popover-trigger"][aria-expanded="true"] {
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px rgba(169, 68, 66, 0.5);
+  border-color: #843534;
+}
+
+/* Success state */
+.ims-select-success [data-slot="popover-trigger"] {
+  border-color: #3c763d;
+}
+
+.ims-select-success [data-slot="popover-trigger"]:focus,
+.ims-select-success [data-slot="popover-trigger"][aria-expanded="true"] {
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px rgba(60, 118, 61, 0.5);
+  border-color: #2b542c;
+}
+
+/* Disabled select */
+.ims-select-disabled [data-slot="popover-trigger"] {
+  background-color: var(--navy-50);
+  border-color: var(--navy-200);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.dark .ims-select-disabled [data-slot="popover-trigger"] {
+  background-color: rgba(30, 58, 95, 0.1);
+  border-color: var(--navy-700);
+}
+
+/* Select dropdown shadow */
+[data-slot="popover-content"]:has([data-slot="command"]) {
+  box-shadow: 0 6px 12px rgba(10, 22, 40, 0.175);
+  border-color: var(--navy-300);
+}
+
+.dark [data-slot="popover-content"]:has([data-slot="command"]) {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  border-color: var(--navy-600);
+}
+
+/* Command list max-height (replaces Select2's max-height: 200px) */
+[data-slot="command-list"] {
+  max-height: 250px;
+}
+
+/* Select option nested groups - indent support */
+.ims-select-nested-1 { padding-left: 24px; }
+.ims-select-nested-2 { padding-left: 36px; }
+.ims-select-nested-3 { padding-left: 48px; }
+.ims-select-nested-4 { padding-left: 60px; }
+.ims-select-nested-5 { padding-left: 72px; }
+
+/* RTL Support for Select */
+[dir="rtl"] [data-slot="popover-trigger"] {
+  text-align: right;
+}
+
+[dir="rtl"] .ims-select-badge {
+  direction: rtl;
+}
+
+/* Size variants matching Select2 bootstrap sizes */
+.ims-select-sm [data-slot="popover-trigger"] {
+  height: 30px;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 5px 22px 5px 10px;
+}
+
+.ims-select-lg [data-slot="popover-trigger"] {
+  height: 46px;
+  font-size: 18px;
+  border-radius: 6px;
+  padding: 10px 31px 10px 16px;
+}
