@@ -106,6 +106,28 @@
   --sidebar-accent-foreground: oklch(0.95 0.005 250);
   --sidebar-border: oklch(0.35 0.06 250);
   --sidebar-ring: oklch(0.50 0.10 250);
+
+  /* ERP Semantic Colors - matching Bootstrap's btn-primary, btn-success, etc */
+  --erp-primary: #1e3a5f;
+  --erp-primary-hover: #162d4d;
+  --erp-success: #18bc9c;
+  --erp-success-hover: #128f76;
+  --erp-info: #f9b31f;
+  --erp-info-hover: #d49a1a;
+  --erp-warning: #f39c12;
+  --erp-warning-hover: #c87f0a;
+  --erp-danger: #e74c3c;
+  --erp-danger-hover: #d62c1a;
+
+  /* ERP specific colors */
+  --erp-breadcrumb-bg: rgba(30, 58, 95, 0.08);
+  --erp-breadcrumb-text: #1e3a5f;
+  --erp-modal-header: #1e3a5f;
+  --erp-panel-border: #d4dde9;
+  --erp-table-border: #a9bbd3;
+  --erp-form-border: #a9bbd3;
+  --erp-form-focus: #1e3a5f;
+  --erp-form-focus-shadow: rgba(30, 58, 95, 0.25);
 }
 
 .dark {
@@ -141,6 +163,27 @@
   --sidebar-accent-foreground: oklch(0.95 0.005 250);
   --sidebar-border: oklch(0.28 0.04 250);
   --sidebar-ring: oklch(0.50 0.10 250);
+
+  /* ERP Semantic Colors - Dark Mode */
+  --erp-primary: #2d5a8e;
+  --erp-primary-hover: #3a6da5;
+  --erp-success: #2dd4a8;
+  --erp-success-hover: #18bc9c;
+  --erp-info: #fbbf24;
+  --erp-info-hover: #f9b31f;
+  --erp-warning: #fbbf24;
+  --erp-warning-hover: #f9b31f;
+  --erp-danger: #ef4444;
+  --erp-danger-hover: #dc2626;
+
+  --erp-breadcrumb-bg: rgba(45, 90, 142, 0.15);
+  --erp-breadcrumb-text: #7e99bd;
+  --erp-modal-header: #162d4d;
+  --erp-panel-border: #2d5a8e;
+  --erp-table-border: #2d5a8e;
+  --erp-form-border: #2d5a8e;
+  --erp-form-focus: #2d5a8e;
+  --erp-form-focus-shadow: rgba(45, 90, 142, 0.3);
 }
 
 @layer base {
@@ -1542,3 +1585,407 @@
     width: 400px !important;
   }
 }
+
+/* ===== ERP Typography - Deep Navy Blue Theme ===== */
+/* Based on Bootstrap Lato font system converted to Geist */
+.ims-heading-1 { font-size: 2.4375rem; font-weight: 700; line-height: 1.1; color: var(--navy-700); }
+.ims-heading-2 { font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--navy-700); }
+.ims-heading-3 { font-size: 1.625rem; font-weight: 600; line-height: 1.1; color: var(--navy-700); }
+.ims-heading-4 { font-size: 1.1875rem; font-weight: 600; line-height: 1.1; color: var(--navy-700); }
+.ims-heading-5 { font-size: 0.9375rem; font-weight: 600; line-height: 1.1; color: var(--navy-700); }
+.ims-heading-6 { font-size: 0.8125rem; font-weight: 600; line-height: 1.1; color: var(--navy-700); }
+
+.dark .ims-heading-1, .dark .ims-heading-2, .dark .ims-heading-3,
+.dark .ims-heading-4, .dark .ims-heading-5, .dark .ims-heading-6 {
+  color: var(--navy-100);
+}
+
+.ims-text-muted { color: #b4bcc2; }
+.dark .ims-text-muted { color: var(--navy-400); }
+.ims-text-primary { color: var(--erp-primary); }
+.ims-text-success { color: var(--erp-success); }
+.ims-text-info { color: var(--erp-info); }
+.ims-text-warning { color: var(--erp-warning); }
+.ims-text-danger { color: var(--erp-danger); }
+
+.ims-hr { border: 0; border-top: 1px solid var(--erp-primary); margin: 0 0 10px; opacity: 0.3; }
+
+/* ===== ERP Form Styles - Deep Navy Blue Theme ===== */
+/* Replaces Bootstrap .form-control, .has-success, .has-warning, .has-error */
+
+/* Form control focus - Navy Blue instead of green #1cc41a */
+.ims-form-control:focus {
+  border-color: var(--erp-form-focus);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px var(--erp-form-focus-shadow);
+}
+
+/* Form validation states */
+.ims-has-success .ims-form-control,
+.ims-has-success input,
+.ims-has-success select,
+.ims-has-success textarea {
+  border-color: var(--erp-success);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
+.ims-has-success .ims-form-control:focus,
+.ims-has-success input:focus {
+  border-color: var(--erp-success-hover);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px rgba(24, 188, 156, 0.4);
+}
+.ims-has-success label { color: var(--erp-success); }
+
+.ims-has-warning .ims-form-control,
+.ims-has-warning input,
+.ims-has-warning select,
+.ims-has-warning textarea {
+  border-color: var(--erp-warning);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
+.ims-has-warning .ims-form-control:focus,
+.ims-has-warning input:focus {
+  border-color: var(--erp-warning-hover);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px rgba(243, 156, 18, 0.4);
+}
+.ims-has-warning label { color: var(--erp-warning); }
+
+.ims-has-error .ims-form-control,
+.ims-has-error input,
+.ims-has-error select,
+.ims-has-error textarea {
+  border-color: var(--erp-danger);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
+.ims-has-error .ims-form-control:focus,
+.ims-has-error input:focus {
+  border-color: var(--erp-danger-hover);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px rgba(231, 76, 60, 0.4);
+}
+.ims-has-error label { color: var(--erp-danger); }
+
+/* Help block text */
+.ims-help-block {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  color: #597ea2;
+  font-size: 0.8125rem;
+}
+.dark .ims-help-block { color: var(--navy-300); }
+
+/* ===== ERP Panel Styles - Deep Navy Blue Theme ===== */
+/* Replaces Bootstrap .panel, .panel-heading, .panel-primary, .panel-success, etc */
+
+.ims-panel {
+  margin-bottom: 12px;
+  background-color: hsl(var(--card));
+  border: 1px solid var(--erp-panel-border);
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.ims-panel-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid transparent;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.ims-panel-body {
+  padding: 7px 15px;
+}
+
+.ims-panel-footer {
+  padding: 10px 15px;
+  background-color: var(--navy-50);
+  border-top: 1px solid var(--erp-panel-border);
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+.dark .ims-panel-footer { background-color: rgba(30, 58, 95, 0.1); }
+
+/* Panel variants - Navy Blue theme replacing Bootstrap green headers */
+.ims-panel-default .ims-panel-heading {
+  color: var(--navy-700); background-color: var(--navy-50); border-color: var(--navy-100);
+}
+.dark .ims-panel-default .ims-panel-heading { color: var(--navy-100); background-color: var(--navy-800); border-color: var(--navy-600); }
+
+.ims-panel-primary .ims-panel-heading {
+  color: #ffffff; background-color: var(--erp-primary); border-color: var(--erp-primary);
+}
+.ims-panel-primary { border-color: var(--erp-primary); }
+
+.ims-panel-success .ims-panel-heading {
+  color: #ffffff; background-color: var(--erp-success); border-color: var(--erp-success);
+}
+.ims-panel-success { border-color: var(--erp-success); }
+
+.ims-panel-info .ims-panel-heading {
+  color: #ffffff; background-color: var(--erp-primary); border-color: var(--erp-primary);
+}
+.ims-panel-info { border-color: var(--erp-primary); }
+
+.ims-panel-warning .ims-panel-heading {
+  color: #ffffff; background-color: var(--erp-warning); border-color: var(--erp-warning);
+}
+.ims-panel-warning { border-color: var(--erp-warning); }
+
+.ims-panel-danger .ims-panel-heading {
+  color: #ffffff; background-color: var(--erp-danger); border-color: var(--erp-danger);
+}
+.ims-panel-danger { border-color: var(--erp-danger); }
+
+/* ===== ERP Breadcrumb Styles - Deep Navy Blue Theme ===== */
+/* Replaces Bootstrap .breadcrumb with -> separator and Navy Blue theme */
+
+.ims-breadcrumb {
+  padding: 8px 15px;
+  margin-bottom: 0;
+  list-style: none;
+  background-color: var(--erp-breadcrumb-bg);
+  border-radius: 0;
+  color: var(--erp-breadcrumb-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.ims-breadcrumb-item {
+  display: inline-block;
+}
+
+.ims-breadcrumb-item + .ims-breadcrumb-item::before {
+  content: "\2192\00a0";
+  padding: 0 5px;
+  color: var(--erp-breadcrumb-text);
+}
+
+.ims-breadcrumb-item.active {
+  color: #95a5a6;
+}
+
+/* ===== ERP Modal Styles - Deep Navy Blue Theme ===== */
+/* Replaces Bootstrap .modal-header with Navy Blue header */
+
+.ims-modal-header {
+  padding: 15px;
+  background-color: var(--erp-modal-header);
+  color: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  border-radius: 6px 6px 0 0;
+}
+
+.ims-modal-header .ims-modal-close {
+  color: #fff;
+  opacity: 0.8;
+}
+.ims-modal-header .ims-modal-close:hover { opacity: 1; }
+
+.ims-modal-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.42857143;
+}
+
+.ims-modal-body { padding: 20px; }
+.ims-modal-footer { padding: 20px; text-align: right; border-top: 1px solid #e5e5e5; }
+
+/* ===== ERP Navbar Styles - Deep Navy Blue Theme ===== */
+
+.ims-navbar {
+  position: relative;
+  min-height: 60px;
+  margin-bottom: 0;
+  border: 1px solid transparent;
+  font-size: 0.7375rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.ims-navbar-brand {
+  float: left;
+  padding: 9.5px 15px;
+  font-size: 1rem;
+  line-height: 21px;
+  height: 60px;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ims-navbar-nav > li > a {
+  color: #ffffff;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  line-height: 21px;
+  transition: color 0.15s;
+}
+
+.ims-navbar-nav > li > a:hover,
+.ims-navbar-nav > li > a:focus {
+  color: #18bc9c;
+  background-color: transparent;
+}
+
+.ims-navbar-nav > .active > a,
+.ims-navbar-nav > .active > a:hover,
+.ims-navbar-nav > .active > a:focus {
+  color: #ffffff;
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* ===== ERP Table Extensions - Deep Navy Blue Theme ===== */
+/* Replaces Bootstrap .table-striped, .table-bordered, .table-hover */
+
+.ims-table-striped > tbody > tr:nth-of-type(even) {
+  background-color: rgba(30, 58, 95, 0.04);
+}
+.dark .ims-table-striped > tbody > tr:nth-of-type(even) {
+  background-color: rgba(30, 58, 95, 0.1);
+}
+
+.ims-table-bordered > thead > tr > th,
+.ims-table-bordered > tbody > tr > th,
+.ims-table-bordered > tfoot > tr > th,
+.ims-table-bordered > thead > tr > td,
+.ims-table-bordered > tbody > tr > td,
+.ims-table-bordered > tfoot > tr > td {
+  border: 1px solid var(--erp-table-border);
+}
+
+.ims-table-hover > tbody > tr:hover {
+  background-color: rgba(30, 58, 95, 0.08);
+}
+.dark .ims-table-hover > tbody > tr:hover {
+  background-color: rgba(30, 58, 95, 0.15);
+}
+
+/* ===== ERP Pagination Styles - Deep Navy Blue Theme ===== */
+
+.ims-pagination > li > a,
+.ims-pagination > li > span {
+  position: relative;
+  float: left;
+  padding: 10px 15px;
+  line-height: 1.42857143;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: var(--erp-primary);
+  border: 1px solid transparent;
+  margin-left: -1px;
+  border-radius: 4px;
+  margin: 0 2px;
+  font-size: 0.8125rem;
+}
+
+.ims-pagination > li > a:hover,
+.ims-pagination > li > span:hover {
+  background-color: var(--erp-primary-hover);
+}
+
+.ims-pagination > .active > a,
+.ims-pagination > .active > span {
+  background-color: #0f7864;
+  border-color: transparent;
+  cursor: default;
+}
+
+/* ===== ERP Label Styles - Deep Navy Blue Theme ===== */
+
+.ims-label {
+  display: inline;
+  padding: 0.2em 0.6em 0.3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25em;
+}
+
+.ims-label-default { background-color: #95a5a6; }
+.ims-label-primary { background-color: var(--erp-primary); }
+.ims-label-success { background-color: var(--erp-success); }
+.ims-label-info { background-color: var(--erp-info); color: #1a1a1a; }
+.ims-label-warning { background-color: var(--erp-warning); color: #1a1a1a; }
+.ims-label-danger { background-color: var(--erp-danger); }
+
+/* ===== ERP Dropdown Styles - Deep Navy Blue Theme ===== */
+
+.ims-dropdown-menu > li > a:hover,
+.ims-dropdown-menu > li > a:focus {
+  text-decoration: none;
+  color: #ffffff;
+  background-color: var(--erp-primary);
+}
+
+.ims-dropdown-menu > .active > a,
+.ims-dropdown-menu > .active > a:hover,
+.ims-dropdown-menu > .active > a:focus {
+  color: #ffffff;
+  background-color: var(--erp-primary);
+}
+
+/* ===== ERP Alert Styles - Colored Background ===== */
+/* Matches Bootstrap's .alert-success, .alert-info, .alert-warning, .alert-danger */
+/* These are full-background colored alerts, not bordered */
+
+.ims-alert-success {
+  background-color: var(--erp-success);
+  border-color: var(--erp-success);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 15px;
+}
+.ims-alert-success .ims-alert-link { color: #e6e6e6; font-weight: 700; text-decoration: underline; }
+
+.ims-alert-info {
+  background-color: var(--erp-primary);
+  border-color: var(--erp-primary);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 15px;
+}
+.ims-alert-info .ims-alert-link { color: #e6e6e6; font-weight: 700; text-decoration: underline; }
+
+.ims-alert-warning {
+  background-color: var(--erp-warning);
+  border-color: var(--erp-warning);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 15px;
+}
+.ims-alert-warning .ims-alert-link { color: #e6e6e6; font-weight: 700; text-decoration: underline; }
+
+.ims-alert-danger {
+  background-color: var(--erp-danger);
+  border-color: var(--erp-danger);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 15px;
+}
+.ims-alert-danger .ims-alert-link { color: #e6e6e6; font-weight: 700; text-decoration: underline; }
+
+/* ===== ERP Progress Bar Variants - Deep Navy Blue Theme ===== */
+
+.ims-progress-success [data-slot="progress-indicator"] { background-color: var(--erp-success); }
+.ims-progress-info [data-slot="progress-indicator"] { background-color: var(--erp-primary); }
+.ims-progress-warning [data-slot="progress-indicator"] { background-color: var(--erp-warning); }
+.ims-progress-danger [data-slot="progress-indicator"] { background-color: var(--erp-danger); }
+
+/* ===== ERP Well / Callout Styles ===== */
+
+.ims-well {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: var(--navy-50);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+}
+.dark .ims-well { background-color: rgba(30, 58, 95, 0.1); }
