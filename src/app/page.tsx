@@ -77,6 +77,13 @@ import {
   DraggablePanel,
   type SortableItemData,
 } from '@/components/ui/sortable-list'
+import { InlineHeader } from '@/components/ui/inline-header'
+import { ShutterButton } from '@/components/ui/shutter-button'
+import { RoundButton } from '@/components/ui/round-button'
+import { ImsTag } from '@/components/ui/ims-tag'
+import { FileUploadButton } from '@/components/ui/file-upload-button'
+import { QuickLinkCard } from '@/components/ui/quick-link-card'
+import { DividerVertical } from '@/components/ui/divider-vertical'
 
 /* ================================================================
    DEMO DATA
@@ -692,6 +699,266 @@ function DesignSystemShowcase() {
 }
 
 /* ================================================================
+   FILE 10 SHOWCASE - Custom ERP Components
+   ================================================================ */
+
+function File10Showcase() {
+  const [tags, setTags] = React.useState(['Inventory', 'Sales', 'Procurement', 'HR'])
+
+  return (
+    <div className="space-y-6">
+      {/* Section Header */}
+      <Card className="shadow-md">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <Layers className="h-5 w-5 text-navy-500" />
+            <CardTitle className="text-lg">Custom ERP Components</CardTitle>
+          </div>
+          <CardDescription>
+            File 10 — Converted from custom site CSS with Deep Navy Blue theme
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      {/* Quick Links + Inline Headers */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Quick Link Cards */}
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Quick Link Cards</CardTitle>
+            <CardDescription>Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.quick-link-height</code> — min-height 115px colored cards</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <QuickLinkCard title="Inventory" icon={Package} color="navy" description="Manage stock" />
+              <QuickLinkCard title="Sales" icon={ShoppingCart} color="emerald" description="Track orders" />
+              <QuickLinkCard title="Reports" icon={BarChart3} color="amber" description="View analytics" />
+              <QuickLinkCard title="Alerts" icon={AlertTriangle} color="rose" description="View warnings" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Inline Headers + Section Headings */}
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Inline Headers &amp; Section Headings</CardTitle>
+            <CardDescription>Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.inline-header</code> and <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.container h4</code></CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Inline Header Variants</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <InlineHeader color="navy">Navy Blue</InlineHeader>
+                <InlineHeader color="emerald">Emerald</InlineHeader>
+                <InlineHeader color="amber">Amber</InlineHeader>
+                <InlineHeader color="rose">Rose</InlineHeader>
+              </div>
+            </div>
+            <Separator />
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Section Heading (ims-section-heading)</p>
+              <h4 className="ims-section-heading text-navy-700 dark:text-navy-300 font-semibold">Product Inventory Report</h4>
+              <h4 className="ims-section-heading text-navy-700 dark:text-navy-300 font-semibold mt-2">Monthly Sales Summary</h4>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Shutter Buttons + Round Buttons */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Shutter Buttons */}
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Shutter Buttons</CardTitle>
+            <CardDescription>Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.shutter-out</code> — horizontal wipe animation on hover</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-3">
+              <ShutterButton>Default Navy</ShutterButton>
+              <ShutterButton shutterColor="#059669">Emerald</ShutterButton>
+              <ShutterButton shutterColor="#d97706">Amber</ShutterButton>
+              <ShutterButton shutterColor="#e11d48">Rose</ShutterButton>
+              <ShutterButton disabled>Disabled</ShutterButton>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Round Buttons */}
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Round Buttons</CardTitle>
+            <CardDescription>Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.round</code> and <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.round.hollow</code> — circular icon buttons</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Solid Variant</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <RoundButton variant="solid" color="default">A</RoundButton>
+                <RoundButton variant="solid" color="navy">B</RoundButton>
+                <RoundButton variant="solid" color="orange">C</RoundButton>
+                <RoundButton variant="solid" color="green">D</RoundButton>
+                <DividerVertical height={30} />
+                <RoundButton variant="solid" color="default" size="lg">1</RoundButton>
+                <RoundButton variant="solid" color="navy" size="lg">2</RoundButton>
+              </div>
+            </div>
+            <Separator />
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Hollow Variant</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <RoundButton variant="hollow" color="default">A</RoundButton>
+                <RoundButton variant="hollow" color="navy">B</RoundButton>
+                <RoundButton variant="hollow" color="orange">C</RoundButton>
+                <RoundButton variant="hollow" color="green">D</RoundButton>
+                <DividerVertical height={30} />
+                <RoundButton variant="hollow" color="default" size="lg">1</RoundButton>
+                <RoundButton variant="hollow" color="navy" size="lg">2</RoundButton>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* IMS Tags + File Upload */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* IMS Tags */}
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">IMS Tags</CardTitle>
+            <CardDescription>Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.tag</code> — arrow-shaped tag with dot indicator and hover color change</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tags with Remove (click X to remove)</p>
+              <div className="flex flex-wrap gap-4">
+                {tags.map((tag) => (
+                  <ImsTag
+                    key={tag}
+                    onRemove={() => setTags((prev) => prev.filter((t) => t !== tag))}
+                    dotColor={tag === 'Inventory' ? 'red' : tag === 'Sales' ? 'navy' : tag === 'Procurement' ? 'amber' : 'emerald'}
+                  >
+                    {tag}
+                  </ImsTag>
+                ))}
+              </div>
+            </div>
+            {tags.length === 0 && (
+              <Button variant="outline" size="sm" onClick={() => setTags(['Inventory', 'Sales', 'Procurement', 'HR'])}>
+                Reset Tags
+              </Button>
+            )}
+            <Separator />
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Dot Color Variants</p>
+              <div className="flex flex-wrap gap-4">
+                <ImsTag dotColor="red">Red Dot</ImsTag>
+                <ImsTag dotColor="navy">Navy Dot</ImsTag>
+                <ImsTag dotColor="amber">Amber Dot</ImsTag>
+                <ImsTag dotColor="emerald">Emerald Dot</ImsTag>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* File Upload + Label Urgent */}
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">File Upload &amp; Urgent Label</CardTitle>
+            <CardDescription>Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.btn-file</code> and <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.label-urgent</code></CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">File Upload Button</p>
+              <div className="flex flex-wrap gap-3">
+                <FileUploadButton onFileSelect={(files) => console.log('Files:', files)} variant="default" size="sm">
+                  Upload Document
+                </FileUploadButton>
+                <FileUploadButton onFileSelect={(files) => console.log('Files:', files)} variant="outline" size="sm" multiple>
+                  Upload Multiple
+                </FileUploadButton>
+              </div>
+            </div>
+            <Separator />
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Urgent Label (ims-label-urgent)</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge className="ims-label-urgent border-0">URGENT</Badge>
+                <Badge className="ims-label-urgent border-0">HIGH PRIORITY</Badge>
+                <Badge variant="outline" className="border-navy-300 dark:border-navy-600 text-navy-600 dark:text-navy-300">Normal</Badge>
+              </div>
+            </div>
+            <Separator />
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Blue Dragon Table Row (ims-row-blue-dragon)</p>
+              <div className="overflow-x-auto rounded-md border">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="ims-table-header">
+                      <th className="text-left px-3 py-2 text-xs font-semibold text-white/90 uppercase">ID</th>
+                      <th className="text-left px-3 py-2 text-xs font-semibold text-white/90 uppercase">Product</th>
+                      <th className="text-right px-3 py-2 text-xs font-semibold text-white/90 uppercase">Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="ims-row-blue-dragon">
+                      <td className="px-3 py-2">WH-001</td>
+                      <td className="px-3 py-2">Widget Pro (Featured)</td>
+                      <td className="px-3 py-2 text-right font-bold">1,250</td>
+                    </tr>
+                    <tr className="border-b border-border/50 hover:bg-navy-50/50 dark:hover:bg-navy-900/20">
+                      <td className="px-3 py-2">WH-002</td>
+                      <td className="px-3 py-2">Gizmo Plus</td>
+                      <td className="px-3 py-2 text-right">890</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Vertical Divider Demo + Navbar Underline Animation */}
+      <Card className="shadow-md">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Dividers &amp; Nav Animations</CardTitle>
+          <CardDescription>
+            Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.divider-vertical</code> and <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">.navbar-nav li:after</code>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="text-sm text-muted-foreground">Toolbar item 1</span>
+            <DividerVertical height={30} />
+            <span className="text-sm text-muted-foreground">Toolbar item 2</span>
+            <DividerVertical height={40} />
+            <span className="text-sm text-muted-foreground">Toolbar item 3</span>
+            <DividerVertical height={50} />
+            <Button variant="outline" size="sm">Action</Button>
+
+            <Separator orientation="vertical" className="h-8 mx-2" />
+
+            {/* Nav underline animation demo */}
+            <div className="flex items-center gap-1">
+              {['Home', 'Products', 'Reports'].map((item, i) => (
+                <button
+                  key={item}
+                  className={`ims-nav-underline px-3 py-1.5 text-sm font-medium transition-colors rounded-sm ${
+                    i === 0 ? 'text-navy-600 dark:text-navy-300' : 'text-muted-foreground hover:text-navy-600 dark:hover:text-navy-300'
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+/* ================================================================
    MAIN DASHBOARD PAGE
    ================================================================ */
 
@@ -764,6 +1031,9 @@ export default function DashboardPage() {
 
             {/* Design System Showcase */}
             <DesignSystemShowcase />
+
+            {/* File 10: Custom ERP Components */}
+            <File10Showcase />
           </div>
         </main>
       </div>

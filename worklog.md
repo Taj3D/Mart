@@ -667,3 +667,99 @@ Stage Summary:
 - NumberSpinner with hold-to-spin acceleration and compact SpinnerInput variant
 - ButtonGroup with SegmentedControl variant
 - Dark mode fully supported
+
+---
+Task ID: 10-a
+Agent: Component Agent
+Task: Create 8 new React components for File 10 (Custom ERP CSS conversion)
+
+Work Log:
+- Created InlineHeader component at /src/components/ui/inline-header.tsx:
+  - Replaces .inline-header CSS (border-left: 3px solid #41b53f → navy-600)
+  - Props: children, className?, color? ('navy' | 'emerald' | 'amber' | 'rose')
+  - Rendered as <span> with border-l-3, italic, font-bold (Geist Sans bold replaces fantasy)
+  - Navy color: text-navy-600 border-navy-600 (light), text-navy-300 border-navy-400 (dark)
+  - Also supports emerald, amber, rose color variants
+- Created ShutterButton component at /src/components/ui/shutter-button.tsx:
+  - Replaces .shutter-out CSS hover animation (#2098D1 → navy-600)
+  - Button with horizontal shutter wipe animation on hover
+  - Props: extends ButtonHTMLAttributes, shutterColor?, children
+  - Uses <span> with scaleX(0) → scaleX(1) on group-hover (replaces CSS ::before)
+  - Navy-600 background wipe, text turns white on hover
+  - Dark mode: navy-500 shutter, navy-900 base
+  - Export: ShutterButton
+- Created RoundButton component at /src/components/ui/round-button.tsx:
+  - Replaces .round and .round.hollow CSS (#222 bg, #3EA6CE → navy-500, #FF6701 → amber, #42A129 → emerald)
+  - Props: variant? ('solid' | 'hollow'), color? ('default' | 'navy' | 'orange' | 'green'), size? ('default' | 'lg')
+  - Solid: navy-700 bg (light), navy-800 bg (dark), white text
+  - Hollow: white bg, colored text, 3px box-shadow ring in chosen color
+  - Navy replaces blue #3EA6CE, orange stays as amber, green stays as emerald
+  - LG size: 40px instead of 30px
+- Created ImsTag component at /src/components/ui/ims-tag.tsx:
+  - Replaces .tag CSS (#41b53f → navy-600, #ef688a → rose-400 hover)
+  - Arrow-shaped tag with colored dot indicator using real DOM elements (not pseudo-elements)
+  - Props: children, onRemove?, dotColor? ('red' | 'navy' | 'amber' | 'emerald'), className?
+  - Navy-600 background (instead of green), arrow notch on right via border trick
+  - Small colored dot on left (red by default, 8px round)
+  - Hover changes to rose-400/rose-500 color
+  - Optional X remove button with stopPropagation
+  - Dark mode: navy-700 base, rose-500 hover
+- Created FileUploadButton component at /src/components/ui/file-upload-button.tsx:
+  - Replaces .btn-file CSS (position relative, overflow hidden, hidden file input)
+  - Props: onFileSelect: (files: FileList) => void, accept?, multiple?, variant?, size?, children?, className?, icon? (LucideIcon)
+  - Uses existing Button component from @/components/ui/button
+  - Hidden file input overlaid on button (opacity-0, absolute positioning)
+  - Shows selected file name(s) after selection (truncated, with count for multiple)
+  - Drag-and-drop visual indicator (ring-2 ring-navy-500)
+  - Upload icon (Lucide) default, customizable
+- Created NotificationBell component at /src/components/ui/notification-bell.tsx:
+  - Replaces entire notification system CSS (#noti_Button, #noti_Counter, #notifications, .seeAll)
+  - Props: notifications?, onMarkRead?, onSeeAll?, className?
+  - Bell icon button with red counter badge (unread count, max 99+)
+  - Dropdown panel (430px wide) using Popover from shadcn/ui
+  - Scrollable notification list (max-height 400px)
+  - Each notification: type icon (Info/Success/Warning/Error), title, message, time, read/unread state
+  - Unread notifications have navy-50/20 background
+  - "See All" footer link with navy-600 color, bold, centered
+  - Notification type mapping: info→navy, success→emerald, warning→amber, error→red
+  - Dark mode: navy-900/20 for unread, navy-400 See All link
+  - Export: NotificationBell
+- Created QuickLinkCard component at /src/components/ui/quick-link-card.tsx:
+  - Replaces .quick-link-height CSS (#41b53f → navy-600)
+  - Props: title, icon? (LucideIcon), href?, description?, color? ('navy' | 'emerald' | 'amber' | 'rose'), className?
+  - Full-width card with colored background (navy-600 default instead of green)
+  - Min-height 115px, white text, centered layout
+  - Icon + title + optional description
+  - Hover: brightness-110, shadow-md (if has href)
+  - Dark mode: slightly lighter shade (navy-700, emerald-700, etc.)
+  - Renders as <a> if href provided, <div> otherwise
+- Created DividerVertical component at /src/components/ui/divider-vertical.tsx:
+  - Replaces .divider-vertical CSS (height: 50px, margin: 0 9px, double border)
+  - Props: height? (default: 50), className?
+  - Double border effect: light left line (#F2F2F2 → navy-700 dark), white right line (→ navy-800 dark)
+  - Inline-flex, mx-[9px]
+  - Role="separator" aria-orientation="vertical" for accessibility
+- All 8 components use 'use client' directive
+- All components use TypeScript with proper typing
+- All components use cn() from @/lib/utils for className merging
+- All components support dark mode with dark: Tailwind prefixes
+- Deep Navy Blue theme: navy-600 (#1e3a5f) primary, navy-500 (#2d5a8e) lighter
+- All original green (#41b53f) replaced with navy-600
+- All original blue (#2098D1, #1a76b9, #3EA6CE) replaced with navy-500
+- Lint check passed (0 errors, 1 known TanStack Table warning)
+- Dev server compiling successfully
+- No existing files modified
+
+Stage Summary:
+- 8 new components for Custom ERP CSS conversion (File 10)
+- InlineHeader: italic bold header with colored border-left (replaces .inline-header)
+- ShutterButton: horizontal shutter wipe animation button (replaces .shutter-out)
+- RoundButton: solid/hollow round buttons with color variants (replaces .round)
+- ImsTag: arrow-shaped tag with dot indicator and hover color change (replaces .tag)
+- FileUploadButton: file upload with drag-and-drop and hidden input (replaces .btn-file)
+- NotificationBell: complete notification dropdown with bell icon and counter (replaces #noti_* CSS)
+- QuickLinkCard: colored card with icon and description (replaces .quick-link-height)
+- DividerVertical: double-border vertical divider for toolbars (replaces .divider-vertical)
+- All green (#41b53f) → navy-600, all blue (#2098D1/#1a76b9/#3EA6CE) → navy-500
+- Dark mode fully supported on all components
+- No existing files modified
