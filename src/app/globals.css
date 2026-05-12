@@ -2157,3 +2157,1255 @@
     color: #000;
   }
 }
+
+/* ===== Sortable / Draggable / Selectable Styles - Deep Navy Blue Theme ===== */
+/* Replaces jQuery UI sortable, draggable, selectable with @dnd-kit + Navy Blue theme */
+/* jQuery UI classes: .ui-sortable-handle, .ui-sortable-placeholder, .ui-sortable-ghost */
+/* jQuery UI classes: .ui-state-disabled, .ui-draggable, .ui-selectable, .ui-selecting, .ui-selected */
+
+/* Sortable handle - touch-action: none, cursor: grab (replaces .ui-sortable-handle) */
+.ims-sortable-handle {
+  touch-action: none;
+  cursor: grab;
+}
+
+.ims-sortable-handle:active {
+  cursor: grabbing;
+}
+
+/* Sortable ghost - opacity during drag (replaces .ui-sortable-placeholder / .ui-sortable-ghost) */
+.ims-sortable-ghost {
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* Sortable chosen - selected/chosen item highlight with Navy Blue (replaces .ui-sortable-helper) */
+.ims-sortable-chosen {
+  background-color: var(--navy-50);
+  box-shadow: 0 0 0 2px var(--navy-300);
+  border-radius: 4px;
+}
+
+.dark .ims-sortable-chosen {
+  background-color: rgba(30, 58, 95, 0.15);
+  box-shadow: 0 0 0 2px var(--navy-600);
+}
+
+/* Sortable container */
+.ims-sortable {
+  touch-action: none;
+}
+
+/* Draggable - position relative, cursor: move (replaces .ui-draggable) */
+.ims-draggable {
+  position: relative;
+  cursor: move;
+  touch-action: none;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.ims-draggable:active {
+  cursor: grabbing;
+}
+
+/* Selectable - touch-action: none, user-select: none (replaces .ui-selectable) */
+.ims-selectable {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Selecting - Navy Blue highlight while selecting (replaces .ui-selecting) */
+.ims-selecting {
+  background-color: rgba(30, 58, 95, 0.15);
+  border-color: var(--navy-400);
+}
+
+.dark .ims-selecting {
+  background-color: rgba(30, 58, 95, 0.25);
+}
+
+/* Selected - Navy Blue highlight for selected items (replaces .ui-selected) */
+.ims-selected {
+  background-color: rgba(30, 58, 95, 0.08);
+  border-left: 3px solid var(--navy-500);
+}
+
+.dark .ims-selected {
+  background-color: rgba(30, 58, 95, 0.2);
+  border-left-color: var(--navy-400);
+}
+
+/* Drag overlay - custom styling for the dnd-kit DragOverlay wrapper */
+.ims-drag-overlay {
+  cursor: grabbing !important;
+}
+
+/* Lasso selection box */
+.ims-lasso {
+  border-radius: 2px;
+}
+
+/* Sortable item disabled state (replaces .ui-state-disabled) */
+.ims-sortable-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ===== jQuery UI Theme - Deep Navy Blue ===== */
+/* Replaces jQuery UI 1.12.1 theme CSS with Navy Blue colors */
+/* Original: active=#007fff/#003eff, hover=#ededed/#cccccc, header=#e9e9e9, overlay=#aaaaaa */
+/* New: active=Deep Navy Blue, hover=Navy tinted, header=Navy-50, overlay=Navy shadow */
+
+/* Layout Helpers (replaces .ui-helper-*) */
+.ims-helper-hidden {
+  display: none;
+}
+
+.ims-helper-hidden-accessible {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.ims-helper-clearfix::before,
+.ims-helper-clearfix::after {
+  content: "";
+  display: table;
+  border-collapse: collapse;
+}
+
+.ims-helper-clearfix::after {
+  clear: both;
+}
+
+/* Z-index layer for front elements (replaces .ui-front) */
+.ims-front {
+  z-index: 100;
+}
+
+/* Interaction States - Deep Navy Blue */
+/* Default state (replaces .ui-state-default) */
+.ims-state-default {
+  border: 1px solid var(--navy-200);
+  background: #f6f6f6;
+  font-weight: normal;
+  color: #454545;
+}
+
+.dark .ims-state-default {
+  border-color: var(--navy-600);
+  background: var(--navy-800);
+  color: var(--navy-200);
+}
+
+/* Hover/Focus state (replaces .ui-state-hover, .ui-state-focus) */
+.ims-state-hover,
+.ims-state-focus {
+  border: 1px solid var(--navy-300);
+  background: var(--navy-50);
+  font-weight: normal;
+  color: #2b2b2b;
+}
+
+.dark .ims-state-hover,
+.dark .ims-state-focus {
+  border-color: var(--navy-500);
+  background: var(--navy-700);
+  color: var(--navy-100);
+}
+
+/* Visual focus ring (replaces .ui-visual-focus) */
+.ims-visual-focus {
+  box-shadow: 0 0 3px 1px rgba(30, 58, 95, 0.4);
+}
+
+.dark .ims-visual-focus {
+  box-shadow: 0 0 3px 1px rgba(45, 90, 142, 0.5);
+}
+
+/* Active state - Deep Navy Blue (replaces .ui-state-active #007fff/#003eff) */
+.ims-state-active {
+  border: 1px solid var(--navy-600);
+  background: var(--navy-600);
+  font-weight: normal;
+  color: #ffffff;
+}
+
+.dark .ims-state-active {
+  border-color: var(--navy-500);
+  background: var(--navy-500);
+  color: #ffffff;
+}
+
+.ims-state-active a,
+.ims-state-active a:link,
+.ims-state-active a:visited {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Highlight state (replaces .ui-state-highlight #fffa90/#dad55e) */
+.ims-state-highlight {
+  border: 1px solid #d4a017;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.dark .ims-state-highlight {
+  border-color: #b45309;
+  background: rgba(180, 83, 9, 0.2);
+  color: #fbbf24;
+}
+
+/* Checked state (for checkboxes/radios) */
+.ims-state-checked {
+  border: 1px solid var(--navy-400);
+  background: var(--navy-50);
+  color: var(--navy-700);
+}
+
+.dark .ims-state-checked {
+  border-color: var(--navy-500);
+  background: rgba(30, 58, 95, 0.2);
+  color: var(--navy-200);
+}
+
+/* Error state (replaces .ui-state-error #fddfdf/#f1a899/#5f3f3f) */
+.ims-state-error {
+  border: 1px solid #f1a899;
+  background: #fddfdf;
+  color: #5f3f3f;
+}
+
+.dark .ims-state-error {
+  border-color: #b91c1c;
+  background: rgba(185, 28, 28, 0.15);
+  color: #fca5a5;
+}
+
+.ims-state-error-text {
+  color: #5f3f3f;
+}
+
+.dark .ims-state-error-text {
+  color: #fca5a5;
+}
+
+/* Disabled state (replaces .ui-state-disabled) */
+.ims-state-disabled {
+  opacity: 0.35;
+  cursor: default !important;
+  pointer-events: none;
+  background-image: none;
+}
+
+.ims-state-disabled .ims-icon {
+  opacity: 0.35;
+}
+
+/* Priority states */
+.ims-priority-primary {
+  font-weight: bold;
+}
+
+.ims-priority-secondary {
+  opacity: 0.7;
+  font-weight: normal;
+}
+
+/* Widget Containers - Deep Navy Blue theme */
+
+/* Widget base (replaces .ui-widget) */
+.ims-widget {
+  font-family: var(--font-geist-sans);
+  font-size: 1em;
+}
+
+.ims-widget input,
+.ims-widget select,
+.ims-widget textarea,
+.ims-widget button {
+  font-family: var(--font-geist-sans);
+  font-size: 1em;
+}
+
+/* Widget content (replaces .ui-widget-content) */
+.ims-widget-content {
+  border: 1px solid var(--navy-200);
+  background: #ffffff;
+  color: #333333;
+}
+
+.dark .ims-widget-content {
+  border-color: var(--navy-700);
+  background: var(--navy-900);
+  color: var(--navy-100);
+}
+
+.ims-widget-content a {
+  color: var(--navy-600);
+}
+
+.dark .ims-widget-content a {
+  color: var(--navy-300);
+}
+
+/* Widget header (replaces .ui-widget-header #e9e9e9) */
+.ims-widget-header {
+  border: 1px solid var(--navy-200);
+  background: var(--navy-50);
+  color: var(--navy-700);
+  font-weight: bold;
+}
+
+.dark .ims-widget-header {
+  border-color: var(--navy-700);
+  background: var(--navy-800);
+  color: var(--navy-100);
+}
+
+.ims-widget-header a {
+  color: var(--navy-700);
+}
+
+.dark .ims-widget-header a {
+  color: var(--navy-100);
+}
+
+/* Widget overlay (replaces .ui-widget-overlay #aaaaaa opacity 0.3) */
+.ims-widget-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0a1628;
+  opacity: 0.5;
+  z-index: 50;
+}
+
+/* Widget shadow (replaces .ui-widget-shadow #666666) */
+.ims-widget-shadow {
+  box-shadow: 0px 0px 5px rgba(10, 22, 40, 0.3);
+}
+
+.dark .ims-widget-shadow {
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Corner radius (replaces .ui-corner-all with 3px) */
+.ims-corner-all { border-radius: 3px; }
+.ims-corner-top { border-top-left-radius: 3px; border-top-right-radius: 3px; }
+.ims-corner-bottom { border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
+.ims-corner-left { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+.ims-corner-right { border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
+.ims-corner-tl { border-top-left-radius: 3px; }
+.ims-corner-tr { border-top-right-radius: 3px; }
+.ims-corner-bl { border-bottom-left-radius: 3px; }
+.ims-corner-br { border-bottom-right-radius: 3px; }
+
+/* jQuery UI Accordion styles (replaces .ui-accordion) */
+.ims-accordion-header {
+  display: block;
+  cursor: pointer;
+  position: relative;
+  margin: 2px 0 0 0;
+  padding: 0.5em 0.5em 0.5em 0.7em;
+  font-size: 100%;
+  border: 1px solid var(--navy-200);
+  background: var(--navy-50);
+  color: var(--navy-700);
+  font-weight: 600;
+  border-radius: 3px;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.ims-accordion-header:hover {
+  background: var(--navy-100);
+}
+
+.dark .ims-accordion-header {
+  border-color: var(--navy-700);
+  background: var(--navy-800);
+  color: var(--navy-100);
+}
+
+.dark .ims-accordion-header:hover {
+  background: var(--navy-700);
+}
+
+.ims-accordion-content {
+  padding: 1em 2.2em;
+  border-top: 0;
+  overflow: auto;
+}
+
+/* jQuery UI Tabs styles (replaces .ui-tabs) */
+.ims-tabs {
+  position: relative;
+  padding: 0.2em;
+}
+
+.ims-tabs-nav {
+  margin: 0;
+  padding: 0.2em 0.2em 0;
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--navy-200);
+}
+
+.dark .ims-tabs-nav {
+  border-bottom-color: var(--navy-700);
+}
+
+.ims-tabs-nav li {
+  list-style: none;
+  position: relative;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.ims-tabs-anchor {
+  display: block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  color: var(--navy-500);
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.ims-tabs-anchor:hover {
+  color: var(--navy-700);
+  background: var(--navy-50);
+}
+
+.dark .ims-tabs-anchor {
+  color: var(--navy-300);
+}
+
+.dark .ims-tabs-anchor:hover {
+  color: var(--navy-100);
+  background: var(--navy-800);
+}
+
+.ims-tabs-active .ims-tabs-anchor {
+  color: var(--navy-700);
+  background: #ffffff;
+  border-color: var(--navy-200);
+  border-bottom-color: #ffffff;
+  font-weight: 600;
+}
+
+.dark .ims-tabs-active .ims-tabs-anchor {
+  color: var(--navy-100);
+  background: var(--navy-900);
+  border-color: var(--navy-700);
+  border-bottom-color: var(--navy-900);
+}
+
+.ims-tabs-panel {
+  display: block;
+  border-width: 0;
+  padding: 1em 1.4em;
+  background: none;
+}
+
+/* jQuery UI Dialog styles (replaces .ui-dialog) */
+.ims-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.2em;
+  outline: 0;
+}
+
+.ims-dialog-titlebar {
+  padding: 0.4em 1em;
+  position: relative;
+  background: var(--navy-600);
+  color: #ffffff;
+  border-radius: 3px 3px 0 0;
+}
+
+.dark .ims-dialog-titlebar {
+  background: var(--navy-700);
+}
+
+.ims-dialog-title {
+  float: left;
+  margin: 0.1em 0;
+  white-space: nowrap;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.ims-dialog-titlebar-close {
+  position: absolute;
+  right: 0.3em;
+  top: 50%;
+  width: 20px;
+  margin: -10px 0 0 0;
+  padding: 1px;
+  height: 20px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.ims-dialog-titlebar-close:hover {
+  opacity: 1;
+}
+
+.ims-dialog-content {
+  position: relative;
+  border: 0;
+  padding: 0.5em 1em;
+  background: none;
+  overflow: auto;
+}
+
+.ims-dialog-buttonpane {
+  text-align: left;
+  border-width: 1px 0 0 0;
+  border-color: var(--navy-200);
+  background-image: none;
+  margin-top: 0.5em;
+  padding: 0.3em 1em 0.5em 0.4em;
+}
+
+.dark .ims-dialog-buttonpane {
+  border-color: var(--navy-700);
+}
+
+.ims-dialog-buttonset {
+  float: right;
+  display: flex;
+  gap: 0.4em;
+}
+
+/* jQuery UI Progressbar styles (replaces .ui-progressbar) */
+.ims-progressbar {
+  height: 2em;
+  text-align: left;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--navy-100);
+}
+
+.dark .ims-progressbar {
+  background: var(--navy-800);
+}
+
+.ims-progressbar-value {
+  margin: -1px;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.ims-progressbar-overlay {
+  height: 100%;
+  opacity: 0.25;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1em 1em;
+  animation: ims-progressbar-stripes 1s linear infinite;
+}
+
+@keyframes ims-progressbar-stripes {
+  0% { background-position: 1em 0; }
+  100% { background-position: 0 0; }
+}
+
+.ims-progressbar-indeterminate .ims-progressbar-value {
+  background-image: none;
+}
+
+/* jQuery UI Selectmenu styles (replaces .ui-selectmenu) */
+.ims-selectmenu-button {
+  text-align: left;
+  white-space: nowrap;
+  width: 14em;
+  padding: 0.4em 1em;
+  border: 1px solid var(--navy-200);
+  background: #ffffff;
+  color: #333333;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+}
+
+.dark .ims-selectmenu-button {
+  border-color: var(--navy-600);
+  background: var(--navy-800);
+  color: var(--navy-100);
+}
+
+.ims-selectmenu-text {
+  display: block;
+  margin-right: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ims-selectmenu-icon {
+  float: right;
+  margin-top: 0;
+}
+
+.ims-selectmenu-optgroup {
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.5;
+  padding: 2px 0.4em;
+  margin: 0.5em 0 0 0;
+  height: auto;
+  border: 0;
+  color: var(--navy-500);
+}
+
+.dark .ims-selectmenu-optgroup {
+  color: var(--navy-400);
+}
+
+/* jQuery UI Slider styles (replaces .ui-slider) */
+.ims-slider {
+  position: relative;
+  text-align: left;
+  border: 1px solid var(--navy-200);
+  background: var(--navy-100);
+  border-radius: 3px;
+}
+
+.dark .ims-slider {
+  border-color: var(--navy-700);
+  background: var(--navy-800);
+}
+
+.ims-slider-handle {
+  position: absolute;
+  z-index: 2;
+  width: 1.2em;
+  height: 1.2em;
+  cursor: default;
+  touch-action: none;
+  background: var(--navy-600);
+  border: 1px solid var(--navy-700);
+  border-radius: 3px;
+  transition: background-color 0.15s;
+}
+
+.ims-slider-handle:hover,
+.ims-slider-handle:focus {
+  background: var(--navy-700);
+}
+
+.dark .ims-slider-handle {
+  background: var(--navy-500);
+  border-color: var(--navy-400);
+}
+
+.dark .ims-slider-handle:hover,
+.dark .ims-slider-handle:focus {
+  background: var(--navy-400);
+}
+
+.ims-slider-range {
+  position: absolute;
+  z-index: 1;
+  font-size: 0.7em;
+  display: block;
+  border: 0;
+  background: var(--navy-500);
+  border-radius: 3px;
+}
+
+.dark .ims-slider-range {
+  background: var(--navy-600);
+}
+
+.ims-slider-horizontal {
+  height: 0.8em;
+}
+
+.ims-slider-horizontal .ims-slider-handle {
+  top: -0.3em;
+  margin-left: -0.6em;
+}
+
+.ims-slider-horizontal .ims-slider-range {
+  top: 0;
+  height: 100%;
+}
+
+.ims-slider-vertical {
+  width: 0.8em;
+  height: 100px;
+}
+
+.ims-slider-vertical .ims-slider-handle {
+  left: -0.3em;
+  margin-left: 0;
+  margin-bottom: -0.6em;
+}
+
+.ims-slider-vertical .ims-slider-range {
+  left: 0;
+  width: 100%;
+}
+
+/* jQuery UI Spinner styles (replaces .ui-spinner) */
+.ims-spinner {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.ims-spinner-input {
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 0.222em 0;
+  margin: 0.2em 0;
+  vertical-align: middle;
+  margin-left: 0.4em;
+  margin-right: 2em;
+}
+
+.ims-spinner-button {
+  width: 1.6em;
+  height: 50%;
+  font-size: 0.5em;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  position: absolute;
+  cursor: default;
+  display: block;
+  overflow: hidden;
+  right: 0;
+  background: var(--navy-50);
+  border: 1px solid var(--navy-200);
+  color: var(--navy-600);
+  transition: background-color 0.15s;
+}
+
+.ims-spinner-button:hover {
+  background: var(--navy-100);
+  color: var(--navy-700);
+}
+
+.dark .ims-spinner-button {
+  background: var(--navy-700);
+  border-color: var(--navy-600);
+  color: var(--navy-200);
+}
+
+.dark .ims-spinner-button:hover {
+  background: var(--navy-600);
+  color: var(--navy-100);
+}
+
+.ims-spinner-up {
+  top: 0;
+  border-radius: 0 3px 0 0;
+}
+
+.ims-spinner-down {
+  bottom: 0;
+  border-radius: 0 0 3px 0;
+}
+
+/* jQuery UI Tooltip styles (replaces .ui-tooltip) */
+.ims-tooltip {
+  padding: 8px;
+  position: absolute;
+  z-index: 9999;
+  max-width: 300px;
+  border: 2px solid var(--navy-300);
+  background: var(--navy-700);
+  color: #ffffff;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  box-shadow: 0px 0px 5px rgba(10, 22, 40, 0.3);
+}
+
+.dark .ims-tooltip {
+  border-color: var(--navy-500);
+  background: var(--navy-800);
+}
+
+/* jQuery UI Menu styles (replaces .ui-menu) */
+.ims-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  outline: 0;
+}
+
+.ims-menu .ims-menu {
+  position: absolute;
+}
+
+.ims-menu-item {
+  margin: 0;
+  cursor: pointer;
+  list-style-image: none;
+}
+
+.ims-menu-item-wrapper {
+  position: relative;
+  padding: 3px 1em 3px 0.4em;
+  transition: background-color 0.1s;
+}
+
+.ims-menu-item-wrapper:hover,
+.ims-menu-item-wrapper.ims-state-focus {
+  background: var(--navy-50);
+  color: var(--navy-700);
+}
+
+.dark .ims-menu-item-wrapper:hover,
+.dark .ims-menu-item-wrapper.ims-state-focus {
+  background: var(--navy-700);
+  color: var(--navy-100);
+}
+
+.ims-menu-divider {
+  margin: 5px 0;
+  height: 0;
+  font-size: 0;
+  line-height: 0;
+  border-width: 1px 0 0 0;
+  border-color: var(--navy-200);
+}
+
+.dark .ims-menu-divider {
+  border-color: var(--navy-700);
+}
+
+/* jQuery UI Resizable handle styles (replaces .ui-resizable-handle) */
+.ims-resizable {
+  position: relative;
+}
+
+.ims-resizable-handle {
+  position: absolute;
+  font-size: 0.1px;
+  display: block;
+  touch-action: none;
+}
+
+.ims-resizable-disabled .ims-resizable-handle,
+.ims-resizable-autohide .ims-resizable-handle {
+  display: none;
+}
+
+.ims-resizable-n {
+  cursor: n-resize;
+  height: 7px;
+  width: 100%;
+  top: -5px;
+  left: 0;
+}
+
+.ims-resizable-s {
+  cursor: s-resize;
+  height: 7px;
+  width: 100%;
+  bottom: -5px;
+  left: 0;
+}
+
+.ims-resizable-e {
+  cursor: e-resize;
+  width: 7px;
+  right: -5px;
+  top: 0;
+  height: 100%;
+}
+
+.ims-resizable-w {
+  cursor: w-resize;
+  width: 7px;
+  left: -5px;
+  top: 0;
+  height: 100%;
+}
+
+.ims-resizable-se {
+  cursor: se-resize;
+  width: 12px;
+  height: 12px;
+  right: 1px;
+  bottom: 1px;
+}
+
+.ims-resizable-se::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--navy-400);
+  border-bottom: 2px solid var(--navy-400);
+}
+
+.dark .ims-resizable-se::after {
+  border-color: var(--navy-500);
+}
+
+.ims-resizable-sw {
+  cursor: sw-resize;
+  width: 9px;
+  height: 9px;
+  left: -5px;
+  bottom: -5px;
+}
+
+.ims-resizable-nw {
+  cursor: nw-resize;
+  width: 9px;
+  height: 9px;
+  left: -5px;
+  top: -5px;
+}
+
+.ims-resizable-ne {
+  cursor: ne-resize;
+  width: 9px;
+  height: 9px;
+  right: -5px;
+  top: -5px;
+}
+
+/* Selectable helper (replaces .ui-selectable-helper) */
+.ims-selectable-helper {
+  position: absolute;
+  z-index: 100;
+  border: 1px dotted var(--navy-500);
+  background: rgba(30, 58, 95, 0.05);
+}
+
+.dark .ims-selectable-helper {
+  border-color: var(--navy-400);
+  background: rgba(45, 90, 142, 0.1);
+}
+
+/* Autocomplete dropdown (replaces .ui-autocomplete) */
+.ims-autocomplete {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: default;
+  z-index: 100;
+}
+
+/* jQuery UI Button styles (replaces .ui-button) */
+.ims-jui-button {
+  padding: 0.4em 1em;
+  display: inline-block;
+  position: relative;
+  line-height: normal;
+  margin-right: 0.1em;
+  cursor: pointer;
+  vertical-align: middle;
+  text-align: center;
+  user-select: none;
+  overflow: visible;
+  text-decoration: none;
+  border: 1px solid var(--navy-200);
+  background: #ffffff;
+  color: var(--navy-700);
+  border-radius: 3px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.ims-jui-button:hover {
+  border-color: var(--navy-300);
+  background: var(--navy-50);
+}
+
+.dark .ims-jui-button {
+  border-color: var(--navy-600);
+  background: var(--navy-800);
+  color: var(--navy-100);
+}
+
+.dark .ims-jui-button:hover {
+  border-color: var(--navy-500);
+  background: var(--navy-700);
+}
+
+.ims-jui-button:active {
+  background: var(--navy-600);
+  color: #ffffff;
+  border-color: var(--navy-600);
+}
+
+.ims-jui-button-icon-only {
+  width: 2em;
+  box-sizing: border-box;
+  text-indent: -9999px;
+  white-space: nowrap;
+}
+
+/* Controlgroup (replaces .ui-controlgroup) */
+.ims-controlgroup {
+  vertical-align: middle;
+  display: inline-flex;
+}
+
+.ims-controlgroup > .ims-controlgroup-item {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.ims-controlgroup > .ims-controlgroup-item:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.ims-controlgroup > .ims-controlgroup-item:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ims-controlgroup-vertical {
+  flex-direction: column;
+}
+
+.ims-controlgroup-vertical > .ims-controlgroup-item:not(:first-child) {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.ims-controlgroup-vertical > .ims-controlgroup-item:not(:last-child) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Checkboxradio (replaces .ui-checkboxradio) */
+.ims-checkboxradio-label .ims-icon-background {
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 0.12em;
+  border: none;
+}
+
+.ims-checkboxradio-radio-label .ims-icon-background {
+  width: 16px;
+  height: 16px;
+  border-radius: 1em;
+  overflow: visible;
+  border: none;
+}
+
+.ims-checkboxradio-radio-label.ims-checkboxradio-checked .ims-icon,
+.ims-checkboxradio-radio-label.ims-checkboxradio-checked:hover .ims-icon {
+  background-image: none;
+  width: 8px;
+  height: 8px;
+  border-width: 4px;
+  border-style: solid;
+  border-color: var(--navy-600);
+}
+
+.dark .ims-checkboxradio-radio-label.ims-checkboxradio-checked .ims-icon,
+.dark .ims-checkboxradio-radio-label.ims-checkboxradio-checked:hover .ims-icon {
+  border-color: var(--navy-400);
+}
+
+.ims-checkboxradio-disabled {
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* Datepicker extension (replaces .ui-datepicker, adds Navy Blue theme) */
+.ims-datepicker {
+  width: 17em;
+  padding: 0.2em 0.2em 0;
+}
+
+.ims-datepicker-header {
+  position: relative;
+  padding: 0.2em 0;
+  background: var(--navy-600);
+  color: #ffffff;
+  border-radius: 3px 3px 0 0;
+}
+
+.dark .ims-datepicker-header {
+  background: var(--navy-700);
+}
+
+.ims-datepicker-prev,
+.ims-datepicker-next {
+  position: absolute;
+  top: 2px;
+  width: 1.8em;
+  height: 1.8em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #ffffff;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.ims-datepicker-prev:hover,
+.ims-datepicker-next:hover {
+  opacity: 1;
+}
+
+.ims-datepicker-prev {
+  left: 2px;
+}
+
+.ims-datepicker-next {
+  right: 2px;
+}
+
+.ims-datepicker-title {
+  margin: 0 2.3em;
+  line-height: 1.8em;
+  text-align: center;
+  font-weight: 600;
+}
+
+.ims-datepicker-title select {
+  font-size: 1em;
+  margin: 1px 0;
+}
+
+.ims-datepicker table {
+  width: 100%;
+  font-size: 0.9em;
+  border-collapse: collapse;
+  margin: 0 0 0.4em;
+}
+
+.ims-datepicker th {
+  padding: 0.7em 0.3em;
+  text-align: center;
+  font-weight: bold;
+  border: 0;
+  color: var(--navy-500);
+}
+
+.dark .ims-datepicker th {
+  color: var(--navy-400);
+}
+
+.ims-datepicker td {
+  border: 0;
+  padding: 1px;
+}
+
+.ims-datepicker td span,
+.ims-datepicker td a {
+  display: block;
+  padding: 0.2em;
+  text-align: right;
+  text-decoration: none;
+  color: #333333;
+  border-radius: 3px;
+  transition: background-color 0.1s;
+}
+
+.ims-datepicker td a:hover {
+  background: var(--navy-50);
+  color: var(--navy-700);
+}
+
+.dark .ims-datepicker td a {
+  color: var(--navy-200);
+}
+
+.dark .ims-datepicker td a:hover {
+  background: var(--navy-700);
+  color: var(--navy-100);
+}
+
+.ims-datepicker-buttonpane {
+  background-image: none;
+  margin: 0.7em 0 0 0;
+  padding: 0 0.2em;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  border-top: 1px solid var(--navy-200);
+  display: flex;
+  justify-content: space-between;
+}
+
+.dark .ims-datepicker-buttonpane {
+  border-top-color: var(--navy-700);
+}
+
+/* jQuery UI Draggable handle (replaces .ui-draggable-handle) */
+.ims-draggable-handle {
+  touch-action: none;
+  cursor: grab;
+}
+
+.ims-draggable-handle:active {
+  cursor: grabbing;
+}
+
+/* Print-friendly jQuery UI styles */
+@media print {
+  .ims-widget-overlay,
+  .ims-selectable-helper,
+  .ims-resizable-handle {
+    display: none !important;
+  }
+
+  .ims-state-active {
+    background: #1e3a5f !important;
+    color: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .ims-progressbar-overlay {
+    animation: none;
+  }
+}
+
+/* Reduced motion - disable progressbar animation */
+@media (prefers-reduced-motion: reduce) {
+  .ims-progressbar-overlay {
+    animation: none;
+  }
+}
