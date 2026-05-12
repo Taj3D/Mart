@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
+import { type ExportFormat, type ExportDataType } from "./data-table-export"
 import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
@@ -41,6 +42,15 @@ interface DataTableProps<TData, TValue> {
   onRowSelectionChange?: (selectedRows: TData[]) => void
   pageSize?: number
   pageSizeOptions?: number[]
+  /** Export configuration — pass to enable the Export dropdown button in the toolbar */
+  exportConfig?: {
+    exportTypes?: ExportFormat[]
+    exportDataType?: ExportDataType
+    allData?: TData[]
+    columnLabels?: Record<string, string>
+    fileName?: string
+    tableName?: string
+  }
 }
 
 export function DataTable<TData, TValue>({
@@ -57,6 +67,7 @@ export function DataTable<TData, TValue>({
   onRowSelectionChange,
   pageSize = 10,
   pageSizeOptions = [10, 25, 50, 100],
+  exportConfig,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -113,6 +124,10 @@ export function DataTable<TData, TValue>({
         searchKey={searchKey}
         searchPlaceholder={searchPlaceholder}
         actions={toolbarActions}
+        exportConfig={exportConfig ? {
+          ...exportConfig,
+          allData: exportConfig.allData ?? data,
+        } : undefined}
       />
 
       {/* Table Container */}

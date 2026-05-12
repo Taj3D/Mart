@@ -1,4 +1,6 @@
 export { DataTable } from "./data-table"
 export { DataTableToolbar } from "./data-table-toolbar"
 export { DataTablePagination } from "./data-table-pagination"
+export { DataTableExport } from "./data-table-export"
+export type { ExportFormat, ExportDataType, DataTableExportProps } from "./data-table-export"
 export { getCheckboxColumn, getRowNumberColumn, getActionColumn } from "./column-helpers"

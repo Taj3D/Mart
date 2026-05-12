@@ -84,6 +84,9 @@ import { ImsTag } from '@/components/ui/ims-tag'
 import { FileUploadButton } from '@/components/ui/file-upload-button'
 import { QuickLinkCard } from '@/components/ui/quick-link-card'
 import { DividerVertical } from '@/components/ui/divider-vertical'
+import { DataTable, type ExportFormat, type ExportDataType } from '@/components/data-table'
+import { ColumnDef } from '@tanstack/react-table'
+import { FileJson, FileSpreadsheet, FileDown, FileText as FileTextIcon, Database as DatabaseIcon } from 'lucide-react'
 
 /* ================================================================
    DEMO DATA
@@ -959,6 +962,112 @@ function File10Showcase() {
 }
 
 /* ================================================================
+   FILE 11 SHOWCASE - DataTable Export
+   ================================================================ */
+
+// Demo data for export showcase
+interface ExportOrder {
+  id: string
+  customer: string
+  product: string
+  amount: string
+  status: string
+  date: string
+}
+
+const exportDemoData: ExportOrder[] = [
+  { id: 'ORD-001', customer: 'Acme Corp', product: 'Widget Pro', amount: '1250.00', status: 'Completed', date: '2024-01-15' },
+  { id: 'ORD-002', customer: 'Globex Inc', product: 'Gizmo Plus', amount: '890.50', status: 'Processing', date: '2024-01-14' },
+  { id: 'ORD-003', customer: 'Wayne Ent.', product: 'Sensor X1', amount: '2100.00', status: 'Pending', date: '2024-01-14' },
+  { id: 'ORD-004', customer: 'Stark Ind.', product: 'Arc Reactor', amount: '5000.00', status: 'Completed', date: '2024-01-13' },
+  { id: 'ORD-005', customer: 'Umbrella Co', product: 'MedKit V2', amount: '475.00', status: 'Shipped', date: '2024-01-12' },
+  { id: 'ORD-006', customer: 'Cyberdyne', product: 'T-800 Chip', amount: '3200.00', status: 'Processing', date: '2024-01-11' },
+  { id: 'ORD-007', customer: 'Oscorp', product: 'Web Fluid', amount: '680.00', status: 'Pending', date: '2024-01-10' },
+  { id: 'ORD-008', customer: 'LexCorp', product: 'Krypto Lens', amount: '7800.00', status: 'Completed', date: '2024-01-09' },
+  { id: 'ORD-009', customer: 'Aperture', product: 'Portal Gun', amount: '15000.00', status: 'Shipped', date: '2024-01-08' },
+  { id: 'ORD-010', customer: 'Umbrella Co', product: 'T-Virus Ant.', amount: '9500.00', status: 'Completed', date: '2024-01-07' },
+]
+
+const exportColumns: ColumnDef<ExportOrder>[] = [
+  { accessorKey: 'id', header: 'Order ID', size: 100 },
+  { accessorKey: 'customer', header: 'Customer', size: 150 },
+  { accessorKey: 'product', header: 'Product', size: 150 },
+  { accessorKey: 'amount', header: 'Amount ($)', size: 120 },
+  { accessorKey: 'status', header: 'Status', size: 110 },
+  { accessorKey: 'date', header: 'Date', size: 110 },
+]
+
+function ExportShowcase() {
+  return (
+    <Card className="shadow-md">
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2">
+          <Download className="h-5 w-5 text-navy-500" />
+          <CardTitle className="text-lg">DataTable Export</CardTitle>
+        </div>
+        <CardDescription>
+          File 11 — Replaces <code className="text-xs bg-navy-50 dark:bg-navy-900/30 px-1 rounded">bootstrap-table-export.jquery.plugin</code> — Export table data to JSON, CSV, TXT, SQL, XML, Excel, XLSX, PDF, MS-Word
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <DataTable
+          columns={exportColumns}
+          data={exportDemoData}
+          searchKey="customer"
+          searchPlaceholder="Search customers..."
+          enableRowSelection
+          pageSize={5}
+          pageSizeOptions={[5, 10, 25]}
+          exportConfig={{
+            exportTypes: ['json', 'csv', 'txt', 'sql', 'xml', 'excel', 'xlsx', 'pdf', 'doc'] as ExportFormat[],
+            exportDataType: 'all' as ExportDataType,
+            fileName: 'ims-erp-orders',
+            tableName: 'orders',
+            columnLabels: {
+              id: 'Order ID',
+              customer: 'Customer Name',
+              product: 'Product Name',
+              amount: 'Amount (USD)',
+              status: 'Order Status',
+              date: 'Order Date',
+            },
+          }}
+        />
+
+        <Separator className="my-4" />
+
+        {/* Export format info */}
+        <div>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Supported Export Formats</p>
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+            {[
+              { icon: FileJson, label: 'JSON', desc: 'Structured data' },
+              { icon: FileSpreadsheet, label: 'CSV', desc: 'Comma-separated' },
+              { icon: FileTextIcon, label: 'TXT', desc: 'Tab-separated' },
+              { icon: DatabaseIcon, label: 'SQL', desc: 'INSERT statements' },
+              { icon: FileTextIcon, label: 'XML', desc: 'Markup data' },
+              { icon: FileSpreadsheet, label: 'Excel', desc: 'Legacy .xls' },
+              { icon: FileSpreadsheet, label: 'XLSX', desc: 'Open XML' },
+              { icon: FileDown, label: 'PDF', desc: 'Print-ready' },
+              { icon: FileTextIcon, label: 'DOC', desc: 'MS-Word' },
+            ].map((fmt) => (
+              <div
+                key={fmt.label}
+                className="flex flex-col items-center gap-1.5 p-2.5 rounded-lg border border-border/60 hover:border-navy-300 dark:hover:border-navy-600 hover:bg-navy-50 dark:hover:bg-navy-900/20 transition-colors"
+              >
+                <fmt.icon className="h-4 w-4 text-navy-600 dark:text-navy-400" />
+                <span className="text-xs font-semibold text-navy-700 dark:text-navy-300">{fmt.label}</span>
+                <span className="text-[9px] text-muted-foreground">{fmt.desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+/* ================================================================
    MAIN DASHBOARD PAGE
    ================================================================ */
 
@@ -1034,6 +1143,9 @@ export default function DashboardPage() {
 
             {/* File 10: Custom ERP Components */}
             <File10Showcase />
+
+            {/* File 11 - DataTable Export */}
+            <ExportShowcase />
           </div>
         </main>
       </div>

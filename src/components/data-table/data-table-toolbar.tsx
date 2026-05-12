@@ -16,12 +16,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  DataTableExport,
+  type ExportFormat,
+  type ExportDataType,
+} from "./data-table-export"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
   searchKey?: string
   searchPlaceholder?: string
   actions?: React.ReactNode
+  /** Export configuration — pass object to enable export, or omit/undefined to hide */
+  exportConfig?: {
+    /** Which formats to show — defaults to ['json', 'csv', 'txt', 'sql', 'excel', 'xlsx', 'pdf'] */
+    exportTypes?: ExportFormat[]
+    /** Which data to export: 'basic' | 'all' | 'selected' */
+    exportDataType?: ExportDataType
+    /** Full dataset (for 'all' export when paginated) */
+    allData?: TData[]
+    /** Column header labels for export files */
+    columnLabels?: Record<string, string>
+    /** File name prefix — defaults to "export" */
+    fileName?: string
+    /** SQL table name for SQL export — defaults to "data_table" */
+    tableName?: string
+  }
 }
 
 export function DataTableToolbar<TData>({
@@ -29,6 +49,7 @@ export function DataTableToolbar<TData>({
   searchKey,
   searchPlaceholder = "Search...",
   actions,
+  exportConfig,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
@@ -63,9 +84,20 @@ export function DataTableToolbar<TData>({
         )}
       </div>
 
-      {/* Right side: Actions & Column Visibility */}
+      {/* Right side: Export, Actions & Column Visibility */}
       <div className="flex items-center gap-2">
         {actions}
+        {exportConfig && (
+          <DataTableExport
+            table={table}
+            exportTypes={exportConfig.exportTypes}
+            exportDataType={exportConfig.exportDataType}
+            allData={exportConfig.allData}
+            columnLabels={exportConfig.columnLabels}
+            fileName={exportConfig.fileName}
+            tableName={exportConfig.tableName}
+          />
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

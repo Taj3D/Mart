@@ -4519,3 +4519,191 @@
     color: #333 !important;
   }
 }
+
+/* ===== DataTable Export Styles - Deep Navy Blue Theme ===== */
+/* Replaces bootstrap-table-export.jquery.plugin with React-based export system */
+/* Original jQuery plugin: showExport, exportDataType (basic/all/selected), exportTypes, exportOptions */
+
+/* Export button container - matching .export.btn-group from the original plugin */
+.ims-export-btn-group {
+  display: inline-flex;
+  position: relative;
+}
+
+/* Export dropdown trigger - matching .export .dropdown-toggle */
+.ims-export-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: 1px solid var(--navy-200);
+  background-color: white;
+  color: var(--navy-700);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ims-export-trigger:hover {
+  background-color: var(--navy-50);
+  border-color: var(--navy-300);
+}
+
+.ims-export-trigger:active {
+  background-color: var(--navy-100);
+}
+
+.dark .ims-export-trigger {
+  background-color: var(--navy-800);
+  border-color: var(--navy-600);
+  color: var(--navy-200);
+}
+
+.dark .ims-export-trigger:hover {
+  background-color: var(--navy-700);
+  border-color: var(--navy-500);
+}
+
+/* Export menu dropdown - matching .export .dropdown-menu */
+.ims-export-menu {
+  min-width: 200px;
+  padding: 4px 0;
+  background-color: white;
+  border: 1px solid var(--navy-200);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(10, 22, 40, 0.12);
+  z-index: 1050;
+}
+
+.dark .ims-export-menu {
+  background-color: var(--navy-800);
+  border-color: var(--navy-600);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Export menu item - matching .export .dropdown-menu li a */
+.ims-export-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--navy-700);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  text-decoration: none;
+}
+
+.ims-export-menu-item:hover {
+  background-color: var(--navy-50);
+  color: var(--navy-900);
+}
+
+.dark .ims-export-menu-item {
+  color: var(--navy-200);
+}
+
+.dark .ims-export-menu-item:hover {
+  background-color: var(--navy-700);
+  color: white;
+}
+
+/* Export menu item icon */
+.ims-export-menu-item-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--navy-400);
+  flex-shrink: 0;
+}
+
+.ims-export-menu-item:hover .ims-export-menu-item-icon {
+  color: var(--navy-600);
+}
+
+.dark .ims-export-menu-item:hover .ims-export-menu-item-icon {
+  color: var(--navy-200);
+}
+
+/* Export menu item format badge */
+.ims-export-format-badge {
+  margin-left: auto;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--navy-400);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Export type indicator - showing which data will be exported */
+.ims-export-data-type {
+  font-size: 10px;
+  color: var(--navy-400);
+  font-weight: 400;
+}
+
+/* Export loading state */
+.ims-export-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.ims-export-loading .ims-export-trigger svg {
+  animation: ims-export-spin 1s linear infinite;
+}
+
+@keyframes ims-export-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Export dropdown separator - matching .dropdown-menu .divider */
+.ims-export-separator {
+  height: 1px;
+  margin: 4px 0;
+  background-color: var(--navy-200);
+}
+
+.dark .ims-export-separator {
+  background-color: var(--navy-600);
+}
+
+/* Export dropdown header - matching .dropdown-menu .dropdown-header */
+.ims-export-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--navy-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dark .ims-export-header {
+  color: var(--navy-300);
+}
+
+/* Print-friendly: hide export button */
+@media print {
+  .ims-export-btn-group,
+  .ims-export-trigger {
+    display: none !important;
+  }
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 640px) {
+  .ims-export-menu {
+    min-width: 180px;
+  }
+  
+  .ims-export-trigger {
+    font-size: 11px;
+    padding: 0 8px;
+    height: 28px;
+  }
+}
