@@ -754,7 +754,123 @@ Stage Summary:
 - 8 new components for Custom ERP CSS conversion (File 10)
 - InlineHeader: italic bold header with colored border-left (replaces .inline-header)
 - ShutterButton: horizontal shutter wipe animation button (replaces .shutter-out)
-- RoundButton: solid/hollow round buttons with color variants (replaces .round)
+- RoundButton: solid/hollow round buttons with color variants (replaces .round/.round.hollow)
+- ImsTag: arrow-shaped tag with dot indicator (replaces .tag)
+- FileUploadButton: file upload with drag-and-drop (replaces .btn-file)
+- NotificationBell: bell icon with dropdown notifications (replaces #noti_Button system)
+- QuickLinkCard: colored card with icon (replaces .quick-link-height)
+- DividerVertical: double-border vertical separator (replaces .divider-vertical)
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: Implement File 12 - Bootstrap Table v1.11.1 core library conversion to React + TanStack React Table (Deep Navy Blue theme)
+
+Work Log:
+- Analyzed bootstrap-table v1.11.1 core jQuery plugin (2000+ lines) with 30+ features
+- Identified all features to convert: detail view, card view, radio selection, row/cell styling, footer, server-side pagination, fixed header, smart display, locale/i18n, event callbacks, etc.
+- Rewrote DataTable component (data-table.tsx) with 30+ new props covering all bootstrap-table features:
+  - Detail View: detailView, detailFormatter, detailExpandIcon, detailCollapseIcon
+  - Card View: cardView, onCardViewChange, showToggle
+  - Row Styling: rowStyle callback for custom row classes/styles
+  - Footer: showFooter, footerFormatters
+  - Striped: striped rows alternating colors
+  - Fixed Header: fixedHeader, maxHeight with CSS sticky positioning
+  - Click to Select: clickToSelect for row click selection
+  - Single Select: singleSelect for radio-style one-row selection
+  - Unique ID: uniqueId for row tracking by field
+  - Maintain Selected: maintainSelected across pages
+  - Toolbar: showRefresh, onRefresh, showPaginationSwitch
+  - Pagination: paginationVAlign (top/bottom/both), smartDisplay
+  - Search: strictSearch, searchOnEnterKey
+  - Events: onClickRow, onDblClickRow, onSort, onSearch, onPageChange
+  - Server-side: sidePagination ('client'|'server'), totalRows, onFetchData
+  - Locale: Full DataTableLocale interface with 16 configurable text functions
+- Created DataTableDetailRow component (data-table-detail.tsx):
+  - Expandable row detail with slide-in/fade-in animation
+  - DataTableDetailToggle button with ChevronRight/ChevronDown icons
+  - DataTableExpandAllToggle toolbar button for expand/collapse all
+  - getDetailColumn() helper for the expand/collapse column
+- Created DataTableCardView component (data-table-card-view.tsx):
+  - Card layout for mobile/responsive view with field label + value pairs
+  - Loading skeleton cards (6 cards with pulse animation)
+  - Empty state with "No matching records found"
+  - Click-to-select support in card mode
+  - Row style callback support
+  - Skip utility columns (select, detailToggle, rowNumber, actions, radio)
+- Created DataTableFooter component (data-table-footer.tsx):
+  - Footer row with tfoot section and Navy Blue styling
+  - Custom footerFormatter per column support
+  - Built-in aggregation: sum, count, avg, min, max
+  - createFooterAggregator() helper with prefix/suffix
+  - Skip utility columns in footer
+  - Navy-50 background in light mode, navy-900/20 in dark mode
+- Created useServerPagination hook (use-server-pagination.ts):
+  - Server-side pagination state management
+  - Debounced search with configurable delay
+  - Auto-fetch on param change
+  - setPage, setPageSize, setSort, setSearchText, setFilters, reset methods
+  - Error handling with error state
+  - totalPages calculation
+- Updated column-helpers.tsx with getRadioColumn<TData>():
+  - Radio button column for single-row selection
+  - role="radio", aria-checked, aria-label accessibility
+  - Navy Blue styling (border-navy-300, bg-navy-600 selected dot)
+  - Deselect all + select current on click
+- Updated DataTableToolbar with new features:
+  - Refresh button (RefreshCw icon with spin animation when refreshing)
+  - Toggle view button (LayoutGrid/Table2 icons for card/table switch)
+  - Pagination switch button (PanelTopClose/PanelTopOpen icons)
+  - searchOnEnterKey: only search on Enter key press
+  - strictSearch: exact match filtering
+  - DataTableToolbarLocale interface for all toolbar text
+- Updated DataTablePagination with new features:
+  - Smart display: hide pagination when only 1 page
+  - Pagination position: top/bottom/both
+  - Pagination visibility toggle (showPaginationSwitch)
+  - Server-side totalRows support
+  - DataTablePaginationLocale interface
+  - DataTablePaginationWrapper for position rendering
+- Updated index.ts with all new exports:
+  - DataTableLocale type
+  - DataTableToolbarLocale type
+  - DataTablePaginationLocale type
+  - DataTableDetailRow, DataTableDetailToggle, DataTableExpandAllToggle, getDetailColumn
+  - DataTableCardView
+  - DataTableFooter, createFooterAggregator, FooterFormatter type
+  - useServerPagination, ServerPaginationParams, ServerPaginationState, UseServerPaginationOptions
+  - getRadioColumn
+- Added 150+ lines of enhanced DataTable CSS to globals.css:
+  - Fixed header container (dt-fixed-header-container) with sticky positioning
+  - Detail row animation (dt-detail-slide-in, dt-detail-fade-in keyframes)
+  - Card view layout (ims-card-view, ims-card-view-item, ims-card-view-title)
+  - Footer row styling (ims-table-footer with Navy Blue bg)
+  - Sorted column highlighting (dt-sorted-column-header, dt-sorted-column-cell)
+  - Card view grid (dt-card-view-grid with Navy Blue cards)
+  - Detail toggle hover states
+  - Dark mode support for all new styles
+- Lint check passed (0 errors, 1 known TanStack Table warning)
+- Dev server compiling successfully
+
+Stage Summary:
+- Complete Bootstrap Table v1.11.1 core library conversion to React
+- 4 new files: data-table-detail.tsx, data-table-card-view.tsx, data-table-footer.tsx, use-server-pagination.ts
+- 6 files modified: data-table.tsx, column-helpers.tsx, data-table-toolbar.tsx, data-table-pagination.tsx, index.ts, globals.css
+- 30+ new DataTable props covering all bootstrap-table features
+- Detail View with expand/collapse animation and expand all
+- Card View toggle for mobile-responsive layout
+- Radio Selection column for single-row selection
+- Row Styling callback for custom row classes/styles
+- Footer row with aggregation (sum/count/avg/min/max)
+- Fixed Header with sticky positioning
+- Server-side Pagination with useServerPagination hook
+- Smart Display: auto-hide pagination when 1 page
+- Locale/i18n with 16 configurable text functions
+- Event Callbacks: onClickRow, onDblClickRow, onSort, onSearch, onPageChange
+- Striped rows, click-to-select, maintain selected across pages
+- Deep Navy Blue theme throughout all new components
+- Fully backward compatible - existing DataTable usages work without changes
+- Dark mode fully supportedants (replaces .round)
 - ImsTag: arrow-shaped tag with dot indicator and hover color change (replaces .tag)
 - FileUploadButton: file upload with drag-and-drop and hidden input (replaces .btn-file)
 - NotificationBell: complete notification dropdown with bell icon and counter (replaces #noti_* CSS)

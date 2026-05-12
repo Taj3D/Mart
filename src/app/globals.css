@@ -402,6 +402,268 @@
   }
 }
 
+/* ===== DataTable Enhanced Styles - Deep Navy Blue Theme ===== */
+/* Bootstrap Table v1.11.1 feature parity with React + TanStack */
+
+/* Fixed header container - sticky header on scroll */
+.dt-fixed-header-container {
+  position: relative;
+}
+
+.dt-fixed-header-container [data-slot="table-header"] {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.dt-fixed-header-container [data-slot="table-header"] tr {
+  background: linear-gradient(to right, var(--navy-700), var(--navy-600));
+}
+
+.dark .dt-fixed-header-container [data-slot="table-header"] tr {
+  background: linear-gradient(to right, var(--navy-800), var(--navy-900));
+}
+
+/* Detail view expand/collapse animation */
+.dt-detail-row {
+  animation: dt-detail-slide-in 0.2s ease-out;
+}
+
+.dt-detail-content {
+  animation: dt-detail-fade-in 0.25s ease-out;
+}
+
+@keyframes dt-detail-slide-in {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+@keyframes dt-detail-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card view animation */
+.dt-card-view-enter {
+  animation: dt-card-fade-in 0.2s ease-out;
+}
+
+@keyframes dt-card-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Footer row styling - Deep Navy Blue */
+[data-slot="table-footer"] {
+  background-color: var(--navy-50);
+  border-top: 2px solid var(--navy-200);
+}
+
+.dark [data-slot="table-footer"] {
+  background-color: rgba(30, 58, 95, 0.15);
+  border-top-color: var(--navy-700);
+}
+
+[data-slot="table-footer"] th {
+  font-weight: 600;
+  color: var(--navy-700);
+  font-size: 12px;
+}
+
+.dark [data-slot="table-footer"] th {
+  color: var(--navy-300);
+}
+
+/* Striped rows - alternating background */
+.dt-striped-row:nth-child(even) {
+  background-color: var(--navy-50);
+}
+
+.dark .dt-striped-row:nth-child(even) {
+  background-color: rgba(30, 58, 95, 0.06);
+}
+
+/* Sort column highlighting */
+.dt-sorted-column-header {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.dt-sorted-column-cell {
+  background-color: rgba(30, 58, 95, 0.03);
+}
+
+.dark .dt-sorted-column-cell {
+  background-color: rgba(30, 58, 95, 0.08);
+}
+
+/* Click-to-select cursor on rows */
+.dt-clickable-row {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dt-clickable-row:hover {
+  background-color: var(--navy-50) !important;
+}
+
+.dark .dt-clickable-row:hover {
+  background-color: rgba(30, 58, 95, 0.12) !important;
+}
+
+/* Radio button column in table */
+[data-slot="table-cell"]:has([data-slot="radio-group-item"]) {
+  padding-right: 0;
+}
+
+[data-slot="radio-group-item"] {
+  transition: all 0.15s ease;
+}
+
+/* Detail toggle button styling */
+.dt-detail-toggle:hover {
+  background-color: var(--navy-100);
+}
+
+.dark .dt-detail-toggle:hover {
+  background-color: rgba(30, 58, 95, 0.3);
+}
+
+/* Pagination switch active state */
+.dt-pagination-switch-active {
+  background-color: var(--navy-50);
+  border-color: var(--navy-300);
+}
+
+.dark .dt-pagination-switch-active {
+  background-color: rgba(30, 58, 95, 0.2);
+  border-color: var(--navy-600);
+}
+
+/* Smart display: hide pagination when only 1 page */
+.dt-smart-pagination-hidden {
+  display: none;
+}
+
+/* Refresh button spinning animation */
+.dt-refresh-spinning svg {
+  animation: dt-spin 1s linear infinite;
+}
+
+@keyframes dt-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Card view enhanced layout */
+.dt-card-view-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.dt-card-view-grid .dt-card-item {
+  transition: all 0.15s ease;
+  border: 1px solid var(--navy-200);
+}
+
+.dark .dt-card-view-grid .dt-card-item {
+  border-color: var(--navy-700);
+}
+
+.dt-card-view-grid .dt-card-item:hover {
+  border-color: var(--navy-300);
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.1);
+}
+
+.dark .dt-card-view-grid .dt-card-item:hover {
+  border-color: var(--navy-600);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dt-card-view-grid .dt-card-item.dt-card-selected {
+  border-color: var(--navy-400);
+  background-color: var(--navy-50);
+}
+
+.dark .dt-card-view-grid .dt-card-item.dt-card-selected {
+  border-color: var(--navy-500);
+  background-color: rgba(30, 58, 95, 0.15);
+}
+
+/* Maintain selection across pages indicator */
+.dt-selection-maintained {
+  position: relative;
+}
+
+.dt-selection-maintained::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--navy-500);
+  border-radius: 3px 0 0 3px;
+}
+
+/* Table row detail separator line */
+[data-slot="table-detail-row"] td {
+  border-left: 3px solid var(--navy-400);
+}
+
+.dark [data-slot="table-detail-row"] td {
+  border-left-color: var(--navy-600);
+}
+
+/* Enhanced toolbar button styles */
+.dt-toolbar-button {
+  border-color: var(--navy-200);
+  color: var(--navy-700);
+  transition: all 0.15s ease;
+}
+
+.dt-toolbar-button:hover {
+  background-color: var(--navy-50);
+  border-color: var(--navy-300);
+}
+
+.dark .dt-toolbar-button {
+  border-color: var(--navy-700);
+  color: var(--navy-300);
+}
+
+.dark .dt-toolbar-button:hover {
+  background-color: rgba(30, 58, 95, 0.2);
+  border-color: var(--navy-600);
+}
+
 /* ===== DateTime Picker Styles - Deep Navy Blue Theme ===== */
 /* Replaces bootstrap-datetimepicker with Navy Blue active color (#337ab7 → Navy) */
 
