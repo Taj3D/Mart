@@ -13,11 +13,12 @@ import {
   ChevronRight,
   Layers,
   Users,
+  Truck,
   Warehouse,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export type NavItem = 'dashboard' | 'inventory' | 'products' | 'sales' | 'purchase' | 'reports' | 'settings'
+export type NavItem = 'dashboard' | 'inventory' | 'products' | 'sales' | 'purchase' | 'customers' | 'suppliers' | 'reports' | 'settings'
 
 const sidebarItems: Array<{ key: NavItem; label: string; icon: React.ElementType; group: string }> = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, group: 'Main' },
@@ -25,6 +26,8 @@ const sidebarItems: Array<{ key: NavItem; label: string; icon: React.ElementType
   { key: 'products', label: 'Products', icon: Layers, group: 'Operations' },
   { key: 'sales', label: 'Sales', icon: TrendingUp, group: 'Operations' },
   { key: 'purchase', label: 'Purchase', icon: ShoppingCart, group: 'Operations' },
+  { key: 'customers', label: 'Customers', icon: Users, group: 'People' },
+  { key: 'suppliers', label: 'Suppliers', icon: Truck, group: 'People' },
   { key: 'reports', label: 'Reports', icon: BarChart3, group: 'Analytics' },
   { key: 'settings', label: 'Settings', icon: Settings, group: 'System' },
 ]

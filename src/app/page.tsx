@@ -18,6 +18,8 @@ import {
   ProductsSection,
   SalesSection,
   PurchaseSection,
+  CustomersSection,
+  SuppliersSection,
   ReportsSection,
   SettingsSection,
 } from '@/components/erp'
@@ -32,6 +34,8 @@ const breadcrumbMap: Record<NavItem, Array<{ label: string; href?: string }>> = 
   products: [{ label: 'Home', href: '#' }, { label: 'Products' }],
   sales: [{ label: 'Home', href: '#' }, { label: 'Sales' }],
   purchase: [{ label: 'Home', href: '#' }, { label: 'Purchase' }],
+  customers: [{ label: 'Home', href: '#' }, { label: 'Customers' }],
+  suppliers: [{ label: 'Home', href: '#' }, { label: 'Suppliers' }],
   reports: [{ label: 'Home', href: '#' }, { label: 'Reports' }],
   settings: [{ label: 'Home', href: '#' }, { label: 'Settings' }],
 }
@@ -40,10 +44,10 @@ const breadcrumbMap: Record<NavItem, Array<{ label: string; href?: string }>> = 
 // SECTION RENDERER
 // ================================================================
 
-function renderSection(activeItem: NavItem) {
+function renderSection(activeItem: NavItem, onNavigate: (section: string) => void) {
   switch (activeItem) {
     case 'dashboard':
-      return <DashboardSection />
+      return <DashboardSection onNavigate={onNavigate} />
     case 'inventory':
       return <InventorySection />
     case 'products':
@@ -52,12 +56,16 @@ function renderSection(activeItem: NavItem) {
       return <SalesSection />
     case 'purchase':
       return <PurchaseSection />
+    case 'customers':
+      return <CustomersSection />
+    case 'suppliers':
+      return <SuppliersSection />
     case 'reports':
       return <ReportsSection />
     case 'settings':
       return <SettingsSection />
     default:
-      return <DashboardSection />
+      return <DashboardSection onNavigate={onNavigate} />
   }
 }
 
@@ -277,7 +285,7 @@ export default function HomePage() {
 
           {/* Page Content */}
           <div className="p-4 sm:p-6">
-            {renderSection(activeItem)}
+            {renderSection(activeItem, handleNavigate)}
           </div>
         </main>
       </div>

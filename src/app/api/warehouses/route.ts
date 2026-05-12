@@ -1,10 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams
+    const includeAll = searchParams.get('all') === 'true'
+
     const warehouses = await db.warehouse.findMany({
-      where: { isActive: true },
+      where: includeAll ? {} : { isActive: true },
       orderBy: { name: 'asc' },
     })
 

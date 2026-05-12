@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Shield, Bell, Menu, LayoutDashboard, Package, BarChart3, Settings, LogOut, User as UserIcon, ShoppingCart, TrendingUp, FileText, Layers } from 'lucide-react'
+import { Shield, Bell, Menu, LayoutDashboard, Package, BarChart3, Settings, LogOut, User as UserIcon, ShoppingCart, TrendingUp, FileText, Layers, Users, Truck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -162,6 +162,8 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
                 { key: 'products' as NavItem, label: 'Products', icon: Layers },
                 { key: 'sales' as NavItem, label: 'Sales', icon: TrendingUp },
                 { key: 'purchase' as NavItem, label: 'Purchase', icon: ShoppingCart },
+                { key: 'customers' as NavItem, label: 'Customers', icon: Users },
+                { key: 'suppliers' as NavItem, label: 'Suppliers', icon: Truck },
                 { key: 'reports' as NavItem, label: 'Reports', icon: BarChart3 },
                 { key: 'settings' as NavItem, label: 'Settings', icon: Settings },
               ].map((item) => (
