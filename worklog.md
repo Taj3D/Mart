@@ -593,3 +593,77 @@ Stage Summary:
 - Sticky header and footer
 - All previously built components integrated and visible
 - Ready for File 9 implementation
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Create jQuery UI 1.12.1 replacement components and theme CSS with Deep Navy Blue theme
+
+Work Log:
+- Analyzed jQuery UI 1.12.1 CSS file (20+ components: draggable, resizable, selectable, sortable, accordion, autocomplete, menu, button, controlgroup, checkboxradio, datepicker, dialog, progressbar, selectmenu, slider, spinner, tabs, tooltip, theme)
+- Mapped each jQuery UI component to existing or new components:
+  - Already implemented: draggable (DraggablePanel), selectable (SelectableList), sortable (SortableList), datepicker (DatePicker), dialog (Dialog), progressbar (Progress), selectmenu (SearchableSelect), tabs (Tabs), tooltip (Tooltip), slider (Slider), accordion (Accordion), menu (DropdownMenu), checkbox/radio (Checkbox/RadioGroup)
+  - New components needed: ResizablePanel, Autocomplete, NumberSpinner, ButtonGroup
+- Created ResizablePanel component at /src/components/ui/resizable-panel.tsx:
+  - 8 resize handles: n/s/e/w/se/sw/nw/ne matching jQuery UI .ui-resizable
+  - SE corner (12x12px) always slightly visible with diagonal lines indicator
+  - Edge handles (7px) with Navy Blue indicator on hover
+  - useResizable hook for composable resize logic
+  - Bounds constraint (parent/window/CSS selector)
+  - Keyboard resize: Arrow=10px, Shift+Arrow=50px
+  - Dimension tooltip during resize
+  - Touch support
+  - CSS classes: ims-resizable, ims-resizable-handle, ims-resizable-n/s/e/w/se/sw/nw/ne, ims-resizable-ghost
+- Created Autocomplete component at /src/components/ui/autocomplete.tsx:
+  - Free-text input with typeahead suggestions (NOT a combobox/select)
+  - Local mode: client-side filtering with fuzzy matching
+  - Async mode: debounced API calls via onSearch prop
+  - Recent items section on empty focus
+  - Match highlighting (bg-navy-100 text-navy-700)
+  - Grouping support via groupField
+  - Keyboard navigation: Up/Down/Enter/Escape
+  - IME composition support for CJK input
+  - 3 sizes: sm/default/lg
+- Created NumberSpinner component at /src/components/ui/number-spinner.tsx:
+  - jQuery UI .ui-spinner layout: input + stacked Up/Down buttons on right
+  - Hold-to-spin with acceleration (300ms → 40ms floor)
+  - Keyboard: ↑↓=±step, PgUp/PgDn=±step×10, Home/End=min/max
+  - Mouse wheel support
+  - Min/Max clamping, precision, prefix/suffix, thousands separator
+  - SpinnerInput variant: compact horizontal layout (− input +)
+- Created ButtonGroup component at /src/components/ui/button-group.tsx:
+  - Horizontal/vertical orientation
+  - ButtonGroupItem with connected borders and active state
+  - ButtonGroupLabel for section labels
+  - ButtonGroupDivider for visual separators
+  - SegmentedControl variant for single-select toggles
+  - Context-based size/disabled propagation
+- Added comprehensive jQuery UI theme CSS to globals.css (ims-* prefixed):
+  - Layout Helpers: ims-helper-hidden, ims-helper-hidden-accessible, ims-helper-reset, ims-helper-clearfix, ims-helper-zfix, ims-front
+  - Widget Containers: ims-widget, ims-widget-content, ims-widget-header
+  - Interaction States: ims-state-default, ims-state-hover, ims-state-focus, ims-state-active, ims-state-highlight, ims-state-error, ims-state-disabled
+  - Priority: ims-priority-primary, ims-priority-secondary
+  - Overlays: ims-widget-overlay (Navy tinted), ims-widget-shadow
+  - Corner Radius: ims-corner-all, ims-corner-top, etc. (3px matching jQuery UI)
+  - Resizable: ims-resizable, ims-resizable-handle, ims-resizable-n/s/e/w/se/sw/nw/ne
+  - Autocomplete: ims-autocomplete, ims-autocomplete-results, ims-autocomplete-item
+  - Spinner: ims-spinner, ims-spinner-input, ims-spinner-button
+  - ControlGroup: ims-controlgroup, ims-controlgroup-item, ims-controlgroup-label
+  - CheckboxRadio: ims-checkboxradio-label, ims-icon-background
+  - All styles support light and dark mode
+  - Print-friendly overrides
+- Lint check passed (0 errors, 1 known TanStack Table warning)
+- Dev server compiling successfully
+
+Stage Summary:
+- 4 new components replacing jQuery UI: ResizablePanel, Autocomplete, NumberSpinner, ButtonGroup
+- Complete jQuery UI theme CSS with ims-* prefixed classes
+- Deep Navy Blue theme replaces jQuery UI's #003eff/#007fff active colors
+- All interaction states (default/hover/focus/active/highlight/error/disabled) themed
+- Overlay and shadow styles themed with Navy Blue
+- Corner radius matching jQuery UI's 3px
+- ResizablePanel with 8-direction resize handles and keyboard support
+- Autocomplete with local/async/recent modes and match highlighting
+- NumberSpinner with hold-to-spin acceleration and compact SpinnerInput variant
+- ButtonGroup with SegmentedControl variant
+- Dark mode fully supported
