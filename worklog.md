@@ -505,3 +505,91 @@ Stage Summary:
 - Accessibility: prefers-reduced-motion, sr-only support
 - Dark mode fully supported
 - Print-friendly icon styles
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Create SortableList, SelectableList, DraggablePanel components replacing jQuery UI (Deep Navy Blue theme)
+
+Work Log:
+- Created SortableList component at /src/components/ui/sortable-list.tsx:
+  - Built with @dnd-kit/core and @dnd-kit/sortable for drag-and-drop
+  - SortableList: Generic sortable list with configurable strategy (vertical/horizontal/rectSwapping)
+  - SortableItem: Individual draggable item with optional drag handle
+  - IMSDragOverlay: Custom drag overlay with Navy Blue semi-transparent background and Framer Motion animation
+  - Drag handle with GripVertical icon and grab cursor
+  - Touch sensor with 150ms delay for mobile support
+  - Keyboard sensor for accessibility
+  - Array move/reorder with arrayMove utility
+- Created SelectableList component:
+  - Single and multi-select modes
+  - Ctrl+click for toggle selection
+  - Shift+click for range selection
+  - Lasso selection with dashed Navy Blue rectangle and Framer Motion animation
+  - ARIA roles (listbox, option, aria-selected, aria-multiselectable)
+  - Selected state with ims-selected CSS class
+- Created DraggablePanel component:
+  - Pointer-event based dragging
+  - Bounds constraint (parent or CSS selector)
+  - Controlled/uncontrolled position modes
+  - Navy Blue gradient header as drag handle
+  - Shadow and ring effects while dragging
+  - Configurable width, height, z-index
+- Added comprehensive drag-and-drop CSS styles to globals.css:
+  - ims-sortable: Container for sortable items
+  - ims-sortable-handle: Touch-action none, cursor grab
+  - ims-sortable-ghost: Opacity 0.4 during drag
+  - ims-sortable-chosen: Navy Blue highlight on chosen item
+  - ims-draggable: Position relative, cursor move
+  - ims-selectable: Touch-action none, user-select none
+  - ims-selecting: Navy Blue highlight while selecting
+  - ims-selected: Navy Blue highlight for selected
+  - ims-sortable-disabled: Disabled item state
+- Re-exported @dnd-kit utilities (arrayMove, arraySwap, DndContext, closestCenter, etc.)
+- All components fully support light and dark mode
+- Lint check passed (only known TanStack Table warning)
+
+Stage Summary:
+- Complete drag-and-drop component suite replacing jQuery UI
+- SortableList with drag handles, touch support, keyboard navigation
+- SelectableList with multi-select, range select, lasso selection
+- DraggablePanel with bounds constraint and Navy Blue theme
+- All components use @dnd-kit for robust drag-and-drop
+- CSS classes prefixed with ims- to avoid conflicts
+- Dark mode fully supported
+- Accessibility features (ARIA roles, keyboard navigation)
+
+---
+Task ID: 10
+Agent: Main Agent
+Task: Restore comprehensive Dashboard page integrating all built components with full ERP layout
+
+Work Log:
+- Restored full Dashboard page with proper ERP layout:
+  - AppHeader (sticky top navigation)
+  - AppSidebar (collapsible left sidebar, 250px desktop)
+  - IMSBreadcrumb (arrow separator)
+  - Main content area with all component showcases
+  - Footer (sticky bottom with NextGen Digital Studio branding)
+- Dashboard sections:
+  - Welcome Banner: Navy Blue gradient with admin greeting, refresh/export buttons
+  - Stats Cards: 4 cards (Total Products, Sales Today, Low Stock, Pending Orders) with gradient backgrounds and trend indicators
+  - Recent Orders Table: 5-row table with ims-table-header Navy gradient, status badges
+  - Performance Panel: 4 progress bars with different colors (navy, emerald, amber, rose)
+  - Notifications Panel: 4 alert types (success, warning, info, error) with border-left indicators
+  - Quick Actions Panel: 6 action buttons (New Order, Add Product, Create Invoice, etc.)
+  - Icon System Showcase: 16 FA→Lucide icon mappings, size modifiers, animations/transforms, IconList
+  - Sortable/Selectable/Draggable section: SortableList with drag handles, SelectableList with multi-select, DraggablePanel
+  - Design System Showcase: Badge variants (7), Button variants (10), Button sizes (5)
+- Layout uses min-h-screen flex flex-col with Footer mt-auto for sticky footer
+- All sections are responsive (grid with sm/xl breakpoints)
+- Lint check passed
+- Dev server compiling successfully
+
+Stage Summary:
+- Full ERP Dashboard with all 8+ implemented component systems showcased
+- Deep Navy Blue theme throughout
+- Responsive layout with mobile hamburger menu and hidden sidebar
+- Sticky header and footer
+- All previously built components integrated and visible
+- Ready for File 9 implementation
