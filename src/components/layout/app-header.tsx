@@ -42,9 +42,15 @@ const sampleNotifications = [
 interface AppHeaderProps {
   activeItem: NavItem
   onNavigate: (item: NavItem) => void
+  user?: {
+    name?: string | null
+    email?: string | null
+    role?: string
+  } | null
+  onLogout?: () => void
 }
 
-export function AppHeader({ activeItem, onNavigate }: AppHeaderProps) {
+export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
   const handleNavigate = (item: NavItem) => {
@@ -100,17 +106,21 @@ export function AppHeader({ activeItem, onNavigate }: AppHeaderProps) {
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 rounded-sm px-2 py-1.5 hover:bg-white/10 transition-colors">
               <Avatar className="h-7 w-7">
-                <AvatarImage src="" alt="Admin" />
-                <AvatarFallback className="bg-navy-500 text-white text-xs">AD</AvatarFallback>
+                <AvatarImage src="" alt={user?.name || 'Admin'} />
+                <AvatarFallback className="bg-navy-500 text-white text-xs">
+                  {user?.name?.charAt(0)?.toUpperCase() || 'A'}
+                </AvatarFallback>
               </Avatar>
-              <span className="hidden sm:inline text-white text-sm font-medium">Admin</span>
+              <span className="hidden sm:inline text-white text-sm font-medium">
+                {user?.name || 'Admin'}
+              </span>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">Admin User</p>
-                <p className="text-xs text-muted-foreground">admin@ims-erp.com</p>
+                <p className="text-sm font-medium">{user?.name || 'Admin User'}</p>
+                <p className="text-xs text-muted-foreground">{user?.email || 'admin@ims-erp.com'}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -123,7 +133,7 @@ export function AppHeader({ activeItem, onNavigate }: AppHeaderProps) {
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem variant="destructive" onClick={onLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>

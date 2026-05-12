@@ -1,7 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { Shield, Eye, EyeOff, Loader2, LogIn, RefreshCw, Database } from 'lucide-react'
+import { useSession, signIn, signOut } from 'next-auth/react'
+import { Shield, Eye, EyeOff, Loader2, LogIn, Database, LogOut } from 'lucide-react'
 import { AppHeader } from '@/components/layout/app-header'
 import { AppSidebar, type NavItem } from '@/components/layout/app-sidebar'
 import { IMSBreadcrumb } from '@/components/layout/ims-breadcrumb'
@@ -64,7 +65,7 @@ function renderSection(activeItem: NavItem) {
 // LOGIN FORM
 // ================================================================
 
-function LoginForm({ onLogin }: { onLogin: () => void }) {
+function LoginForm() {
   const [userName, setUserName] = React.useState('admin')
   const [password, setPassword] = React.useState('admin123')
   const [showPassword, setShowPassword] = React.useState(false)
@@ -74,11 +75,13 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
   const handleSeed = async () => {
     setSeeding(true)
     try {
-      // Seed auth data (admin user + company)
-      await fetch('/api/auth/seed', { method: 'POST' })
-      // Seed ERP business data
-      await fetch('/api/seed-erp', { method: 'POST' })
-      toast.success('Database seeded with sample data')
+      const res = await fetch('/api/auth/seed', { method: 'POST' })
+      const data = await res.json()
+      if (data.success) {
+        toast.success(data.message || 'Database seeded successfully')
+      } else {
+        toast.error(data.message || 'Failed to seed database')
+      }
     } catch {
       toast.error('Failed to seed database')
     } finally {
@@ -95,19 +98,20 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 
     setLoading(true)
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName, password }),
+      const result = await signIn('credentials', {
+        userName,
+        password,
+        redirect: false,
       })
 
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Login failed')
+      if (result?.error) {
+        // NextAuth v4 returns "CredentialsSignin" as generic error
+        toast.error('Invalid username or password. Please check your credentials.')
+      } else if (result?.ok) {
+        toast.success('Login successful! Welcome to X-Mart Global ERP')
+      } else {
+        toast.error('Login failed. Please try again.')
       }
-
-      toast.success('Login successful! Welcome to X-Mart Global ERP')
-      onLogin()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Login failed')
     } finally {
@@ -221,38 +225,20 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 // ================================================================
 
 export default function HomePage() {
+  const { data: session, status } = useSession()
   const [activeItem, setActiveItem] = React.useState<NavItem>('dashboard')
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
-  const [checkingAuth, setCheckingAuth] = React.useState(true)
-
-  // Check auth status on mount
-  React.useEffect(() => {
-    async function checkAuth() {
-      try {
-        const res = await fetch('/api/auth/session')
-        const data = await res.json()
-        if (data?.user) {
-          setIsLoggedIn(true)
-        }
-      } catch {
-        // Not authenticated
-      } finally {
-        setCheckingAuth(false)
-      }
-    }
-    checkAuth()
-  }, [])
-
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-  }
 
   const handleNavigate = (item: NavItem) => {
     setActiveItem(item)
   }
 
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    toast.success('Logged out successfully')
+  }
+
   // Show loading while checking auth
-  if (checkingAuth) {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-navy-800 via-navy-900 to-navy-950">
         <div className="text-center">
@@ -264,15 +250,20 @@ export default function HomePage() {
   }
 
   // Show login form if not authenticated
-  if (!isLoggedIn) {
-    return <LoginForm onLogin={handleLogin} />
+  if (status === 'unauthenticated' || !session) {
+    return <LoginForm />
   }
 
   // Show main ERP application
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Sticky Header */}
-      <AppHeader activeItem={activeItem} onNavigate={handleNavigate} />
+      <AppHeader
+        activeItem={activeItem}
+        onNavigate={handleNavigate}
+        user={session.user}
+        onLogout={handleLogout}
+      />
 
       {/* Main Content Area */}
       <div className="flex-1 flex">

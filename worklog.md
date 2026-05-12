@@ -1171,3 +1171,34 @@ Stage Summary:
 - Settings module with company profile, users, warehouses, preferences
 - Database has 16 models with proper relations
 - 18+ API routes with full CRUD and business logic
+---
+Task ID: auth-fix
+Agent: Main Agent
+Task: Fix admin/admin123 login not working
+
+Work Log:
+- Investigated the auth system and found TWO critical issues:
+  1. Admin user did NOT exist in the database (seed was never run)
+  2. Login flow used custom `/api/auth/login` endpoint that does NOT create NextAuth sessions
+- The custom endpoint only validated credentials but never set session cookies
+- Session check used `getServerSession(authOptions)` which always returned null (no NextAuth session)
+- After page refresh, user was always kicked back to login screen
+- Seeded the database with admin user using `/api/auth/seed` endpoint
+- Created AuthProvider component (`/src/components/providers/auth-provider.tsx`) wrapping next-auth/react SessionProvider
+- Updated root layout (`/src/app/layout.tsx`) to include AuthProvider wrapper
+- Rewrote page.tsx to use `signIn()` from next-auth/react instead of custom endpoint
+- Rewrote page.tsx to use `useSession()` from next-auth/react instead of custom session check
+- Updated AppHeader to accept `user` and `onLogout` props
+- Connected logout button to `signOut()` from next-auth/react
+- Created auto-seed instrumentation file (`/src/instrumentation.ts`) to auto-create admin user on startup
+- Verified login works: POST to NextAuth callback returns 302 with session-token cookie
+- Verified session works: GET /api/auth/session returns authenticated user with Admin role
+- Verified dashboard API works: GET /api/dashboard returns full data
+
+Stage Summary:
+- Login now works with admin/admin123 credentials
+- NextAuth sessions properly created with JWT tokens and cookies
+- Session persists across page refreshes
+- Logout functionality works via signOut()
+- Auto-seed on server startup ensures admin user always exists
+- All changes are backward compatible
