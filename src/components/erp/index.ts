@@ -1,0 +1,7 @@
+export { DashboardSection } from './dashboard-section'
+export { InventorySection } from './inventory-section'
+export { ProductsSection } from './products-section'
+export { SalesSection } from './sales-section'
+export { PurchaseSection } from './purchase-section'
+export { ReportsSection } from './reports-section'
+export { SettingsSection } from './settings-section'

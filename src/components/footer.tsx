@@ -1,6 +1,6 @@
 'use client'
 
-import { Heart, Shield } from 'lucide-react'
+import { Shield } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -18,10 +18,10 @@ export function Footer() {
             </p>
             <p className="text-center text-navy-200 dark:text-navy-300 underline decoration-navy-400 decoration-1 underline-offset-2">
               Copyright &copy; {new Date().getFullYear()}{' '}
-              <span className="font-bold text-white">NextGen Digital Studio</span>. All rights reserved.
+              <span className="font-bold text-white">IMS</span>. All rights reserved.
             </p>
             <div className="flex items-center gap-3 text-navy-300 dark:text-navy-400">
-              <span className="text-xs opacity-70">IMS v1.0</span>
+              <span className="text-xs opacity-70">X-Mart Global ERP v10.1</span>
             </div>
           </div>
         </div>

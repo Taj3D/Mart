@@ -1,27 +1,38 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Lato, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const lato = Lato({
+  variable: "--font-lato",
   subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"],
+  style: ["normal", "italic"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
-  title: "IMS - Inventory Management System",
-  description: "Enterprise Resource Planning Software - Developed by NextGen Digital Studio",
-  keywords: ["ERP", "IMS", "Inventory", "Management", "NextGen Digital Studio"],
+  title: "X-Mart Global ERP v10.1 — Inventory Management System",
+  description: "Enterprise Resource Planning Software — X-Mart Global ERP v10.1 — Developed by NextGen Digital Studio",
+  keywords: ["ERP", "IMS", "Inventory", "Management", "NextGen Digital Studio", "X-Mart"],
   authors: [{ name: "NextGen Digital Studio" }],
   icons: {
     icon: "/logo.svg",
   },
+  manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1a2744",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -32,7 +43,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${lato.variable} ${poppins.variable} antialiased bg-background text-foreground`}
+        style={{ fontFamily: "var(--font-lato), sans-serif" }}
       >
         <ThemeProvider
           attribute="class"

@@ -1,11 +1,12 @@
 'use client'
 
 import * as React from 'react'
-import { Shield, Bell, Menu, LayoutDashboard, Package, BarChart3, Settings, LogOut, User as UserIcon } from 'lucide-react'
+import { Shield, Bell, Menu, LayoutDashboard, Package, BarChart3, Settings, LogOut, User as UserIcon, ShoppingCart, TrendingUp, FileText, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { NotificationBell } from '@/components/ui/notification-bell'
+import type { NavItem } from './app-sidebar'
 import {
   Sheet,
   SheetTrigger,
@@ -22,11 +23,12 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 
-const navItems = [
-  { label: 'Dashboard', icon: LayoutDashboard, active: true },
-  { label: 'Inventory', icon: Package, active: false },
-  { label: 'Reports', icon: BarChart3, active: false },
-  { label: 'Settings', icon: Settings, active: false },
+const navItems: Array<{ key: NavItem; label: string; icon: React.ElementType }> = [
+  { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { key: 'inventory', label: 'Inventory', icon: Package },
+  { key: 'sales', label: 'Sales', icon: TrendingUp },
+  { key: 'reports', label: 'Reports', icon: BarChart3 },
+  { key: 'settings', label: 'Settings', icon: Settings },
 ]
 
 const sampleNotifications = [
@@ -37,8 +39,18 @@ const sampleNotifications = [
   { id: '5', title: 'New User Registered', message: 'John Doe has been added to the system', time: '5 hrs ago', read: true, type: 'info' as const },
 ]
 
-export function AppHeader() {
+interface AppHeaderProps {
+  activeItem: NavItem
+  onNavigate: (item: NavItem) => void
+}
+
+export function AppHeader({ activeItem, onNavigate }: AppHeaderProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false)
+
+  const handleNavigate = (item: NavItem) => {
+    onNavigate(item)
+    setMobileOpen(false)
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-navy-700 dark:bg-navy-800 h-[60px] flex items-center px-4 shadow-md">
@@ -52,9 +64,10 @@ export function AppHeader() {
       <nav className="hidden md:flex items-center gap-1 flex-1">
         {navItems.map((item) => (
           <button
-            key={item.label}
+            key={item.key}
+            onClick={() => handleNavigate(item.key)}
             className={`group relative flex items-center gap-1.5 px-3 py-2 text-white uppercase font-bold text-[11.8px] tracking-wider transition-colors rounded-sm ${
-              item.active
+              activeItem === item.key
                 ? 'bg-white/15'
                 : 'hover:bg-white/10'
             }`}
@@ -64,7 +77,7 @@ export function AppHeader() {
             {/* Animated underline on hover - replaces .navbar-nav > li:after */}
             <span
               className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-emerald-400 transition-all duration-500 ease-out ${
-                item.active ? 'w-full' : 'w-0 group-hover:w-full'
+                activeItem === item.key ? 'w-full' : 'w-0 group-hover:w-full'
               }`}
             />
           </button>
@@ -105,7 +118,7 @@ export function AppHeader() {
               <UserIcon className="mr-2 h-4 w-4" />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleNavigate('settings')}>
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </DropdownMenuItem>
@@ -133,12 +146,20 @@ export function AppHeader() {
               </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1 mt-4">
-              {navItems.map((item) => (
+              {[
+                { key: 'dashboard' as NavItem, label: 'Dashboard', icon: LayoutDashboard },
+                { key: 'inventory' as NavItem, label: 'Inventory', icon: Package },
+                { key: 'products' as NavItem, label: 'Products', icon: Layers },
+                { key: 'sales' as NavItem, label: 'Sales', icon: TrendingUp },
+                { key: 'purchase' as NavItem, label: 'Purchase', icon: ShoppingCart },
+                { key: 'reports' as NavItem, label: 'Reports', icon: BarChart3 },
+                { key: 'settings' as NavItem, label: 'Settings', icon: Settings },
+              ].map((item) => (
                 <button
-                  key={item.label}
-                  onClick={() => setMobileOpen(false)}
+                  key={item.key}
+                  onClick={() => handleNavigate(item.key)}
                   className={`flex items-center gap-3 px-4 py-3 text-sm uppercase font-bold tracking-wider rounded-sm transition-colors ${
-                    item.active
+                    activeItem === item.key
                       ? 'bg-white/15 text-white border-l-4 border-emerald-400'
                       : 'text-navy-300 hover:bg-white/10 hover:text-white'
                   }`}
