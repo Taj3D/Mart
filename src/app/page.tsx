@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { Icon, IconList, IconListItem } from '@/components/ui/icon'
 import {
   Table,
   TableHeader,
@@ -321,6 +322,111 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Icon System Showcase - Font Awesome → Lucide */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Icon System</CardTitle>
+                <CardDescription>Font Awesome 4.7.0 → Lucide React mapping with all FA features</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* FA Name → Icon mapping */}
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">FA Name → Lucide Icon</p>
+                    <div className="grid grid-cols-4 gap-2">
+                      {['search', 'home', 'user', 'cog', 'bell', 'envelope', 'shopping-cart', 'bar-chart', 'plus-circle', 'edit', 'trash', 'download', 'calendar', 'clock-o', 'lock', 'eye'].map((faName) => (
+                        <div key={faName} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-navy-50 dark:hover:bg-navy-900/20 transition-colors">
+                          <Icon icon={faName} className="text-navy-600 dark:text-navy-300" />
+                          <span className="text-[9px] text-muted-foreground text-center leading-tight">{faName}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* FA Size modifiers */}
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">FA Size Modifiers</p>
+                    <div className="flex items-end gap-3 flex-wrap">
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="home" faSize="xs" className="text-navy-600 dark:text-navy-300" />
+                        <span className="text-[9px] text-muted-foreground">xs</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="home" faSize="sm" className="text-navy-600 dark:text-navy-300" />
+                        <span className="text-[9px] text-muted-foreground">sm</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="home" className="text-navy-600 dark:text-navy-300" />
+                        <span className="text-[9px] text-muted-foreground">1x</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="home" faSize="lg" className="text-navy-600 dark:text-navy-300" />
+                        <span className="text-[9px] text-muted-foreground">lg</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="home" faSize="2x" className="text-navy-600 dark:text-navy-300" />
+                        <span className="text-[9px] text-muted-foreground">2x</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="home" faSize="3x" className="text-navy-600 dark:text-navy-300" />
+                        <span className="text-[9px] text-muted-foreground">3x</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Animations & Transforms */}
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Animations & Transforms</p>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="spinner" spin className="text-navy-600 dark:text-navy-300" size={20} />
+                        <span className="text-[9px] text-muted-foreground">spin</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="cog" pulse className="text-navy-600 dark:text-navy-300" size={20} />
+                        <span className="text-[9px] text-muted-foreground">pulse</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="arrow-right" rotate="90" className="text-navy-600 dark:text-navy-300" size={20} />
+                        <span className="text-[9px] text-muted-foreground">rotate-90</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="arrow-right" rotate="180" className="text-navy-600 dark:text-navy-300" size={20} />
+                        <span className="text-[9px] text-muted-foreground">rotate-180</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="arrow-right" flipH className="text-navy-600 dark:text-navy-300" size={20} />
+                        <span className="text-[9px] text-muted-foreground">flip-h</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <Icon icon="arrow-right" flipV className="text-navy-600 dark:text-navy-300" size={20} />
+                        <span className="text-[9px] text-muted-foreground">flip-v</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Icon List (fa-ul / fa-li) */}
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Icon List (fa-ul/fa-li)</p>
+                    <IconList>
+                      <IconListItem icon="check-circle" iconClassName="text-emerald-600 dark:text-emerald-400">
+                        <span className="text-sm">Active inventory items</span>
+                      </IconListItem>
+                      <IconListItem icon="exclamation-triangle" iconClassName="text-amber-600 dark:text-amber-400">
+                        <span className="text-sm">Low stock warnings</span>
+                      </IconListItem>
+                      <IconListItem icon="times-circle" iconClassName="text-rose-600 dark:text-rose-400">
+                        <span className="text-sm">Discontinued products</span>
+                      </IconListItem>
+                      <IconListItem icon="info-circle" iconClassName="text-navy-600 dark:text-navy-400">
+                        <span className="text-sm">System notifications</span>
+                      </IconListItem>
+                    </IconList>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>

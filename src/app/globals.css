@@ -1989,3 +1989,171 @@
   box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
 }
 .dark .ims-well { background-color: rgba(30, 58, 95, 0.1); }
+
+/* ===== Icon Styles - Lucide React replacing Font Awesome 4.7.0 ===== */
+/* Replaces @font-face FontAwesome with SVG-based Lucide icons */
+/* Supports all FA features: sizing, animation, rotation, flip, stacking, lists */
+
+/* Fixed width (replaces .fa-fw) - for alignment in lists/tables */
+.ims-icon-fw {
+  width: 1.28571429em;
+  text-align: center;
+}
+
+/* Spin animation (replaces .fa-spin) - 2s linear infinite */
+.ims-icon-spin {
+  animation: ims-icon-spin 2s infinite linear;
+}
+
+@keyframes ims-icon-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pulse animation (replaces .fa-pulse) - 1s steps(8) infinite */
+.ims-icon-pulse {
+  animation: ims-icon-pulse 1s infinite steps(8);
+}
+
+@keyframes ims-icon-pulse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Rotation transforms (replaces .fa-rotate-90, .fa-rotate-180, .fa-rotate-270) */
+.ims-icon-rotate-90 {
+  transform: rotate(90deg);
+}
+
+.ims-icon-rotate-180 {
+  transform: rotate(180deg);
+}
+
+.ims-icon-rotate-270 {
+  transform: rotate(270deg);
+}
+
+/* Flip transforms (replaces .fa-flip-horizontal, .fa-flip-vertical) */
+.ims-icon-flip-h {
+  transform: scale(-1, 1);
+}
+
+.ims-icon-flip-v {
+  transform: scale(1, -1);
+}
+
+/* Combined rotation + flip (when both are applied) */
+.ims-icon-rotate-90.ims-icon-flip-h {
+  transform: rotate(90deg) scale(-1, 1);
+}
+.ims-icon-rotate-90.ims-icon-flip-v {
+  transform: rotate(90deg) scale(1, -1);
+}
+.ims-icon-rotate-180.ims-icon-flip-h {
+  transform: rotate(180deg) scale(-1, 1);
+}
+.ims-icon-rotate-180.ims-icon-flip-v {
+  transform: rotate(180deg) scale(1, -1);
+}
+.ims-icon-rotate-270.ims-icon-flip-h {
+  transform: rotate(270deg) scale(-1, 1);
+}
+.ims-icon-rotate-270.ims-icon-flip-v {
+  transform: rotate(270deg) scale(1, -1);
+}
+
+/* Border around icon (replaces .fa-border) */
+.ims-icon-border {
+  padding: 0.2em 0.25em 0.15em;
+  border: solid 0.08em var(--navy-200);
+  border-radius: 0.1em;
+}
+
+.dark .ims-icon-border {
+  border-color: var(--navy-600);
+}
+
+/* Pull left/right (replaces .fa-pull-left, .fa-pull-right) */
+.ims-icon-pull-left {
+  float: left;
+  margin-right: 0.3em;
+}
+
+.ims-icon-pull-right {
+  float: right;
+  margin-left: 0.3em;
+}
+
+/* Inverse color (replaces .fa-inverse) - white icon */
+.ims-icon-inverse {
+  color: #ffffff;
+}
+
+/* Icon Stack (replaces .fa-stack) - for layering icons */
+.ims-icon-stack {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.ims-icon-stack > svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ims-icon-stack > svg:first-child {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+}
+
+/* Icon List (replaces .fa-ul, .fa-li) - for icon bullet lists */
+.ims-icon-list {
+  padding-left: 0;
+  margin-left: 2.14285714em;
+  list-style-type: none;
+}
+
+.ims-icon-list-item {
+  position: relative;
+}
+
+.ims-icon-list-marker {
+  position: absolute;
+  left: -2.14285714em;
+  width: 2.14285714em;
+  top: 0.14285714em;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prefers reduced motion - disable spin/pulse animations */
+@media (prefers-reduced-motion: reduce) {
+  .ims-icon-spin,
+  .ims-icon-pulse {
+    animation: none;
+  }
+}
+
+/* Print-friendly icon styles */
+@media print {
+  .ims-icon-spin,
+  .ims-icon-pulse {
+    animation: none;
+  }
+
+  .ims-icon-border {
+    border-color: #000;
+  }
+
+  .ims-icon-inverse {
+    color: #000;
+  }
+}
