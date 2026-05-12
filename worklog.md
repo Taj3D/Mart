@@ -936,3 +936,80 @@ Stage Summary:
 - Dynamic imports for heavy libraries (xlsx, jspdf, html2canvas) for code-splitting
 - DataTableExport dropdown organized into 3 format categories
 - Advanced configuration options exposed (PDF settings, CSV settings, etc.)
+
+---
+Task ID: 14
+Agent: Main Agent
+Task: Implement File 14 - bootstrap-datetimepicker jQuery plugin → IMSDateTimePicker React component
+
+Work Log:
+- Created comprehensive IMSDateTimePicker component at /src/components/pickers/ims-date-time-picker.tsx (~800 lines)
+- Converted all jQuery-dependent datetime picker logic to pure React/TypeScript
+- Implemented all calendar view modes:
+  - Days view with full month grid, week start on Monday, outside days, today indicator
+  - Months view with 12-month grid, click to select month or drill down
+  - Years view with 12-year range, click to select year or drill down
+  - Decades view with 10-decade (100-year) range, click to select decade
+  - Navigation: prev/next arrows, click header to drill down through views
+- Implemented date restrictions:
+  - minDate/maxDate (disabled dates outside range)
+  - disabledDates (specific dates disabled)
+  - enabledDates (whitelist of selectable dates)
+  - daysOfWeekDisabled (e.g., disable weekends)
+- Implemented time picker:
+  - Hour/Minute/Second spinners with increment/decrement buttons
+  - 12/24 hour format auto-detection from format string
+  - AM/PM toggle button
+  - Minute stepping (e.g., stepping=5 → 0, 5, 10, 15...)
+  - disabledHours/enabledHours restrictions
+  - disabledTimeIntervals (time ranges disabled)
+  - Validation prevents selecting disabled times
+- Implemented layout modes:
+  - Popover mode (default) with Popover component
+  - Inline mode (always visible, no popover)
+  - Side-by-side mode (date + time visible simultaneously)
+- Implemented toolbar:
+  - Today button (set date to now)
+  - Clear button (clear selection)
+  - Close button (close popover)
+  - Toggle button (switch between date/time views)
+  - Configurable placement: top/default/bottom
+- Implemented behavior options:
+  - keepOpen (don't close on selection)
+  - keepInvalid (allow invalid dates in input)
+  - useCurrent (auto-fill with current date)
+  - defaultDate (pre-fill date)
+  - allowInputToggle (focus opens picker)
+  - focusOnShow
+- Implemented keyboard navigation:
+  - Arrow Up/Down: ±1 week in days view
+  - Arrow Left/Right: ±1 day
+  - Ctrl+Up/Down: ±1 year
+  - PageUp/PageDown: ±1 month
+  - Enter: close picker
+  - Escape: close picker
+  - 't': go to today
+  - Delete: clear
+  - Ctrl+Space: toggle AM/PM
+- Implemented calendar weeks (ISO week number column)
+- Implemented dayViewHeaderFormat (configurable, default "MMMM yyyy")
+- Implemented widget positioning (vertical/horizontal auto/top/bottom/left/right)
+- Customizable icons (Lucide icons replace original Glyphicons)
+- Customizable tooltips (all buttons have configurable tooltips)
+- Added IMS DateTimePicker CSS styles to globals.css
+- Updated pickers/index.ts to export IMSDateTimePicker and all types
+- Fixed setDate hoisting issue (renamed to dfSetDate using date-fns)
+- Removed unused imports (Type, startOfDecade, endOfDecade)
+- All lint checks passed (0 errors, 1 known TanStack Table warning)
+- Dev server compiling successfully (200 status)
+
+Stage Summary:
+- Complete bootstrap-datetimepicker conversion to React/TypeScript
+- All 4 calendar views: days, months, years, decades
+- Full date/time restriction system (min/max, disabled/enabled, days of week, stepping, hour restrictions)
+- 3 layout modes: popover, inline, side-by-side
+- Toolbar with configurable placement
+- Comprehensive keyboard navigation matching original
+- Calendar weeks, custom icons, custom tooltips
+- Deep Navy Blue theme throughout (selected days, headers, today indicator)
+- Zero jQuery dependency — pure React/TypeScript implementation

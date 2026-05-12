@@ -2396,6 +2396,84 @@
   justify-content: center;
 }
 
+/* ================================================================
+   IMS DateTimePicker Styles
+   Converted from bootstrap-datetimepicker.css
+   Deep Navy Blue theme replacing original blue (#337ab7)
+   ================================================================ */
+
+.ims-dtp-widget {
+  font-size: 14px;
+  border-radius: 4px;
+  min-width: 280px;
+}
+
+.ims-dtp-inline .ims-dtp-widget {
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.ims-dtp-days table,
+.ims-dtp-months,
+.ims-dtp-years,
+.ims-dtp-decades {
+  width: 100%;
+}
+
+/* Selected day — Deep Navy Blue */
+.ims-dtp-widget .bg-navy-600 {
+  background-color: #1e3a5f;
+}
+
+/* Time picker panel */
+.ims-dtp-time-picker {
+  border-top: 1px solid var(--border);
+}
+
+.ims-dtp-widget .ims-dtp-time-picker button:hover:not(:disabled) {
+  background-color: rgba(30, 58, 95, 0.1);
+}
+
+.dark .ims-dtp-widget .ims-dtp-time-picker button:hover:not(:disabled) {
+  background-color: rgba(30, 58, 95, 0.3);
+}
+
+/* Calendar day hover */
+.ims-dtp-days button:not(:disabled):hover {
+  background-color: rgba(30, 58, 95, 0.08);
+}
+
+.dark .ims-dtp-days button:not(:disabled):hover {
+  background-color: rgba(30, 58, 95, 0.25);
+}
+
+/* Today indicator — Navy Blue ring */
+.ims-dtp-days button.ring-navy-500 {
+  box-shadow: inset 0 0 0 1px #2d5a8e;
+}
+
+/* Weekend days */
+.ims-dtp-days button.text-navy-400 {
+  color: #3d6a9e;
+}
+
+.dark .ims-dtp-days button.text-navy-500 {
+  color: #4a7ab5;
+}
+
+/* Side-by-side layout */
+.ims-dtp-widget:has(> .flex > .flex-1) {
+  min-width: 560px;
+}
+
+/* Print-friendly */
+@media print {
+  .ims-dtp-widget {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
 /* Prefers reduced motion - disable spin/pulse animations */
 @media (prefers-reduced-motion: reduce) {
   .ims-icon-spin,
