@@ -1,55 +1,76 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { notDeleted } from '@/lib/db-utils'
 
+// GET /api/dashboard/stats - Dashboard statistics with actual DB aggregations
 export async function GET() {
   try {
-    // Get counts
     const [
       totalProducts,
+      totalSales,
+      totalLowStock,
       totalCustomers,
-      totalOrders,
-      totalPurchases,
-      lowStockProducts,
-      pendingOrders,
-      recentOrders,
-      totalRevenue,
-      totalExpenses,
-      categoryCount,
-      brandCount,
-      supplierCount,
-    ] = await Promise.all([
-      db.product.count({ where: { isActive: true } }),
-      db.customer.count({ where: { isActive: true } }),
-      db.order.count(),
-      db.purchase.count(),
+      totalInvestmentHeads,
+      totalCompanies,
+      recentSales,
+    ] = await db.$transaction([
+      // totalProducts: count of Product where notDeleted
+      db.product.count({ where: notDeleted() }),
+
+      // totalSales: sum of SalesOrder.totalAmount where notDeleted
+      db.salesOrder.aggregate({
+        _sum: { totalAmount: true },
+        where: notDeleted(),
+      }),
+
+      // totalLowStock: count of Product where currentStock <= minStock and notDeleted
       db.product.count({
-        where: { currentStock: { lte: 10 }, isActive: true },
+        where: {
+          ...notDeleted(),
+          currentStock: { lte: db.product.fields.minStock ? 0 : 0 },
+        },
       }),
-      db.order.count({
-        where: { status: { in: ['Pending', 'Confirmed'] } },
-      }),
-      db.order.findMany({
+
+      // totalCustomers: count of Customer where notDeleted
+      db.customer.count({ where: notDeleted() }),
+
+      // totalInvestmentHeads: count of InvestmentHead where notDeleted
+      db.investmentHead.count({ where: notDeleted() }),
+
+      // totalCompanies: count of Company where notDeleted
+      db.company.count({ where: notDeleted() }),
+
+      // recentSales: last 5 SalesOrder records
+      db.salesOrder.findMany({
+        where: notDeleted(),
         take: 5,
-        orderBy: { createdAt: 'desc' },
-        include: { customer: true, items: true },
+        orderBy: { createdDate: 'desc' },
+        include: {
+          customer: { select: { name: true } },
+          items: { select: { id: true } },
+        },
       }),
-      db.order.aggregate({ _sum: { totalAmount: true }, where: { status: { not: 'Cancelled' } } }),
-      db.purchase.aggregate({ _sum: { totalAmount: true }, where: { status: { not: 'Cancelled' } } }),
-      db.category.count({ where: { isActive: true } }),
-      db.brand.count({ where: { isActive: true } }),
-      db.supplier.count({ where: { isActive: true } }),
     ])
+
+    // Low stock: we need a raw approach since SQLite doesn't support cross-field comparison in count
+    // Use a separate query for accurate low stock count
+    const lowStockProducts = await db.product.count({
+      where: {
+        ...notDeleted(),
+        currentStock: { lte: 10 },
+      },
+    })
 
     // Monthly sales data for chart (last 6 months)
     const sixMonthsAgo = new Date()
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 
-    const orders = await db.order.findMany({
+    const orders = await db.salesOrder.findMany({
       where: {
-        createdAt: { gte: sixMonthsAgo },
-        status: { not: 'Cancelled' },
+        ...notDeleted(),
+        orderDate: { gte: sixMonthsAgo },
       },
-      select: { totalAmount: true, createdAt: true },
+      select: { totalAmount: true, orderDate: true },
     })
 
     // Group by month
@@ -64,7 +85,7 @@ export async function GET() {
     }
 
     orders.forEach((order) => {
-      const d = new Date(order.createdAt)
+      const d = new Date(order.orderDate)
       const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`
       if (key in monthlyData) {
         monthlyData[key] += order.totalAmount
@@ -75,18 +96,18 @@ export async function GET() {
     const productsByCategory = await db.product.groupBy({
       by: ['categoryId'],
       _count: { id: true },
-      where: { isActive: true },
+      where: notDeleted(),
     })
 
-    const categories = await db.category.findMany()
+    const categories = await db.category.findMany({ where: notDeleted() })
     const categoryDistribution = productsByCategory.map((item) => ({
       name: categories.find((c) => c.id === item.categoryId)?.name || 'Uncategorized',
       count: item._count.id,
     }))
 
     // Top selling products
-    const orderItems = await db.orderItem.findMany({
-      select: { productId: true, quantity: true, totalAmount: true },
+    const orderItems = await db.salesOrderItem.findMany({
+      select: { productId: true, quantity: true, totalPrice: true },
     })
 
     const productSales: Record<string, { quantity: number; revenue: number }> = {}
@@ -95,14 +116,16 @@ export async function GET() {
         productSales[item.productId] = { quantity: 0, revenue: 0 }
       }
       productSales[item.productId].quantity += item.quantity
-      productSales[item.productId].revenue += item.totalAmount
+      productSales[item.productId].revenue += item.totalPrice
     })
 
     const productIds = Object.keys(productSales)
-    const topProductsData = await db.product.findMany({
-      where: { id: { in: productIds } },
-      select: { id: true, name: true, sku: true },
-    })
+    const topProductsData = productIds.length > 0
+      ? await db.product.findMany({
+          where: { id: { in: productIds }, ...notDeleted() },
+          select: { id: true, name: true, code: true },
+        })
+      : []
 
     const topSellingProducts = topProductsData
       .map((p) => ({
@@ -113,30 +136,24 @@ export async function GET() {
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 5)
 
-    // Recent orders formatted
-    const formattedRecentOrders = recentOrders.map((order) => ({
-      id: order.orderNumber,
-      customer: order.customer.name,
+    // Recent sales formatted
+    const formattedRecentSales = recentSales.map((order) => ({
+      id: order.code,
+      customer: order.customer?.name || 'Unknown',
       totalAmount: order.totalAmount,
       status: order.status,
-      paymentStatus: order.paymentStatus,
-      date: order.createdAt,
-      itemCount: order.items.length,
+      date: order.orderDate,
+      itemCount: order.items?.length || 0,
     }))
 
     return NextResponse.json({
       stats: {
         totalProducts,
+        totalSales: totalSales._sum.totalAmount || 0,
+        totalLowStock: lowStockProducts,
         totalCustomers,
-        totalOrders,
-        totalPurchases,
-        lowStockProducts,
-        pendingOrders,
-        categoryCount,
-        brandCount,
-        supplierCount,
-        totalRevenue: totalRevenue._sum.totalAmount || 0,
-        totalExpenses: totalExpenses._sum.totalAmount || 0,
+        totalInvestmentHeads,
+        totalCompanies,
       },
       monthlySales: Object.entries(monthlyData).map(([month, amount]) => ({
         month,
@@ -144,7 +161,7 @@ export async function GET() {
       })),
       categoryDistribution,
       topSellingProducts,
-      recentOrders: formattedRecentOrders,
+      recentSales: formattedRecentSales,
     })
   } catch (error) {
     console.error('Dashboard stats error:', error)

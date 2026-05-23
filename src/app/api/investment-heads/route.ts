@@ -2,29 +2,24 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { generateNextCode, notDeleted, createAuditLog } from '@/lib/db-utils'
 
-// GET /api/companies - List all companies (not deleted) with pagination and search
+// GET /api/investment-heads - List all investment heads (not deleted)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '10')
     const search = searchParams.get('search') || ''
+    const investmentType = searchParams.get('investmentType') || ''
     const all = searchParams.get('all') === 'true'
 
     const where = {
       ...notDeleted(),
-      ...(search ? {
-        OR: [
-          { name: { contains: search } },
-          { email: { contains: search } },
-          { phone: { contains: search } },
-          { code: { contains: search } },
-        ],
-      } : {}),
+      ...(search ? { name: { contains: search } } : {}),
+      ...(investmentType ? { investmentType } : {}),
     }
 
     if (all) {
-      const records = await db.company.findMany({
+      const records = await db.investmentHead.findMany({
         where,
         orderBy: { createdDate: 'desc' },
       })
@@ -34,13 +29,13 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * pageSize
 
     const [records, total] = await db.$transaction([
-      db.company.findMany({
+      db.investmentHead.findMany({
         where,
         skip,
         take: pageSize,
         orderBy: { createdDate: 'desc' },
       }),
-      db.company.count({ where }),
+      db.investmentHead.count({ where }),
     ])
 
     return NextResponse.json({
@@ -53,49 +48,31 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error fetching companies:', error)
-    return NextResponse.json({ error: 'Failed to fetch companies' }, { status: 500 })
+    console.error('Error fetching investment heads:', error)
+    return NextResponse.json({ error: 'Failed to fetch investment heads' }, { status: 500 })
   }
 }
 
-// POST /api/companies - Create new company with auto-code generation
+// POST /api/investment-heads - Create new investment head
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const {
-      name,
-      address,
-      phone,
-      email,
-      website,
-      logo,
-      currency,
-      financialYear,
-      taxId,
-      registrationNo,
-      isActive,
-      createdBy,
-    } = body
+    const { name, description, investmentType, openingBalance, openingType, isActive, createdBy } = body
 
-    if (!name) {
-      return NextResponse.json({ error: 'Company name is required' }, { status: 400 })
+    if (!name || !investmentType) {
+      return NextResponse.json({ error: 'Name and Investment Type are required' }, { status: 400 })
     }
 
     const result = await db.$transaction(async (tx) => {
-      const code = await generateNextCode('Company')
-      const record = await tx.company.create({
+      const code = await generateNextCode('InvestmentHead')
+      const record = await tx.investmentHead.create({
         data: {
           code,
           name,
-          address: address || null,
-          phone: phone || null,
-          email: email || null,
-          website: website || null,
-          logo: logo || null,
-          currency: currency || 'BDT',
-          financialYear: financialYear || null,
-          taxId: taxId || null,
-          registrationNo: registrationNo || null,
+          description: description || null,
+          investmentType,
+          openingBalance: openingBalance || 0,
+          openingType: openingType || 'Payment',
           isActive: isActive !== undefined ? isActive : true,
           createdBy: createdBy || null,
         },
@@ -103,7 +80,7 @@ export async function POST(request: NextRequest) {
       await createAuditLog({
         userId: createdBy || undefined,
         action: 'Create',
-        entity: 'Company',
+        entity: 'InvestmentHead',
         entityId: record.id,
         newValues: record,
       })
@@ -112,7 +89,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ data: result }, { status: 201 })
   } catch (error) {
-    console.error('Error creating company:', error)
-    return NextResponse.json({ error: 'Failed to create company' }, { status: 500 })
+    console.error('Error creating investment head:', error)
+    return NextResponse.json({ error: 'Failed to create investment head' }, { status: 500 })
   }
 }

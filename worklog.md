@@ -237,3 +237,293 @@ Stage Summary:
 - **Product UI** completely rewritten with data grid, grid/list view toggle, category sidebar, brand filter, comprehensive form with variant multi-selects, profit margin preview
 - **Triple Utility Bundle** fully implemented: Import CSV (with staging preview + validation), Export CSV (client-side), Export PDF (jsPDF + autoTable with corporate branding)
 - Lint passes with 0 errors
+
+---
+Task ID: 3
+Agent: Auth Store Builder
+Task: Create Zustand Auth Store with persist middleware
+
+Work Log:
+- Read worklog.md for context on previous agents' work
+- Read existing auth-provider.tsx (wrapping SessionProvider from next-auth)
+- Read existing layout.tsx (wraps AuthProvider around children)
+- Read existing /api/auth/login/route.ts to understand API contract (expects { userName, password }, returns { success, user: { id, userName, fullName, email, role } })
+- Read existing navigation-store.ts for Zustand pattern reference in this project
+- Created /src/lib/stores/auth-store.ts:
+  - Zustand store with persist middleware (localStorage key: 'ems-auth')
+  - AuthUser type: { id, name, email, role }
+  - State: user (AuthUser | null), isAuthenticated (boolean)
+  - login(username, password): POSTs to /api/auth/login with { userName, password }, maps fullName → name on success, sets user + isAuthenticated, returns boolean
+  - logout(): clears user and isAuthenticated
+  - partialize: persists only user and isAuthenticated (not the login/logout functions)
+  - Exported as useAuthStore
+- Updated /src/components/providers/auth-provider.tsx:
+  - Removed SessionProvider import from next-auth/react
+  - Simplified to passthrough: just renders <>{children}</>
+  - Kept 'use client' directive for compatibility
+- Verified layout.tsx still wraps AuthProvider — no changes needed (passthrough works fine)
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **Zustand auth store** created with persist middleware at /src/lib/stores/auth-store.ts
+- **AuthProvider** simplified to passthrough (removed next-auth SessionProvider dependency)
+- **layout.tsx** unchanged — still wraps AuthProvider (now just a passthrough)
+- Login validates against /api/auth/login API endpoint
+- Persist key: 'ems-auth' — user session survives page refreshes
+- Lint passes with 0 errors
+
+---
+Task ID: 4
+Agent: API Route Builder
+Task: Create API Routes for Investment Heads and Companies with atomic transactions
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read existing files: companies/route.ts, auth/login/route.ts, dashboard/stats/route.ts, db-utils.ts, Prisma schema, auth.ts, db.ts
+- Created /api/investment-heads/route.ts:
+  - GET: Paginated list with search, investmentType filter, notDeleted filter, ?all=true support
+  - POST: Create with auto-code generation (INVH-00001) inside $transaction, audit logging
+- Created /api/investment-heads/[id]/route.ts:
+  - GET: Single record with related investments (not deleted)
+  - PUT: Update with $transaction, code read-only enforcement, audit logging
+  - DELETE: Soft-delete with active investment check, audit logging in $transaction
+- Rewrote /api/companies/route.ts:
+  - GET: Paginated list with search (name/email/phone/code), notDeleted filter, ?all=true support
+  - POST: Create with auto-code generation (CMP-00001) inside $transaction, audit logging
+- Created /api/companies/[id]/route.ts:
+  - GET: Single company record with notDeleted filter
+  - PUT: Update with $transaction, code read-only enforcement, audit logging
+  - DELETE: Soft-delete with audit logging in $transaction
+- Rewrote /api/auth/login/route.ts:
+  - Hardcoded credentials check (emart.amit / Test_123) as primary validation
+  - Database User table check using bcryptjs compare as secondary validation
+  - Both paths update lastLoginAt in $transaction with audit logging
+  - Returns { success: true, user: { id, name, email, role } } on success
+  - Returns { success: false, error: 'Invalid credentials' } on failure
+- Rewrote /api/dashboard/stats/route.ts:
+  - totalProducts: count of Product where notDeleted
+  - totalSales: sum of SalesOrder.totalAmount where notDeleted
+  - totalLowStock: count of Product where currentStock <= 10 and notDeleted
+  - totalCustomers: count of Customer where notDeleted
+  - totalInvestmentHeads: count of InvestmentHead where notDeleted
+  - totalCompanies: count of Company where notDeleted
+  - recentSales: last 5 SalesOrder records with customer and items
+  - Monthly sales chart data (last 6 months)
+  - Category distribution and top selling products
+  - Core aggregations in single $transaction, extended queries for chart data
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **6 API route files** created/rewritten with atomic transactions
+- **InvestmentHead CRUD**: Full GET/POST/PUT/DELETE with auto-code (INVH-00001), soft-delete, audit logging
+- **Company CRUD**: Full GET/POST/PUT/DELETE with auto-code (CMP-00001), soft-delete, audit logging
+- **Auth login**: Dual validation (hardcoded + database bcryptjs), $transaction for login tracking
+- **Dashboard stats**: Real DB aggregations with notDeleted filter, $transaction for core queries
+- All write operations wrapped in db.$transaction()
+- All list queries use notDeleted() filter
+- All delete operations use softDelete() helper
+- All create/update operations use createAuditLog()
+- Lint passes with 0 errors
+
+---
+Task ID: 5-c
+Agent: Dashboard Module Builder
+Task: Create the IMS Dashboard Module Component
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read existing dashboard-section.tsx (ERP dashboard) as pattern reference
+- Read dashboard/stats API route to understand data contract
+- Read page.tsx to understand integration point
+- Created /src/components/ims/ directory
+- Built /src/components/ims/dashboard-module.tsx with complete dashboard UI:
+  1. **IMEI/Serial Quick Search Bar** — Prominent search input at top with ScanLine icon, amber "Search Stock" button, Enter key support, fetches /api/products?search=... for live product lookup
+  2. **Advance Search Card** — Green gradient card with "Advance Search" button that navigates to products section
+  3. **KPI Metric Cards** (4 cards in responsive grid):
+     - Total Sales (BDT amount, emerald)
+     - Total Products (count, navy)
+     - Low Stock Items (count, amber warning)
+     - Total Customers (count, rose)
+  4. **Secondary Stats Row** — Investment Heads + Companies cards with arrow navigation
+  5. **Monthly Sales Chart** — Area chart using Recharts with navy gradient, 6-month trend from /api/dashboard/stats monthlySales data
+  6. **Category Distribution** — Donut/pie chart using Recharts with 8-color palette, custom legend
+  7. **Today's Installment Table** — Full table matching target site columns: Sl, Action (Eye button), Invoice No, Sales Date, Payment Date, Remind Date (with bell icon), Code, Customer Name, Product, Installment (BDT), Default Amount (badge or "Clear")
+  8. **Quick Action Buttons** (4 buttons in 2x2 grid): New Sale, Add Product, Stock Adjustment, View Reports
+  9. **Top Selling Products** — Ranked list with progress bars showing relative revenue, sold count
+- Features implemented:
+  - `useApiData` custom hook for data fetching with loading/error/refetch states
+  - `formatBDT()` helper with Intl.NumberFormat('en-IN') for BDT currency
+  - Deep Navy Blue theme (#1e3a5f / #0f2744 gradients)
+  - `text-slate-900 dark:text-white` on all section headers
+  - Loading skeleton states for all sections
+  - Error state with XCircle icon and Retry button
+  - Responsive design (mobile-first, grid breakpoints at sm/xl)
+  - Custom Recharts tooltips for area chart and pie chart
+  - Status badges for order statuses
+- Updated /src/app/page.tsx:
+  - Imported DashboardModule from '@/components/ims/dashboard-module'
+  - Replaced DashboardSection with DashboardModule in renderSection switch (dashboard case and default)
+- Fixed React Compiler memoization issue:
+  - Changed useMemo dependencies from `dashboardData?.monthlySales` to extracted `monthlySalesRaw` variable
+  - Same fix for categoryDistribution useMemo
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **Complete IMS Dashboard Module** created at /src/components/ims/dashboard-module.tsx
+- **IMEI/Serial Quick Search** with live product lookup
+- **Advance Search** card with navigation
+- **4 KPI stat cards** + 2 secondary stats (Investment Heads, Companies)
+- **Monthly Sales area chart** + **Category Distribution pie chart**
+- **Today's Installment table** matching target site's column layout
+- **4 Quick Action buttons** + **Top Selling Products** ranked list
+- **Deep Navy Blue theme** throughout
+- **Loading skeletons, error handling, responsive design** all implemented
+- Lint passes with 0 errors
+
+---
+Task ID: 5-b
+Agent: Companies Module Builder
+Task: Create Companies CRUD Module Component
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read category-section.tsx as reference pattern for the UI component
+- Read Company Prisma schema model (code, name, address, phone, email, website, logo, currency, financialYear, taxId, registrationNo, isActive, isDeleted, audit fields)
+- Read /api/companies/route.ts — GET (paginated + search + all), POST (auto-code CMP-00001)
+- Read /api/companies/[id]/route.ts — GET, PUT (code read-only), DELETE (soft-delete)
+- Read searchable-select.tsx to confirm API interface
+- Created /src/components/ims/companies-module.tsx with full CompaniesModule component:
+  - Data Grid: Table with Sl, Code, Name, Action (Edit | Delete) columns matching target site
+  - Title: "Existing companies", Create button: "Create new company"
+  - Search across name, code, email, phone fields with 400ms debounce
+  - Server-side pagination with page controls (ellipsis for large page counts)
+  - Create Sheet: Code (readonly auto-generated CMP-00001), Name (required), Address (with MapPin icon), Phone (with Phone icon), Email (with Mail icon), Website (with Globe icon), Currency (default BDT, searchable select with 10 currencies), Tax ID (with Hash icon), Registration No (with CreditCard icon), "Add Company" button
+  - Edit Sheet: Same fields, code read-only, "Update Company" button
+  - View Detail Dialog: All company fields with icons, status badge (Active/Inactive), 2-column info grid
+  - Delete AlertDialog: Soft-delete with descriptive messaging
+  - Triple Utility Bundle:
+    1. Import CSV: Dialog with drag-and-drop file upload, CSV template download, column mapping (8 fields: name, address, phone, email, website, currency, taxId, registrationNo), staging preview table, validation errors (skipped rows with empty names), bulk import with progress, success/failure summary
+    2. Export CSV: Client-side CSV generation with all columns (Code, Name, Address, Phone, Email, Website, Currency, Tax ID, Registration No, Active, Created Date), proper CSV escaping
+    3. Export PDF: Landscape A4 jsPDF + autoTable with "Electronics Mart" corporate header, "Company Report" title, date, 8-column table (Sl, Code, Name, Address, Phone, Email, Currency, Status), slate-900 header fill, alternating row colors, page numbers
+  - Deep Navy Blue / Slate theme: headers use text-slate-900 dark:text-white
+  - Sheet header: bg-slate-900 dark:bg-slate-800
+  - Responsive design with mobile-friendly layout
+  - Form validation with toast notifications (name required, email format, website format)
+  - Loading skeletons, empty states, error states with retry button
+  - Custom usePaginatedCompanies and useAllCompanies hooks for API data fetching
+- Ran lint: 0 errors, only pre-existing warnings
+- Dev server running successfully
+
+Stage Summary:
+- **CompaniesModule** component created at /src/components/ims/companies-module.tsx
+- **Full CRUD**: Create (Sheet), Edit (Sheet), View (Dialog), Delete (AlertDialog)
+- **Triple Utility Bundle**: Import CSV (drag-and-drop + mapping + staging), Export CSV, Export PDF
+- **Server-side pagination** with search across name/code/email/phone
+- **Code field read-only** — auto-generated by server (CMP-00001 format)
+- **Currency searchable select** with 10 currencies (BDT default)
+- **Form validation** with email/website format checks
+- Lint passes with 0 errors
+
+---
+Task ID: 5-a
+Agent: Investment Heads Module Builder
+Task: Create Investment Heads CRUD Module Component
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read category-section.tsx as reference pattern for UI component structure, hooks, and Triple Utility Bundle
+- Read /api/investment-heads/route.ts — GET (paginated + search + investmentType filter + all), POST (auto-code INVH-00001)
+- Read /api/investment-heads/[id]/route.ts — GET (with investments), PUT (code read-only), DELETE (soft-delete with active investment check)
+- Read Prisma InvestmentHead schema: code, name, description, investmentType, openingBalance, openingType, isActive, isDeleted, audit fields, investments relation
+- Created /src/components/ims/investment-heads-module.tsx with complete InvestmentHeadsModule component:
+  - **Title**: "Existing Investment Heads" matching target site
+  - **Create button**: "Create new" matching target site
+  - **Data Grid**: Table with Sl, Code, Name, Investment Type, Opening Balance, Opening Type, Action (Eye | Edit | Delete)
+  - **Investment Type badges**: Color-coded (Fixed Asset=sky, Current Asset=emerald, Liability=rose, PF=violet, FDR=amber, Security=teal)
+  - **Opening Type badges**: Payment=orange, Receive=emerald
+  - **Server-side pagination** with page number buttons, page size selector (10/25/50/100), first/prev/next/last controls
+  - **Search** across name and code fields with 400ms debounce and X clear button
+  - **Create Sheet** matching target form exactly:
+    - Code: READ-ONLY, auto-generated (INVH-00001), shows "Auto-generated on save" for new records
+    - Name: Required text input
+    - Investment Type: Required dropdown select (Fixed Asset, Current Asset, Liability, PF, FDR, Security)
+    - Opening Balance: Number/decimal input with ৳ prefix (default 0)
+    - Opening Type: Required dropdown select (Payment, Receive)
+    - Description: Optional textarea
+    - "Add" button (matches target site)
+  - **Edit Sheet**: Same fields, code read-only, "Update" button
+  - **View Detail Dialog**: Full record details with code, status, investment type badge, opening type badge, opening balance, dates
+  - **Delete AlertDialog**: Soft-delete messaging with confirmation
+  - **Triple Utility Bundle** (mandatory):
+    1. Import CSV: Dialog with drag-and-drop file upload area, CSV template download, column mapping (name, investmentType, openingBalance, openingType, description), staging preview table, validation errors (empty names, invalid types/balances), bulk import with success/failure summary
+    2. Export CSV: Client-side CSV generation with all columns (Code, Name, Investment Type, Opening Balance, Opening Type, Active, Description, Created Date), proper CSV escaping for commas/quotes/newlines
+    3. Export PDF: Landscape A4 jsPDF + autoTable with "Electronics Mart" corporate header, "Investment Heads Report" title, date, 8-column table (Sl, Code, Name, Type, Balance, Open Type, Status, Created), navy-800 header fill [25,42,86], alternating row colors, page numbers
+  - **Deep Navy Blue theme**: Section headers use text-slate-900 dark:text-white, sheet header bg-navy-600
+  - **Custom hooks**: usePaginatedData (server-side pagination with URL construction), useAllData (for export, no pagination)
+  - **Responsive design**: Mobile-friendly table with overflow-x-auto, flexible header layout
+  - **Loading skeletons, empty states, error states** with retry button
+  - **PaginationControls** component with page numbers, first/prev/next/last, page size selector
+  - **Form validation** with toast error messages for required fields (name, investmentType, openingType)
+- Updated /src/components/layout/app-sidebar.tsx:
+  - Added Landmark icon import
+  - Added 'investment-heads' to NavItem type
+  - Added Investment Heads as sub-item of Inventory section
+  - Added parentOf: ['investment-heads'] to inventory sidebar item
+- Updated /src/app/page.tsx:
+  - Imported InvestmentHeadsModule from '@/components/ims/investment-heads-module'
+  - Added breadcrumb mapping for 'investment-heads' (Home > Inventory > Investment Heads)
+  - Added renderSection case for 'investment-heads' returning <InvestmentHeadsModule />
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **InvestmentHeadsModule** component created at /src/components/ims/investment-heads-module.tsx
+- **Full CRUD**: Create (Sheet with "Add" button), Edit (Sheet with "Update" button), View (Dialog), Delete (AlertDialog with soft-delete)
+- **Triple Utility Bundle**: Import CSV (drag-and-drop + mapping + staging + validation), Export CSV (client-side with escaping), Export PDF (jsPDF + autoTable with navy header)
+- **Server-side pagination** with search across name and code
+- **Code field READ-ONLY** in both Create and Edit forms — auto-generated by server (INVH-00001)
+- **Investment Type dropdown**: Fixed Asset, Current Asset, Liability, PF, FDR, Security
+- **Opening Type dropdown**: Payment, Receive
+- **Target site matching**: Title "Existing Investment Heads", Create button "Create new", form button "Add", table columns Sl/Code/Name/Investment Type/Action
+- Sidebar updated with Investment Heads under Inventory section
+- Lint passes with 0 errors
+
+---
+Task ID: Phase-3-Batch1-Integration
+Agent: Main Agent (Full-Stack Architect / Lead QA)
+Task: Phase 3 Batch 1 — Integrate all modules, migrate auth to Zustand, update layout to match target site
+
+Work Log:
+- Scraped target site (embd-j.com) using agent-browser: captured DOM structure for Dashboard, Investment Heads, Companies pages
+- Logged into target site with emart.amit/Test_123 credentials
+- Captured full DOM snapshots: Investment Heads list + Create form, Companies list + Create form, Dashboard
+- Updated Prisma schema: replaced InvestmentHead.type with investmentType, openingBalance, openingType fields
+- Ran db:push successfully — schema synced with 0 errors
+- Deployed 3 parallel subagents for: Auth Store (Task 3), API Routes (Task 4), Module Components (Tasks 5-a/5-b/5-c)
+- Auth Store subagent: Created Zustand store with persist middleware (key: 'ems-auth'), updated AuthProvider to passthrough
+- API Routes subagent: Created 6 API route files with atomic $transaction, auto-code generation, soft-delete, audit logging
+- Investment Heads module: Full CRUD with 5 fields matching target (Code, Name, Investment Type, Opening Balance, Opening Type), triple utility bundle
+- Companies module: Full CRUD matching target (Code, Name + extended fields), triple utility bundle
+- Dashboard module: KPI metrics, IMEI Quick Search, Advance Search, installment table, charts, quick actions
+- Completely rewrote page.tsx: replaced NextAuth (useSession/signIn/signOut) with Zustand (useAuthStore)
+- Completely rewrote app-sidebar.tsx: matching target site structure (Investment, Basic Modules, Staff, Customers & Suppliers, etc.)
+- Updated app-header.tsx: Deep Navy Blue colors (#0a1628, #132240, #2563eb), matching nav items
+- Updated NavItem type to include all new sections: 'investment', 'investment-heads', 'basic-modules', 'companies', 'colors', 'staff', 'customers-suppliers', 'inventory-mgmt', 'account-mgmt'
+- Updated breadcrumb map for all new NavItem values
+- Updated renderSection to route: dashboard→DashboardModule, investment-heads→InvestmentHeadsModule, companies→CompaniesModule
+- Applied Deep Navy Blue color scheme throughout: #0a1628 (header/sidebar), #132240 (sidebar highlight), #2563eb (active border)
+- Login page uses #0a1628/#132240 gradient background with amber-500 CTA button
+- Footer shows "Developed & Copyright by NextGen Digital Studio"
+- Ran lint: 0 errors, 9 warnings (all pre-existing)
+
+Stage Summary:
+- **Phase 3 Batch 1 COMPLETE**: All 3 modules fully implemented and integrated
+- **Module A: Dashboard** — KPI metrics (Total Sales, Products, Low Stock, Customers), IMEI Quick Search, Advance Search, Monthly Sales chart, Category Distribution pie chart, Today's Installment table, Quick Actions
+- **Module B: Investment Heads** — Full CRUD with 5 fields matching target (Code auto-gen readonly, Name, Investment Type [Fixed Asset/Current Asset/Liability/PF/FDR/Security], Opening Balance, Opening Type [Payment/Receive]), triple utility bundle (Import CSV, Export CSV, Export PDF)
+- **Module C: Companies** — Full CRUD matching target (Code auto-gen readonly, Name + extended fields), triple utility bundle
+- **Auth migration**: NextAuth → Zustand + persist (localStorage key: ems-auth)
+- **Sidebar restructured**: Matches target site hierarchy (Investment, Basic Modules, Staff, Customers & Suppliers, etc.)
+- **Deep Navy Blue theme**: Applied across header (#0a1628), sidebar (#0a1628), highlights (#132240), active borders (#2563eb)
+- **Day/Night toggle**: Inherited from ThemeToggle component
+- **API routes**: 6 new files with atomic $transaction, auto-code generation, soft-delete, audit logging
+- **Lint**: 0 errors
+- **Next Batch 2 targets**: Categories, Colors, Brands (Basic Modules sector)

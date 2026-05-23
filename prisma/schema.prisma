@@ -25,22 +25,24 @@ datasource db {
 
 /// Investment Heads — Categories of investment portfolios
 model InvestmentHead {
-  id          String   @id @default(cuid())
-  code        String   @unique                                          // INVH-00001
-  name        String
-  description String?
-  type        String   @default("General")                              // General, RealEstate, Stock, Bond, Other
-  isActive    Boolean  @default(true)
-  isDeleted   Boolean  @default(false)
-  createdBy   String?
-  createdDate DateTime @default(now())
-  updatedBy   String?
-  updatedDate DateTime @updatedAt
+  id              String   @id @default(cuid())
+  code            String   @unique                                          // INVH-00001
+  name            String
+  description     String?
+  investmentType  String   @default("Fixed Asset")                           // Fixed Asset, Current Asset, Liability, PF, FDR, Security
+  openingBalance  Float    @default(0)
+  openingType     String   @default("Payment")                               // Payment, Receive
+  isActive        Boolean  @default(true)
+  isDeleted       Boolean  @default(false)
+  createdBy       String?
+  createdDate     DateTime @default(now())
+  updatedBy       String?
+  updatedDate     DateTime @updatedAt
 
   investments Investment[]
 
   @@index([code])
-  @@index([type])
+  @@index([investmentType])
   @@index([isDeleted])
   @@index([isActive])
 }

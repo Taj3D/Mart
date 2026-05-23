@@ -29,10 +29,43 @@ import {
   Building2,
   UserCog,
   Cog,
+  Landmark,
+  Palette,
+  DollarSign,
+  Percent,
+  Gauge,
+  Target,
+  CreditCardIcon,
+  IdCard,
+  Briefcase,
+  MessageSquare,
+  BookOpen,
+  LineChart,
+  Megaphone,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export type NavItem = 'dashboard' | 'inventory' | 'products' | 'categories' | 'brands' | 'sales' | 'purchase' | 'customers' | 'suppliers' | 'reports' | 'settings'
+export type NavItem =
+  | 'dashboard'
+  | 'investment'
+  | 'investment-heads'
+  | 'basic-modules'
+  | 'companies'
+  | 'categories'
+  | 'colors'
+  | 'products'
+  | 'brands'
+  | 'staff'
+  | 'customers-suppliers'
+  | 'inventory-mgmt'
+  | 'account-mgmt'
+  | 'sales'
+  | 'purchase'
+  | 'customers'
+  | 'suppliers'
+  | 'inventory'
+  | 'reports'
+  | 'settings'
 
 // ================================================================
 // Sub-menu item definition
@@ -59,7 +92,7 @@ interface SidebarItem {
 }
 
 // ================================================================
-// Hierarchical sidebar items
+// Hierarchical sidebar items — matching target site embd-j.com
 // ================================================================
 
 const sidebarItems: SidebarItem[] = [
@@ -69,29 +102,74 @@ const sidebarItems: SidebarItem[] = [
     icon: LayoutDashboard,
     group: 'Main',
   },
+  // ── Investment ──
   {
-    key: 'inventory',
-    label: 'Inventory',
-    icon: Package,
+    key: 'investment',
+    label: 'Investment',
+    icon: Landmark,
     group: 'Operations',
     subItems: [
-      { key: 'stock-overview', label: 'Stock Overview', icon: BarChart2 },
-      { key: 'stock-adjustment', label: 'Stock Adjustment', icon: ArrowLeftRight },
-      { key: 'stock-movements', label: 'Stock Movements', icon: Truck },
+      { key: 'investment-heads', label: 'Investment Heads', icon: Landmark },
+      // Future: Asset, Liability sub-menus
     ],
+    parentOf: ['investment-heads'],
   },
+  // ── Basic Modules ──
   {
-    key: 'products',
-    label: 'Products',
+    key: 'basic-modules',
+    label: 'Basic Modules',
     icon: Layers,
     group: 'Operations',
     subItems: [
-      { key: 'all-products', label: 'All Products', icon: Package },
+      { key: 'companies', label: 'Companies', icon: Building2 },
       { key: 'categories', label: 'Categories', icon: FolderTree },
+      { key: 'colors', label: 'Color', icon: Palette },
+      { key: 'products', label: 'Products', icon: Package },
       { key: 'brands', label: 'Brands', icon: Tag },
+      // Future: Bank, Department, Godowns, Segment, Capacity, etc.
     ],
-    parentOf: ['categories', 'brands'],
+    parentOf: ['companies', 'categories', 'colors', 'products', 'brands'],
   },
+  // ── Staff ──
+  {
+    key: 'staff',
+    label: 'Staff',
+    icon: Briefcase,
+    group: 'People',
+  },
+  // ── Customers & Suppliers ──
+  {
+    key: 'customers-suppliers',
+    label: 'Customers & Suppliers',
+    icon: Users,
+    group: 'People',
+    subItems: [
+      { key: 'customers', label: 'Customers', icon: Users },
+      { key: 'suppliers', label: 'Suppliers', icon: Truck },
+    ],
+    parentOf: ['customers', 'suppliers'],
+  },
+  // ── Inventory Management ──
+  {
+    key: 'inventory-mgmt',
+    label: 'Inventory Management',
+    icon: Warehouse,
+    group: 'Operations',
+    subItems: [
+      { key: 'inventory', label: 'Stock Overview', icon: BarChart2 },
+      { key: 'stock-adjustment', label: 'Stock Adjustment', icon: ArrowLeftRight },
+      { key: 'stock-movements', label: 'Stock Movements', icon: Truck },
+    ],
+    parentOf: ['inventory'],
+  },
+  // ── Account Management ──
+  {
+    key: 'account-mgmt',
+    label: 'Account Management',
+    icon: DollarSign,
+    group: 'Finance',
+  },
+  // ── Sales ──
   {
     key: 'sales',
     label: 'Sales',
@@ -103,6 +181,7 @@ const sidebarItems: SidebarItem[] = [
       { key: 'payments', label: 'Payments', icon: CreditCard },
     ],
   },
+  // ── Purchase ──
   {
     key: 'purchase',
     label: 'Purchase',
@@ -110,46 +189,27 @@ const sidebarItems: SidebarItem[] = [
     group: 'Operations',
     subItems: [
       { key: 'purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
-      { key: 'suppliers', label: 'Suppliers', icon: Users },
       { key: 'goods-receipt', label: 'Goods Receipt', icon: PackageCheck },
     ],
-    parentOf: ['suppliers'],
   },
-  {
-    key: 'customers',
-    label: 'Customers',
-    icon: Users,
-    group: 'People',
-  },
+  // ── SMS Service ──
   {
     key: 'reports',
-    label: 'Reports',
-    icon: BarChart3,
-    group: 'Analytics',
-    subItems: [
-      { key: 'sales-report', label: 'Sales Report', icon: TrendingUp },
-      { key: 'inventory-report', label: 'Inventory Report', icon: PieChart },
-      { key: 'financial-report', label: 'Financial Report', icon: BarChart2 },
-      { key: 'audit-log', label: 'Audit Log', icon: ScrollText },
-    ],
+    label: 'SMS Service',
+    icon: MessageSquare,
+    group: 'System',
   },
+  // ── Accounting Report ──
   {
     key: 'settings',
-    label: 'Settings',
-    icon: Settings,
-    group: 'System',
-    subItems: [
-      { key: 'company-profile', label: 'Company Profile', icon: Building2 },
-      { key: 'users', label: 'Users', icon: UserCog },
-      { key: 'warehouses', label: 'Warehouses', icon: Warehouse },
-      { key: 'system', label: 'System', icon: Cog },
-    ],
+    label: 'Accounting Report',
+    icon: BookOpen,
+    group: 'Reports',
   },
 ]
 
 // ================================================================
 // Helper: map any NavItem to its parent sidebar item
-// (e.g. 'suppliers' → the Purchase sidebar item)
 // ================================================================
 
 const navItemToParent: Partial<Record<NavItem, NavItem>> = {}
@@ -177,18 +237,13 @@ interface AppSidebarProps {
 export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
   const [collapsed, setCollapsed] = React.useState(false)
   const [expandedItems, setExpandedItems] = React.useState<Set<NavItem>>(() => {
-    // Auto-expand the group that contains the active item on mount
     const parent = getParentNavItem(activeItem)
     const item = sidebarItems.find((i) => i.key === parent)
     return item?.subItems ? new Set([parent]) : new Set()
   })
 
-  // Resolve the active top-level key (e.g. 'suppliers' → 'purchase')
   const activeTopLevel = getParentNavItem(activeItem)
 
-  // ----------------------------------------------------------------
-  // Toggle a top-level item's sub-menu open / closed
-  // ----------------------------------------------------------------
   const toggleExpand = (key: NavItem) => {
     setExpandedItems((prev) => {
       const next = new Set(prev)
@@ -201,11 +256,6 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
     })
   }
 
-  // ----------------------------------------------------------------
-  // Handle top-level item click:
-  //   - If item has sub-items: expand its menu AND navigate
-  //   - If no sub-items: just navigate
-  // ----------------------------------------------------------------
   const handleTopLevelClick = (item: SidebarItem) => {
     if (item.subItems && item.subItems.length > 0) {
       toggleExpand(item.key)
@@ -213,12 +263,7 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
     onNavigate(item.key)
   }
 
-  // ----------------------------------------------------------------
-  // Handle sub-item click: navigate to the sub-item's own page if
-  // it's registered as a NavItem, otherwise fall back to parent
-  // ----------------------------------------------------------------
   const handleSubItemClick = (parentKey: NavItem, subKey: string) => {
-    // Check if subKey is a valid NavItem by looking at all keys including parentOf targets
     const validNavItems = new Set<string>(sidebarItems.map((i) => i.key))
     for (const item of sidebarItems) {
       if (item.parentOf) {
@@ -234,9 +279,6 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
     }
   }
 
-  // ----------------------------------------------------------------
-  // Group items by group name
-  // ----------------------------------------------------------------
   const groups = sidebarItems.reduce<Record<string, SidebarItem[]>>((acc, item) => {
     if (!acc[item.group]) acc[item.group] = []
     acc[item.group].push(item)
@@ -246,7 +288,7 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        'hidden lg:flex flex-col bg-navy-800 dark:bg-navy-900 border-r border-navy-700/50 transition-all duration-300 shrink-0 overflow-hidden',
+        'hidden lg:flex flex-col bg-[#0a1628] dark:bg-[#0a1628] border-r border-slate-700/30 transition-all duration-300 shrink-0 overflow-hidden',
         collapsed ? 'w-[68px]' : 'w-[250px]'
       )}
     >
@@ -256,7 +298,7 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
           <div key={groupName} className="mb-4">
             {/* Group Label */}
             {!collapsed && (
-              <p className="px-4 mb-1 text-[10px] font-bold uppercase tracking-widest text-navy-500 dark:text-navy-400">
+              <p className="px-4 mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 {groupName}
               </p>
             )}
@@ -275,8 +317,8 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
                       className={cn(
                         'flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
                         isActive
-                          ? 'bg-navy-700/50 text-white border-l-4 border-emerald-400'
-                          : 'text-navy-300 hover:bg-navy-700/30 hover:text-white border-l-4 border-transparent',
+                          ? 'bg-[#132240] text-white border-l-4 border-[#2563eb]'
+                          : 'text-slate-400 hover:bg-[#132240]/60 hover:text-white border-l-4 border-transparent',
                         collapsed && 'justify-center px-0 border-l-0'
                       )}
                       title={collapsed ? item.label : undefined}
@@ -286,12 +328,10 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
                       {!collapsed && (
                         <>
                           <span className="flex-1 text-left">{item.label}</span>
-
-                          {/* Chevron for items with sub-menus */}
                           {hasSubItems && (
                             <ChevronDown
                               className={cn(
-                                'h-4 w-4 shrink-0 text-navy-400 transition-transform duration-200',
+                                'h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200',
                                 isExpanded && 'rotate-180'
                               )}
                             />
@@ -300,7 +340,7 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
                       )}
                     </button>
 
-                    {/* Sub-menu items with smooth expand animation */}
+                    {/* Sub-menu items */}
                     {hasSubItems && !collapsed && (
                       <div
                         className={cn(
@@ -315,8 +355,8 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
                                 onClick={() => handleSubItemClick(item.key, sub.key)}
                                 className={cn(
                                   'flex items-center gap-2.5 w-full px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
-                                  'text-navy-400 hover:text-white hover:bg-navy-700/30',
-                                  isActive && 'text-navy-200'
+                                  'text-slate-500 hover:text-white hover:bg-[#132240]/60',
+                                  activeItem === sub.key && 'text-white bg-[#132240]/80'
                                 )}
                               >
                                 <sub.icon className="h-3.5 w-3.5 shrink-0" />
@@ -337,16 +377,16 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
 
       {/* Version Info */}
       {!collapsed && (
-        <div className="px-4 py-2 border-t border-navy-700/50">
-          <p className="text-[10px] text-navy-500">Electronics Mart v1.0</p>
+        <div className="px-4 py-2 border-t border-slate-700/30">
+          <p className="text-[10px] text-slate-600">Electronics Mart v1.0</p>
         </div>
       )}
 
       {/* Collapse Toggle */}
-      <div className="border-t border-navy-700/50 p-2">
+      <div className="border-t border-slate-700/30 p-2">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-navy-400 hover:text-white hover:bg-navy-700/30 text-sm transition-colors"
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-slate-500 hover:text-white hover:bg-[#132240]/60 text-sm transition-colors"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? (

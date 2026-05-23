@@ -1,8 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { useSession, signIn, signOut } from 'next-auth/react'
 import { Shield, Eye, EyeOff, Loader2, LogIn, Database, LogOut } from 'lucide-react'
+import { useAuthStore } from '@/lib/stores/auth-store'
 import { AppHeader } from '@/components/layout/app-header'
 import { AppSidebar, type NavItem } from '@/components/layout/app-sidebar'
 import { IMSBreadcrumb } from '@/components/layout/ims-breadcrumb'
@@ -12,8 +12,10 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
+import { DashboardModule } from '@/components/ims/dashboard-module'
+import { InvestmentHeadsModule } from '@/components/ims/investment-heads-module'
+import { CompaniesModule } from '@/components/ims/companies-module'
 import {
-  DashboardSection,
   InventorySection,
   ProductsSection,
   CategorySection,
@@ -32,14 +34,23 @@ import {
 
 const breadcrumbMap: Record<NavItem, Array<{ label: string; href?: string }>> = {
   dashboard: [{ label: 'Home' }, { label: 'Dashboard' }],
-  inventory: [{ label: 'Home', href: '#' }, { label: 'Inventory' }],
-  products: [{ label: 'Home', href: '#' }, { label: 'Products' }],
-  categories: [{ label: 'Home', href: '#' }, { label: 'Products', href: '#' }, { label: 'Categories' }],
-  brands: [{ label: 'Home', href: '#' }, { label: 'Products', href: '#' }, { label: 'Brands' }],
+  investment: [{ label: 'Home', href: '#' }, { label: 'Investment' }],
+  'investment-heads': [{ label: 'Home', href: '#' }, { label: 'Investment', href: '#' }, { label: 'Investment Heads' }],
+  'basic-modules': [{ label: 'Home', href: '#' }, { label: 'Basic Modules' }],
+  companies: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Companies' }],
+  categories: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Categories' }],
+  colors: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Colors' }],
+  products: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Products' }],
+  staff: [{ label: 'Home', href: '#' }, { label: 'Staff' }],
+  'customers-suppliers': [{ label: 'Home', href: '#' }, { label: 'Customers & Suppliers' }],
+  'inventory-mgmt': [{ label: 'Home', href: '#' }, { label: 'Inventory Management' }],
+  'account-mgmt': [{ label: 'Home', href: '#' }, { label: 'Account Management' }],
   sales: [{ label: 'Home', href: '#' }, { label: 'Sales' }],
   purchase: [{ label: 'Home', href: '#' }, { label: 'Purchase' }],
   customers: [{ label: 'Home', href: '#' }, { label: 'Customers' }],
   suppliers: [{ label: 'Home', href: '#' }, { label: 'Suppliers' }],
+  inventory: [{ label: 'Home', href: '#' }, { label: 'Inventory' }],
+  brands: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Brands' }],
   reports: [{ label: 'Home', href: '#' }, { label: 'Reports' }],
   settings: [{ label: 'Home', href: '#' }, { label: 'Settings' }],
 }
@@ -51,7 +62,11 @@ const breadcrumbMap: Record<NavItem, Array<{ label: string; href?: string }>> = 
 function renderSection(activeItem: NavItem, onNavigate: (section: string) => void) {
   switch (activeItem) {
     case 'dashboard':
-      return <DashboardSection onNavigate={onNavigate} />
+      return <DashboardModule onNavigate={onNavigate} />
+    case 'investment-heads':
+      return <InvestmentHeadsModule />
+    case 'companies':
+      return <CompaniesModule />
     case 'inventory':
       return <InventorySection />
     case 'products':
@@ -72,8 +87,23 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
       return <ReportsSection />
     case 'settings':
       return <SettingsSection />
+    // Placeholder sections for future modules
+    case 'investment':
+      return <InvestmentHeadsModule />
+    case 'basic-modules':
+      return <CompaniesModule />
+    case 'colors':
+      return <CategorySection />
+    case 'staff':
+      return <SettingsSection />
+    case 'customers-suppliers':
+      return <CustomersSection />
+    case 'inventory-mgmt':
+      return <InventorySection />
+    case 'account-mgmt':
+      return <ReportsSection />
     default:
-      return <DashboardSection onNavigate={onNavigate} />
+      return <DashboardModule onNavigate={onNavigate} />
   }
 }
 
@@ -87,6 +117,7 @@ function LoginForm() {
   const [showPassword, setShowPassword] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const [seeding, setSeeding] = React.useState(false)
+  const login = useAuthStore((s) => s.login)
 
   const handleSeed = async () => {
     setSeeding(true)
@@ -114,19 +145,11 @@ function LoginForm() {
 
     setLoading(true)
     try {
-      const result = await signIn('credentials', {
-        userName,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        // NextAuth v4 returns "CredentialsSignin" as generic error
-        toast.error('Invalid username or password. Please check your credentials.')
-      } else if (result?.ok) {
+      const success = await login(userName, password)
+      if (success) {
         toast.success('Login successful! Welcome to Electronics Mart')
       } else {
-        toast.error('Login failed. Please try again.')
+        toast.error('Invalid username or password. Please check your credentials.')
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Login failed')
@@ -136,29 +159,29 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-navy-800 via-navy-900 to-navy-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a1628] via-[#132240] to-[#0a1628] p-4">
       <div className="w-full max-w-md">
         {/* Logo + Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-navy-600/50 border border-navy-500/30 mb-4">
+          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-[#132240] border border-[#2563eb]/30 mb-4">
             <Shield className="h-8 w-8 text-amber-400" />
           </div>
           <h1 className="text-2xl font-bold text-white">Electronics Mart</h1>
-          <p className="text-navy-300 text-sm mt-1">Inventory Management System</p>
+          <p className="text-slate-400 text-sm mt-1">Inventory Management System</p>
         </div>
 
         {/* Login Card */}
-        <Card className="shadow-2xl border-navy-600/30 bg-white/5 backdrop-blur-sm">
+        <Card className="shadow-2xl border-slate-700/30 bg-white/5 backdrop-blur-sm">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-white text-lg">Sign In</CardTitle>
-            <CardDescription className="text-navy-300">
+            <CardDescription className="text-slate-400">
               Enter your credentials to access the ERP
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="userName" className="text-navy-200 text-xs font-semibold">
+                <Label htmlFor="userName" className="text-slate-300 text-xs font-semibold">
                   Username
                 </Label>
                 <Input
@@ -166,11 +189,11 @@ function LoginForm() {
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder="Enter username"
-                  className="bg-navy-800/50 border-navy-600/50 text-white placeholder:text-navy-400 focus:border-amber-500 focus:ring-amber-500/20"
+                  className="bg-[#0a1628]/50 border-slate-600/50 text-white placeholder:text-slate-500 focus:border-amber-500 focus:ring-amber-500/20"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-navy-200 text-xs font-semibold">
+                <Label htmlFor="password" className="text-slate-300 text-xs font-semibold">
                   Password
                 </Label>
                 <div className="relative">
@@ -180,12 +203,12 @@ function LoginForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter password"
-                    className="bg-navy-800/50 border-navy-600/50 text-white placeholder:text-navy-400 focus:border-amber-500 focus:ring-amber-500/20 pr-10"
+                    className="bg-[#0a1628]/50 border-slate-600/50 text-white placeholder:text-slate-500 focus:border-amber-500 focus:ring-amber-500/20 pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -193,7 +216,7 @@ function LoginForm() {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-amber-500 hover:bg-amber-600 text-navy-900 font-semibold"
+                className="w-full bg-amber-500 hover:bg-amber-600 text-[#0a1628] font-semibold"
                 disabled={loading}
               >
                 {loading ? (
@@ -205,10 +228,10 @@ function LoginForm() {
               </Button>
             </form>
 
-            <div className="mt-4 pt-4 border-t border-navy-600/30">
+            <div className="mt-4 pt-4 border-t border-slate-700/30">
               <Button
                 variant="outline"
-                className="w-full border-navy-600/50 text-navy-200 hover:bg-navy-700/50 hover:text-white"
+                className="w-full border-slate-600/50 text-slate-200 hover:bg-[#132240]/50 hover:text-white"
                 onClick={handleSeed}
                 disabled={seeding}
               >
@@ -219,7 +242,7 @@ function LoginForm() {
                 )}
                 {seeding ? 'Seeding Data...' : 'Seed Sample Data'}
               </Button>
-              <p className="text-center text-navy-400 text-[11px] mt-2">
+              <p className="text-center text-slate-500 text-[11px] mt-2">
                 Default credentials: emart.amit / Test_123
               </p>
             </div>
@@ -227,7 +250,7 @@ function LoginForm() {
         </Card>
 
         {/* Footer */}
-        <div className="text-center mt-6 text-navy-400 text-xs">
+        <div className="text-center mt-6 text-slate-500 text-xs">
           <p>Developed & Copyright by <span className="text-amber-400 font-semibold">NextGen Digital Studio</span></p>
         </div>
       </div>
@@ -240,32 +263,38 @@ function LoginForm() {
 // ================================================================
 
 export default function HomePage() {
-  const { data: session, status } = useSession()
+  const { isAuthenticated, user } = useAuthStore()
+  const [hydrated, setHydrated] = React.useState(false)
   const [activeItem, setActiveItem] = React.useState<NavItem>('dashboard')
+
+  // Wait for Zustand persist to hydrate
+  React.useEffect(() => {
+    setHydrated(true)
+  }, [])
 
   const handleNavigate = (item: NavItem) => {
     setActiveItem(item)
   }
 
-  const handleLogout = async () => {
-    await signOut({ redirect: false })
+  const handleLogout = () => {
+    useAuthStore.getState().logout()
     toast.success('Logged out successfully')
   }
 
   // Show loading while checking auth
-  if (status === 'loading') {
+  if (!hydrated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-navy-800 via-navy-900 to-navy-950">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a1628] via-[#132240] to-[#0a1628]">
         <div className="text-center">
           <Loader2 className="h-8 w-8 text-amber-400 animate-spin mx-auto mb-3" />
-          <p className="text-navy-300 text-sm">Loading Electronics Mart...</p>
+          <p className="text-slate-400 text-sm">Loading Electronics Mart...</p>
         </div>
       </div>
     )
   }
 
   // Show login form if not authenticated
-  if (status === 'unauthenticated' || !session) {
+  if (!isAuthenticated) {
     return <LoginForm />
   }
 
@@ -276,7 +305,7 @@ export default function HomePage() {
       <AppHeader
         activeItem={activeItem}
         onNavigate={handleNavigate}
-        user={session.user}
+        user={user ? { name: user.name, email: user.email, role: user.role } : null}
         onLogout={handleLogout}
       />
 

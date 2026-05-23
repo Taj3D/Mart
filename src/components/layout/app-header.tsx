@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Shield, Bell, Menu, LayoutDashboard, Package, BarChart3, Settings, LogOut, User as UserIcon, ShoppingCart, TrendingUp, FileText, Layers, Users, Truck } from 'lucide-react'
+import { Shield, Bell, Menu, LayoutDashboard, Package, BarChart3, Settings, LogOut, User as UserIcon, ShoppingCart, TrendingUp, FileText, Layers, Users, Truck, Landmark } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -25,10 +25,10 @@ import {
 
 const navItems: Array<{ key: NavItem; label: string; icon: React.ElementType }> = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { key: 'inventory', label: 'Inventory', icon: Package },
+  { key: 'investment', label: 'Investment', icon: Landmark },
+  { key: 'basic-modules', label: 'Basic Modules', icon: Layers },
   { key: 'sales', label: 'Sales', icon: TrendingUp },
-  { key: 'reports', label: 'Reports', icon: BarChart3 },
-  { key: 'settings', label: 'Settings', icon: Settings },
+  { key: 'settings', label: 'Reports', icon: BarChart3 },
 ]
 
 const sampleNotifications = [
@@ -59,7 +59,7 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-navy-700 dark:bg-navy-800 h-[60px] flex items-center px-4 shadow-md">
+    <header className="sticky top-0 z-50 bg-[#0a1628] dark:bg-[#0a1628] h-[60px] flex items-center px-4 shadow-md">
       {/* Left: Logo + Brand */}
       <div className="flex items-center gap-2 mr-6">
         <Shield className="h-7 w-7 text-white/90" />
@@ -107,7 +107,7 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
             <button className="flex items-center gap-2 rounded-sm px-2 py-1.5 hover:bg-white/10 transition-colors">
               <Avatar className="h-7 w-7">
                 <AvatarImage src="" alt={user?.name || 'Admin'} />
-                <AvatarFallback className="bg-navy-500 text-white text-xs">
+                <AvatarFallback className="bg-[#132240] text-white text-xs">
                   {user?.name?.charAt(0)?.toUpperCase() || 'A'}
                 </AvatarFallback>
               </Avatar>
@@ -148,7 +148,7 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="bg-navy-800 dark:bg-navy-900 border-navy-700 text-white w-[260px]">
+          <SheetContent side="left" className="bg-[#0a1628] border-slate-700/30 text-white w-[260px]">
             <SheetHeader>
               <SheetTitle className="text-white flex items-center gap-2">
                 <Shield className="h-6 w-6 text-white/90" />
@@ -158,8 +158,8 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
             <nav className="flex flex-col gap-1 mt-4">
               {[
                 { key: 'dashboard' as NavItem, label: 'Dashboard', icon: LayoutDashboard },
-                { key: 'inventory' as NavItem, label: 'Inventory', icon: Package },
-                { key: 'products' as NavItem, label: 'Products', icon: Layers },
+                { key: 'investment-heads' as NavItem, label: 'Investment Heads', icon: Landmark },
+                { key: 'companies' as NavItem, label: 'Companies', icon: Layers },
                 { key: 'sales' as NavItem, label: 'Sales', icon: TrendingUp },
                 { key: 'purchase' as NavItem, label: 'Purchase', icon: ShoppingCart },
                 { key: 'customers' as NavItem, label: 'Customers', icon: Users },
@@ -172,8 +172,8 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
                   onClick={() => handleNavigate(item.key)}
                   className={`flex items-center gap-3 px-4 py-3 text-sm uppercase font-bold tracking-wider rounded-sm transition-colors ${
                     activeItem === item.key
-                      ? 'bg-white/15 text-white border-l-4 border-emerald-400'
-                      : 'text-navy-300 hover:bg-white/10 hover:text-white'
+                      ? 'bg-[#132240] text-white border-l-4 border-[#2563eb]'
+                      : 'text-slate-400 hover:bg-[#132240]/60 hover:text-white'
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
