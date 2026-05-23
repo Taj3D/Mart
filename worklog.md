@@ -1165,3 +1165,209 @@ Stage Summary:
 - Schema enhancements: PaymentOption.charge, CardType.sequence, Payment FK links
 - Total lines added: 6,291 insertions across 15 files
 - Production deployment verified
+
+---
+Task ID: 3-a
+Agent: Departments Module Builder
+Task: Build Departments CRUD Module (DEP-00001) with API + UI + Triple Utilities
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read segments-module.tsx and segments API route as reference patterns for UI component and API structure
+- Read db-utils.ts to confirm generateNextCode, softDelete, createAuditLog, notDeleted, activeNotDeleted helpers
+- Read Prisma schema: Department model with code (unique), name, description, isActive, isDeleted, audit fields, employees relation
+- Read page.tsx and app-sidebar.tsx for integration points
+- Created /src/app/api/departments/route.ts with full CRUD:
+  - GET: List departments with ?all= and ?search= query params, includes _count: { select: { employees: true } } for employee count, maps to employeeCount field
+  - POST: Auto-generated code via generateNextCode('Department') (DEP-00001 format), name validation, $transaction for atomicity, createAuditLog()
+  - PUT: Code field read-only on edit, $transaction, createAuditLog(), name validation, allowedFields filter
+  - DELETE: Soft-delete with active employee check (blocks delete if employees linked), uses softDelete() helper in $transaction, createAuditLog()
+- Created /src/app/api/departments/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Single department with _count for employees, isDeleted filter
+  - PUT: Update with $transaction, code read-only enforcement, audit log
+  - DELETE: Soft-delete with active employee check in $transaction, audit log
+  - Dynamic route params: `{ params }: { params: Promise<{ id: string }> }` → `const { id } = await params`
+- Created /src/components/ims/departments-module.tsx with complete DepartmentsModule component:
+  - **Data Grid**: Table with Sl, Department Code, Department Name, Description, Employees (with Users icon), Status, Actions (View/Edit/Delete)
+  - **Title**: "Existing Departments", Create button: "Create new" matching target site
+  - **Search**: 400ms debounce across name/code/description with X clear button
+  - **Show Inactive toggle**: Includes inactive departments when enabled
+  - **Row count indicator**: Showing filtered/total counts
+  - **Create Sheet**: Code (READ-ONLY auto-generated DEP-00001), Department Name (required), Description (optional), Active toggle, "Add Department" button
+  - **Edit Sheet**: Same fields, code read-only, "Update" button
+  - **View Detail Dialog**: Department code, status badge, employee count (with Users icon), created/updated dates, description
+  - **Delete AlertDialog**: With employee count warning — blocks delete button if department has active employees, soft-delete messaging otherwise
+  - **Triple Utility Bundle**:
+    1. Import CSV: 3-step wizard (Upload with drag-and-drop → Column Mapping → Staging Preview + Validation → Import Result), CSV template download
+    2. Export CSV: Client-side generation with Code, Name, Description, Employees, Status, Created Date; proper CSV escaping
+    3. Export PDF: Landscape A4 jsPDF + autoTable with "Electronics Mart" corporate header, "Departments Report" title, navy #192A56 header fill [25,42,86], alternating row colors, page numbers
+  - **Theme**: text-slate-900 dark:text-white headers, bg-slate-900 dark:bg-slate-800 sheet header, amber submit, rose delete, emerald/amber status badges
+  - **Pagination**: Client-side with [10,25,50,100] page sizes, page number buttons, first/prev/next/last
+  - **Loading skeleton**, **empty state** (Building2 icon), **error state** with retry
+  - **useAllDepartments** custom data hook
+  - Export: `export function DepartmentsModule() { ... }`
+- Updated /src/components/layout/app-sidebar.tsx:
+  - Added 'departments' to NavItem type union
+  - Added Departments as sub-item of Staff section (with Building2 icon)
+  - Added parentOf: ['departments'] to staff sidebar item
+- Updated /src/app/page.tsx:
+  - Imported DepartmentsModule from '@/components/ims/departments-module'
+  - Added breadcrumb mapping: 'departments' → Home > Staff > Departments
+  - Added renderSection case: 'departments' → <DepartmentsModule />
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **Departments CRUD API** fully implemented with atomic transactions, auto-code generation (DEP-00001), soft-delete, and audit logging
+- **Departments Detail API** with GET/PUT/DELETE by ID, employee count, active employee check on delete
+- **DepartmentsModule** component created at /src/components/ims/departments-module.tsx
+- **Full CRUD**: Create (Sheet with "Add Department"), Edit (Sheet with "Update"), View (Dialog), Delete (AlertDialog with employee count warning)
+- **Triple Utility Bundle**: Import CSV (3-step wizard), Export CSV (client-side with escaping), Export PDF (jsPDF + autoTable with navy #192A56 header)
+- **Employee count protection**: Delete blocked if department has active employees
+- **Code field READ-ONLY** in both Create and Edit — auto-generated by server (DEP-00001 format)
+- **Sidebar** updated: Departments sub-item under Staff section
+- **Breadcrumb** mapped: Home > Staff > Departments
+- Lint passes with 0 errors
+
+---
+Task ID: 3-b
+Agent: Designations Module Builder
+Task: Build Designations Module (DSG-00001) — Full CRUD API + UI + Triple Utilities
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read segments-module.tsx as reference pattern for UI component structure, hooks, and Triple Utility Bundle
+- Read segments API route.ts as reference pattern for CRUD API with atomic transactions
+- Read db-utils.ts to confirm generateNextCode, notDeleted, activeNotDeleted, softDelete, createAuditLog helpers
+- Read Prisma Designation schema: code (unique), name, description, grade, minSalary, maxSalary, isActive, isDeleted, employees relation
+- Created /src/app/api/designations/route.ts with full GET/POST/PUT/DELETE:
+  - GET: List with ?all=true, ?search= filters, includes _count for employees, ordered by grade ASC, name ASC
+  - POST: Auto-code generation (DSG-00001) inside $transaction, name validation, salary band validation (max >= min), createAuditLog()
+  - PUT: Code field read-only, $transaction, salary band validation, createAuditLog(), allowedFields pattern
+  - DELETE: Check active employees first (block if linked), soft-delete inside $transaction, createAuditLog()
+- Created /src/app/api/designations/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Single designation with employees list (top 20, not deleted) and employee count
+  - PUT: Update with $transaction, code read-only enforcement, salary band validation, createAuditLog()
+  - DELETE: Active employee check, soft-delete inside $transaction, createAuditLog()
+  - Dynamic route params: { params }: { params: Promise<{ id: string }> } → const { id } = await params
+- Created /src/components/ims/designations-module.tsx with complete DesignationsModule component:
+  - **Data Grid**: Table with Sl, Code, Name, Grade, Min Salary, Max Salary, Employees, Status, Actions
+  - **Grade badges**: Color-coded (A1/A2=violet, B1/B2=sky, C1/C2=teal, D1=slate)
+  - **Salary formatting**: Intl.NumberFormat with BDT currency
+  - **useAllDesignations hook**: Fetches from /api/designations?all=true&search=...
+  - **Create/Edit Sheet** (right side panel):
+    - Code: AUTO-GENERATED, READ-ONLY (DSG-00001 format)
+    - Name: Required text input
+    - Description: Optional textarea
+    - Grade: Dropdown select (A1, A2, B1, B2, C1, C2, D1) with "None" option
+    - Salary Band info box: "Define the salary range for this designation level"
+    - Min Salary: Numeric input (BDT)
+    - Max Salary: Numeric input (BDT)
+    - Active toggle switch
+    - Validation: maxSalary >= minSalary
+  - **View Detail Dialog**: Full record details including salary band range (min — max), grade badge, employee count
+  - **Delete AlertDialog**: Employee count warning, blocks delete if employees exist
+  - **Triple Utility Bundle**:
+    1. Import CSV: Dialog with drag-and-drop, CSV template download, column mapping (name, description, grade, minSalary, maxSalary), staging preview, validation (grade options check), bulk import
+    2. Export CSV: Client-side CSV with all columns (Code, Name, Description, Grade, Min Salary, Max Salary, Employees, Status, Created Date), proper CSV escaping
+    3. Export PDF: Landscape A4 jsPDF + autoTable with navy header (#192A56 [25,42,86]), "Electronics Mart" corporate header, "Designations Report" title, 8-column table (Sl, Code, Name, Grade, Min Salary, Max Salary, Employees, Status), alternating row colors, page numbers
+  - **Search/filter**: 400ms debounce, search across name/code/grade/description, Show Inactive toggle
+  - **Pagination**: Client-side with [10, 25, 50, 100] page size options
+  - **Loading skeleton, empty state** (Briefcase icon), **error state** with retry
+  - **Theme**: text-slate-900 dark:text-white, sheet header bg-slate-900 dark:bg-slate-800, amber submit, rose delete, emerald/amber status badges
+- Updated /src/components/layout/app-sidebar.tsx:
+  - Added 'designations' to NavItem type
+  - Added Designations as sub-item of Staff section with Briefcase icon
+  - Added parentOf: ['departments', 'designations'] to staff sidebar item
+- Updated /src/app/page.tsx:
+  - DesignationsModule import already present
+  - Added breadcrumb mapping for 'designations' (Home > Staff > Designations)
+  - Added renderSection case for 'designations' returning <DesignationsModule />
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **DesignationsModule** component created at /src/components/ims/designations-module.tsx
+- **Full CRUD API** at /api/designations and /api/designations/[id] with atomic $transaction, auto-code (DSG-00001), soft-delete, audit logging
+- **Employee protection**: Delete blocked if active employees linked to designation
+- **Salary band validation**: maxSalary >= minSalary enforced on both client and server
+- **Grade dropdown**: A1, A2, B1, B2, C1, C2, D1 with color-coded badges
+- **Triple Utility Bundle**: Import CSV (5-column mapping + validation), Export CSV, Export PDF (navy #192A56 header)
+- **Sidebar navigation** updated with Designations under Staff section
+- Lint passes with 0 errors
+
+---
+Task ID: 3-c
+Agent: Employees Module Builder
+Task: Build Employees CRUD Module (EMP-00001) with full API + UI + Triple Utilities
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read Prisma schema (Employee model with 22+ fields, Department/Designation relations, EmployeeLeave/SrTarget relations)
+- Read db-utils.ts for helper functions (generateNextCode, notDeleted, activeNotDeleted, softDelete, createAuditLog)
+- Read existing /api/departments/route.ts and /api/designations/route.ts for dropdown API patterns
+- Read departments-module.tsx as reference pattern for UI component structure
+- Read page.tsx and app-sidebar.tsx for integration points
+- Created /src/app/api/employees/route.ts with full GET/POST/PUT/DELETE:
+  - GET: List employees with department/designation relations, _count for leaves/srTargets, search by name/code/phone/email, filter by departmentId/designationId/status, ?all=true support
+  - POST: Create with auto-code generation (EMP-00001) inside $transaction, name validation, date parsing for joinDate/dateOfBirth, audit logging
+  - PUT: Update with $transaction, code read-only enforcement, audit logging, date field handling
+  - DELETE: Soft-delete with active srTarget check, audit logging in $transaction
+- Created /src/app/api/employees/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Single employee with department/designation details, leave/srTarget counts
+  - PUT: Update with $transaction, code read-only, audit logging
+  - DELETE: Soft-delete with srTarget check, audit logging
+  - Dynamic route params: `{ params }: { params: Promise<{ id: string }> }` → `const { id } = await params`
+- Created /src/components/ims/employees-module.tsx with complete EmployeesModule component:
+  - **Data Grid**: Table with Sl, Code, Name, Contact No., Join Date, Department, Designation, Salary, Status, Actions columns
+  - **Title**: "Existing Employees", Create button: "Create new" matching target site
+  - **Search bar** with 400ms debounce across name/code/phone/email, X clear button
+  - **Filter dropdowns**: Department (fetched from /api/departments?all=true), Designation (fetched from /api/designations?all=true), Status (Active, On Leave, Resigned, Terminated)
+  - **Client-side pagination** with page size selector (10/25/50/100), first/prev/next/last controls
+  - **Status badges**: Active=emerald, OnLeave=amber, Resigned=slate, Terminated=rose
+  - **View Detail Dialog**: ALL fields organized in 3 sections:
+    - Personal Info: Name, Father Name, Mother Name, Date of Birth, Blood Group, Religion, NID
+    - Contact Info: Phone, Email, Present Address, Permanent Address, Emergency Contact
+    - Employment Info: Code, Department, Designation, Join Date, Status, Active, Salary, SR Due Limit, Account No., Leaves, SR Targets
+  - **Create/Edit Sheet** (LARGE form with 3 sections):
+    - Employment Section: Code (auto-gen readonly), Department (combobox), Designation (combobox), Join Date (date input), Status (dropdown), Gross Salary (numeric with ৳), SR Due Limit (numeric with ৳), Account No.
+    - Personal Section: Name (required), Father Name, Mother Name, Date of Birth (date input), Blood Group (dropdown: A+/A-/B+/B-/AB+/AB-/O+/O-), Religion (dropdown: Islam/Hindu/Christian/Buddhist/Other), National ID
+    - Contact Section: Phone, Email, Emergency Contact, Present Address (textarea), Permanent Address (textarea)
+    - Active toggle switch
+    - Submit button: "Add Employee" / "Update Employee"
+  - **Delete AlertDialog**: SR target count warning, blocks deletion if active SR targets exist
+  - **Active toggle**: Mini toggle switch in Actions column for quick activate/deactivate
+  - **Triple Utility Bundle**:
+    1. Import CSV: Dialog with drag-and-drop file upload, CSV template download, column mapping (13 fields), staging preview table, validation errors, bulk import with success/failure summary
+    2. Export CSV: Client-side CSV generation with all columns, proper CSV escaping
+    3. Export PDF: Landscape A4 jsPDF + autoTable with "Electronics Mart" corporate header, "Employees Report" title, date, 9-column table (Sl, Code, Name, Phone, Join Date, Department, Designation, Salary, Status), navy #192A56 header fill, alternating row colors, page numbers
+  - **BDT currency formatting**: ৳ symbol with Intl.NumberFormat('en-IN')
+  - **Deep Navy Blue / Slate theme**: Headers use text-slate-900 dark:text-white, sheet header bg-slate-900
+  - **Loading skeletons, empty states** with Users icon, **error states** with retry
+  - **Custom useAllEmployees hook** for data fetching
+  - Departments and designations fetched on component mount via useEffect
+  - No `any` types used
+- Updated /src/app/page.tsx:
+  - Imported EmployeesModule from '@/components/ims/employees-module'
+  - Added breadcrumb mapping for 'employees' (Home > Staff > Employees)
+  - Added renderSection case for 'employees' returning <EmployeesModule />
+- Updated /src/components/layout/app-sidebar.tsx:
+  - Added 'employees' to NavItem type union
+  - Added Employees sub-item under Staff section with Users icon
+  - Updated parentOf to include 'employees'
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **EmployeesModule** component created at /src/components/ims/employees-module.tsx
+- **Full CRUD API** at /api/employees and /api/employees/[id] with atomic $transaction, auto-code (EMP-00001), soft-delete, audit logging
+- **22+ field Employee model** with department/designation relations, date parsing, salary formatting
+- **Delete protection**: Blocked if active SR targets exist for the employee
+- **3-section form**: Employment, Personal, Contact — matching target site layout
+- **View Detail Dialog**: Organized into Personal/Contact/Employment sections with icons
+- **Status badges**: Active=emerald, OnLeave=amber, Resigned=slate, Terminated=rose
+- **Active toggle**: Mini switch in Actions column for quick activate/deactivate
+- **Triple Utility Bundle**: Import CSV (13-column mapping), Export CSV, Export PDF (navy header)
+- **Dropdowns**: Department and Designation fetched on mount from /api/departments and /api/designations
+- **Blood Group dropdown**: A+, A-, B+, B-, AB+, AB-, O+, O-
+- **Religion dropdown**: Islam, Hindu, Christian, Buddhist, Other
+- **Sidebar navigation** updated with Employees under Staff section
+- **BDT currency**: ৳ symbol with Intl.NumberFormat('en-IN')
+- Lint passes with 0 errors

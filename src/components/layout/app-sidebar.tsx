@@ -63,6 +63,9 @@ export type NavItem =
   | 'payment-options'
   | 'card-types'
   | 'staff'
+  | 'departments'
+  | 'designations'
+  | 'employees'
   | 'customers-suppliers'
   | 'inventory-mgmt'
   | 'account-mgmt'
@@ -148,6 +151,12 @@ const sidebarItems: SidebarItem[] = [
     label: 'Staff',
     icon: Briefcase,
     group: 'People',
+    subItems: [
+      { key: 'departments', label: 'Departments', icon: Building2 },
+      { key: 'designations', label: 'Designations', icon: Briefcase },
+      { key: 'employees', label: 'Employees', icon: Users },
+    ],
+    parentOf: ['departments', 'designations', 'employees'],
   },
   // ── Customers & Suppliers ──
   {

@@ -592,39 +592,46 @@ model Supplier {
 
 /// Employee — Staff management
 model Employee {
-  id          String   @id @default(cuid())
-  code        String   @unique                                             // EMP-00001
-  firstName   String
-  lastName    String
-  email       String?
-  phone       String?
-  address     String?
-  departmentId String?
-  designationId String?
-  joinDate    DateTime @default(now())
-  endDate     DateTime?
-  salary      Float    @default(0)
-  nid         String?
-  bloodGroup  String?
+  id              String    @id @default(cuid())
+  code            String    @unique                                             // EMP-00001
+  name            String                                                          // Full name (target: single Name field)
+  email           String?
+  phone           String?                                                        // Contact No.
+  accountNo       String?                                                        // Bank account number
+  departmentId    String?
+  designationId   String?
+  religion        String?                                                        // Religion dropdown
+  salary          Float     @default(0)                                          // Gross Salary
+  srDueLimit      Float     @default(0)                                          // SR Due Limit
+  photo           String?
+  nid             String?                                                        // National ID
+  fatherName      String?
+  motherName      String?
+  joinDate        DateTime  @default(now())
+  dateOfBirth     DateTime?
+  bloodGroup      String?
+  presentAddress  String?
+  permanentAddress String?
+  endDate         DateTime?
   emergencyContact String?
-  photo       String?
-  status      String   @default("Active")                                   // Active, OnLeave, Resigned, Terminated
-  isActive    Boolean  @default(true)
-  isDeleted   Boolean  @default(false)
-  createdBy   String?
-  createdDate DateTime @default(now())
-  updatedBy   String?
-  updatedDate DateTime @updatedAt
+  status          String    @default("Active")                                   // Active, OnLeave, Resigned, Terminated
+  isActive        Boolean   @default(true)
+  isDeleted       Boolean   @default(false)
+  createdBy       String?
+  createdDate     DateTime  @default(now())
+  updatedBy       String?
+  updatedDate     DateTime  @updatedAt
 
-  department   Department?  @relation(fields: [departmentId], references: [id])
-  designation  Designation? @relation(fields: [designationId], references: [id])
-  leaves       EmployeeLeave[]
-  srTargets    SrTarget[]
+  department      Department?   @relation(fields: [departmentId], references: [id])
+  designation     Designation?  @relation(fields: [designationId], references: [id])
+  leaves          EmployeeLeave[]
+  srTargets       SrTarget[]
 
   @@index([code])
   @@index([departmentId])
   @@index([designationId])
   @@index([status])
+  @@index([isActive])
   @@index([isDeleted])
 }
 
@@ -634,7 +641,9 @@ model Designation {
   code        String   @unique                                             // DSG-00001
   name        String
   description String?
-  grade       String?
+  grade       String?                                                       // Grade level (e.g., Grade-1, Grade-2)
+  minSalary   Float    @default(0)                                          // Minimum salary band
+  maxSalary   Float    @default(0)                                          // Maximum salary band
   isActive    Boolean  @default(true)
   isDeleted   Boolean  @default(false)
   createdBy   String?
@@ -645,6 +654,7 @@ model Designation {
   employees Employee[]
 
   @@index([code])
+  @@index([grade])
   @@index([isDeleted])
 }
 

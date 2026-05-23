@@ -85,14 +85,14 @@ export async function register() {
       if (desgCount === 0) {
         await db.designation.createMany({
           data: [
-            { code: 'DSG-00001', name: 'Managing Director', grade: 'A1' },
-            { code: 'DSG-00002', name: 'General Manager', grade: 'A2' },
-            { code: 'DSG-00003', name: 'Sales Manager', grade: 'B1' },
-            { code: 'DSG-00004', name: 'Purchase Manager', grade: 'B1' },
-            { code: 'DSG-00005', name: 'Accounts Manager', grade: 'B1' },
-            { code: 'DSG-00006', name: 'Warehouse In-Charge', grade: 'B2' },
-            { code: 'DSG-00007', name: 'Sales Representative', grade: 'C1' },
-            { code: 'DSG-00008', name: 'IT Officer', grade: 'C1' },
+            { code: 'DSG-00001', name: 'Managing Director', grade: 'A1', minSalary: 100000, maxSalary: 300000 },
+            { code: 'DSG-00002', name: 'General Manager', grade: 'A2', minSalary: 80000, maxSalary: 150000 },
+            { code: 'DSG-00003', name: 'Sales Manager', grade: 'B1', minSalary: 40000, maxSalary: 80000 },
+            { code: 'DSG-00004', name: 'Purchase Manager', grade: 'B1', minSalary: 40000, maxSalary: 80000 },
+            { code: 'DSG-00005', name: 'Accounts Manager', grade: 'B1', minSalary: 40000, maxSalary: 80000 },
+            { code: 'DSG-00006', name: 'Warehouse In-Charge', grade: 'B2', minSalary: 30000, maxSalary: 60000 },
+            { code: 'DSG-00007', name: 'Sales Representative', grade: 'C1', minSalary: 20000, maxSalary: 40000 },
+            { code: 'DSG-00008', name: 'IT Officer', grade: 'C1', minSalary: 25000, maxSalary: 50000 },
           ],
         })
         console.log('[Seed] 8 designations created')
