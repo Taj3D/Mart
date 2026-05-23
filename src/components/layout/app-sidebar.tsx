@@ -32,7 +32,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export type NavItem = 'dashboard' | 'inventory' | 'products' | 'sales' | 'purchase' | 'customers' | 'suppliers' | 'reports' | 'settings'
+export type NavItem = 'dashboard' | 'inventory' | 'products' | 'categories' | 'brands' | 'sales' | 'purchase' | 'customers' | 'suppliers' | 'reports' | 'settings'
 
 // ================================================================
 // Sub-menu item definition
@@ -90,6 +90,7 @@ const sidebarItems: SidebarItem[] = [
       { key: 'categories', label: 'Categories', icon: FolderTree },
       { key: 'brands', label: 'Brands', icon: Tag },
     ],
+    parentOf: ['categories', 'brands'],
   },
   {
     key: 'sales',
@@ -213,10 +214,24 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
   }
 
   // ----------------------------------------------------------------
-  // Handle sub-item click: navigate to the parent section
+  // Handle sub-item click: navigate to the sub-item's own page if
+  // it's registered as a NavItem, otherwise fall back to parent
   // ----------------------------------------------------------------
-  const handleSubItemClick = (parentKey: NavItem) => {
-    onNavigate(parentKey)
+  const handleSubItemClick = (parentKey: NavItem, subKey: string) => {
+    // Check if subKey is a valid NavItem by looking at all keys including parentOf targets
+    const validNavItems = new Set<string>(sidebarItems.map((i) => i.key))
+    for (const item of sidebarItems) {
+      if (item.parentOf) {
+        for (const child of item.parentOf) {
+          validNavItems.add(child)
+        }
+      }
+    }
+    if (validNavItems.has(subKey)) {
+      onNavigate(subKey as NavItem)
+    } else {
+      onNavigate(parentKey)
+    }
   }
 
   // ----------------------------------------------------------------
@@ -297,7 +312,7 @@ export function AppSidebar({ activeItem, onNavigate }: AppSidebarProps) {
                           {item.subItems!.map((sub) => (
                             <li key={sub.key}>
                               <button
-                                onClick={() => handleSubItemClick(item.key)}
+                                onClick={() => handleSubItemClick(item.key, sub.key)}
                                 className={cn(
                                   'flex items-center gap-2.5 w-full px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
                                   'text-navy-400 hover:text-white hover:bg-navy-700/30',

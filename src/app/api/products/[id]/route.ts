@@ -1,65 +1,120 @@
+// ============================================================================
+// Electronics Mart IMS — Product Detail API (/api/products/[id])
+// GET by ID, PUT by ID, DELETE by ID
+// ============================================================================
+
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { softDelete, createAuditLog } from '@/lib/db-utils'
 
-// GET /api/products/[id] - Get single product
+// ============================================================================
+// GET /api/products/[id] — Get single product with all relations
+// ============================================================================
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
+
     const product = await db.product.findUnique({
       where: { id },
       include: {
-        category: {
-          select: { id: true, name: true },
-        },
-        stockMovements: {
-          take: 20,
-          orderBy: { createdAt: 'desc' },
-          include: {
-            warehouse: { select: { id: true, name: true } },
+        category: { select: { id: true, name: true, code: true } },
+        brand: { select: { id: true, name: true, code: true } },
+        unit: { select: { id: true, name: true, symbol: true, code: true } },
+        productColors: {
+          select: {
+            colorId: true,
+            color: { select: { id: true, name: true, code: true, hexCode: true } },
           },
         },
-        purchaseOrderItems: {
-          take: 10,
-          orderBy: { purchaseOrder: { orderDate: 'desc' } },
-          include: {
-            purchaseOrder: {
-              select: { id: true, orderNo: true, status: true, orderDate: true },
-            },
+        productSegments: {
+          select: {
+            segmentId: true,
+            segment: { select: { id: true, name: true, code: true } },
           },
         },
-        salesOrderItems: {
-          take: 10,
-          orderBy: { salesOrder: { orderDate: 'desc' } },
-          include: {
-            salesOrder: {
-              select: { id: true, orderNo: true, status: true, orderDate: true },
-            },
+        productCapacities: {
+          select: {
+            capacityId: true,
+            capacity: { select: { id: true, name: true, code: true, value: true, unit: true } },
           },
+        },
+        productImages: {
+          select: {
+            id: true,
+            imageUrl: true,
+            altText: true,
+            sortOrder: true,
+            isPrimary: true,
+          },
+          orderBy: { sortOrder: 'asc' },
         },
       },
     })
 
     if (!product) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ data: product })
+    // Compute status
+    const status = product.currentStock === 0
+      ? 'Out of Stock'
+      : product.currentStock <= product.minStock
+        ? 'Low Stock'
+        : 'In Stock'
+
+    return NextResponse.json({
+      id: product.id,
+      code: product.code,
+      sku: product.sku,
+      name: product.name,
+      description: product.description,
+      categoryId: product.categoryId,
+      brandId: product.brandId,
+      unitId: product.unitId,
+      modelNo: product.modelNo,
+      costPrice: product.costPrice,
+      sellPrice: product.sellPrice,
+      wholesalePrice: product.wholesalePrice,
+      minStock: product.minStock,
+      maxStock: product.maxStock,
+      currentStock: product.currentStock,
+      warrantyMonths: product.warrantyMonths,
+      image: product.image,
+      isActive: product.isActive,
+      isDeleted: product.isDeleted,
+      status,
+      // Relations
+      category: product.category,
+      brand: product.brand,
+      unit: product.unit,
+      colors: product.productColors.map((pc) => pc.color),
+      segments: product.productSegments.map((ps) => ps.segment),
+      capacities: product.productCapacities.map((pc) => pc.capacity),
+      images: product.productImages,
+      // Variant IDs for form
+      colorIds: product.productColors.map((pc) => pc.colorId),
+      segmentIds: product.productSegments.map((ps) => ps.segmentId),
+      capacityIds: product.productCapacities.map((pc) => pc.capacityId),
+      // Audit
+      createdBy: product.createdBy,
+      createdDate: product.createdDate,
+      updatedBy: product.updatedBy,
+      updatedDate: product.updatedDate,
+    })
   } catch (error) {
     console.error('Error fetching product:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch product' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
   }
 }
 
-// PUT /api/products/[id] - Update product
+// ============================================================================
+// PUT /api/products/[id] — Update product with transaction
+// ============================================================================
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -69,68 +124,134 @@ export async function PUT(
     const body = await request.json()
 
     // Check if product exists
-    const existingProduct = await db.product.findUnique({
-      where: { id },
-    })
-
-    if (!existingProduct) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+    const existing = await db.product.findUnique({ where: { id } })
+    if (!existing) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    }
+    if (existing.isDeleted) {
+      return NextResponse.json({ error: 'Cannot update a deleted product' }, { status: 400 })
     }
 
     // If SKU is being changed, check for duplicates
-    if (body.sku && body.sku !== existingProduct.sku) {
-      const duplicateSku = await db.product.findUnique({
-        where: { sku: body.sku },
-      })
+    if (body.sku && body.sku !== existing.sku) {
+      const duplicateSku = await db.product.findUnique({ where: { sku: body.sku } })
       if (duplicateSku) {
-        return NextResponse.json(
-          { error: 'Product with this SKU already exists' },
-          { status: 409 }
-        )
+        return NextResponse.json({ error: 'SKU already exists' }, { status: 409 })
       }
     }
 
-    // Build update data
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updateData: any = {}
-    const allowedFields = ['sku', 'name', 'description', 'categoryId', 'unit', 'costPrice', 'sellPrice', 'minStock', 'maxStock', 'currentStock', 'image', 'isActive']
+    // Build update data — code is read-only
+    const updateData: Record<string, unknown> = {}
+    const allowedFields = [
+      'sku', 'name', 'description', 'categoryId', 'brandId', 'unitId',
+      'modelNo', 'costPrice', 'sellPrice', 'wholesalePrice',
+      'minStock', 'maxStock', 'currentStock', 'warrantyMonths',
+      'image', 'isActive',
+    ]
 
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
-        if (['costPrice', 'sellPrice'].includes(field)) {
-          updateData[field] = parseFloat(String(body[field]))
-        } else if (['minStock', 'maxStock', 'currentStock'].includes(field)) {
-          updateData[field] = parseInt(String(body[field]))
+        if (['costPrice', 'sellPrice', 'wholesalePrice'].includes(field)) {
+          updateData[field] = parseFloat(String(body[field])) || 0
+        } else if (['minStock', 'maxStock', 'currentStock', 'warrantyMonths'].includes(field)) {
+          updateData[field] = parseInt(String(body[field])) || 0
+        } else if (field === 'sku') {
+          updateData[field] = body[field]?.trim() || null
+        } else if (field === 'isActive') {
+          updateData[field] = Boolean(body[field])
         } else {
           updateData[field] = body[field]
         }
       }
     }
+    updateData.updatedBy = body.userId || null
 
-    const product = await db.product.update({
-      where: { id },
-      data: updateData,
-      include: {
-        category: {
-          select: { id: true, name: true },
+    // Validate name
+    if (updateData.name !== undefined && (!updateData.name || !String(updateData.name).trim())) {
+      return NextResponse.json({ error: 'Product name cannot be empty' }, { status: 400 })
+    }
+
+    // Atomic transaction
+    const result = await db.$transaction(async (tx) => {
+      const product = await tx.product.update({
+        where: { id },
+        data: updateData,
+        include: {
+          category: { select: { id: true, name: true } },
+          brand: { select: { id: true, name: true } },
+          unit: { select: { id: true, name: true, symbol: true } },
         },
+      })
+
+      // Replace variant junctions
+      if (body.colorIds !== undefined) {
+        await tx.productColor.deleteMany({ where: { productId: id } })
+        if (Array.isArray(body.colorIds) && body.colorIds.length > 0) {
+          await tx.productColor.createMany({
+            data: body.colorIds.map((colorId: string) => ({ productId: id, colorId })),
+            skipDuplicates: true,
+          })
+        }
+      }
+
+      if (body.segmentIds !== undefined) {
+        await tx.productSegment.deleteMany({ where: { productId: id } })
+        if (Array.isArray(body.segmentIds) && body.segmentIds.length > 0) {
+          await tx.productSegment.createMany({
+            data: body.segmentIds.map((segmentId: string) => ({ productId: id, segmentId })),
+            skipDuplicates: true,
+          })
+        }
+      }
+
+      if (body.capacityIds !== undefined) {
+        await tx.productCapacity.deleteMany({ where: { productId: id } })
+        if (Array.isArray(body.capacityIds) && body.capacityIds.length > 0) {
+          await tx.productCapacity.createMany({
+            data: body.capacityIds.map((capacityId: string) => ({ productId: id, capacityId })),
+            skipDuplicates: true,
+          })
+        }
+      }
+
+      return product
+    })
+
+    // Audit log
+    await createAuditLog({
+      userId: body.userId || undefined,
+      action: 'Update',
+      entity: 'Product',
+      entityId: id,
+      oldValues: {
+        code: existing.code,
+        name: existing.name,
+        sku: existing.sku,
+        costPrice: existing.costPrice,
+        sellPrice: existing.sellPrice,
+        currentStock: existing.currentStock,
+      },
+      newValues: {
+        code: result.code,
+        name: result.name,
+        sku: result.sku,
+        costPrice: result.costPrice,
+        sellPrice: result.sellPrice,
+        currentStock: result.currentStock,
       },
     })
 
-    return NextResponse.json({ data: product })
+    return NextResponse.json({ data: result })
   } catch (error) {
     console.error('Error updating product:', error)
-    return NextResponse.json(
-      { error: 'Failed to update product' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })
   }
 }
 
-// DELETE /api/products/[id] - Soft delete (set isActive=false)
+// ============================================================================
+// DELETE /api/products/[id] — Soft-delete with audit log
+// ============================================================================
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -138,28 +259,34 @@ export async function DELETE(
   try {
     const { id } = await params
 
-    const existingProduct = await db.product.findUnique({
-      where: { id },
-    })
-
-    if (!existingProduct) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+    const existing = await db.product.findUnique({ where: { id } })
+    if (!existing) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    }
+    if (existing.isDeleted) {
+      return NextResponse.json({ error: 'Product is already deleted' }, { status: 400 })
     }
 
-    const product = await db.product.update({
-      where: { id },
-      data: { isActive: false },
+    // Soft-delete + audit log in transaction
+    await db.$transaction(async (tx) => {
+      await softDelete(tx.product, id, undefined)
+
+      await createAuditLog({
+        action: 'Delete',
+        entity: 'Product',
+        entityId: id,
+        oldValues: {
+          code: existing.code,
+          name: existing.name,
+          sku: existing.sku,
+          isActive: existing.isActive,
+        },
+      })
     })
 
-    return NextResponse.json({ data: product, message: 'Product deactivated successfully' })
+    return NextResponse.json({ success: true, message: 'Product soft-deleted successfully' })
   } catch (error) {
     console.error('Error deleting product:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete product' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 })
   }
 }

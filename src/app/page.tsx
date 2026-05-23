@@ -16,6 +16,8 @@ import {
   DashboardSection,
   InventorySection,
   ProductsSection,
+  CategorySection,
+  BrandSection,
   SalesSection,
   PurchaseSection,
   CustomersSection,
@@ -32,6 +34,8 @@ const breadcrumbMap: Record<NavItem, Array<{ label: string; href?: string }>> = 
   dashboard: [{ label: 'Home' }, { label: 'Dashboard' }],
   inventory: [{ label: 'Home', href: '#' }, { label: 'Inventory' }],
   products: [{ label: 'Home', href: '#' }, { label: 'Products' }],
+  categories: [{ label: 'Home', href: '#' }, { label: 'Products', href: '#' }, { label: 'Categories' }],
+  brands: [{ label: 'Home', href: '#' }, { label: 'Products', href: '#' }, { label: 'Brands' }],
   sales: [{ label: 'Home', href: '#' }, { label: 'Sales' }],
   purchase: [{ label: 'Home', href: '#' }, { label: 'Purchase' }],
   customers: [{ label: 'Home', href: '#' }, { label: 'Customers' }],
@@ -52,6 +56,10 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
       return <InventorySection />
     case 'products':
       return <ProductsSection />
+    case 'categories':
+      return <CategorySection />
+    case 'brands':
+      return <BrandSection />
     case 'sales':
       return <SalesSection />
     case 'purchase':
