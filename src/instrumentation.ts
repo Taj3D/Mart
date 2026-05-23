@@ -256,12 +256,12 @@ export async function register() {
       if (payOptCount === 0) {
         await db.paymentOption.createMany({
           data: [
-            { code: 'POP-00001', name: 'Cash', description: 'Cash payment' },
-            { code: 'POP-00002', name: 'Card', description: 'Credit/Debit card' },
-            { code: 'POP-00003', name: 'Bank Transfer', description: 'Direct bank transfer' },
-            { code: 'POP-00004', name: 'Mobile Banking', description: 'bKash, Nagad, Rocket' },
-            { code: 'POP-00005', name: 'EMI', description: 'Equal Monthly Installment' },
-            { code: 'POP-00006', name: 'Check', description: 'Bank check payment' },
+            { code: 'POP-00001', name: 'Cash', description: 'Cash payment', charge: 0 },
+            { code: 'POP-00002', name: 'Card', description: 'Credit/Debit card', charge: 2.5 },
+            { code: 'POP-00003', name: 'Bank Transfer', description: 'Direct bank transfer', charge: 1.0 },
+            { code: 'POP-00004', name: 'Mobile Banking', description: 'bKash, Nagad, Rocket', charge: 1.5 },
+            { code: 'POP-00005', name: 'EMI', description: 'Equal Monthly Installment', charge: 5.0 },
+            { code: 'POP-00006', name: 'Check', description: 'Bank check payment', charge: 0 },
           ],
         })
         console.log('[Seed] 6 payment options created')
@@ -271,10 +271,10 @@ export async function register() {
       if (cardTypeCount === 0) {
         await db.cardType.createMany({
           data: [
-            { code: 'CDT-00001', name: 'Visa', description: 'Visa credit/debit card' },
-            { code: 'CDT-00002', name: 'Mastercard', description: 'Mastercard credit/debit card' },
-            { code: 'CDT-00003', name: 'Amex', description: 'American Express card' },
-            { code: 'CDT-00004', name: 'DBBL Nexus', description: 'Dutch Bangla Nexus card' },
+            { code: 'CDT-00001', name: 'Visa', description: 'Visa credit/debit card', sequence: 1 },
+            { code: 'CDT-00002', name: 'Mastercard', description: 'Mastercard credit/debit card', sequence: 2 },
+            { code: 'CDT-00003', name: 'Amex', description: 'American Express card', sequence: 3 },
+            { code: 'CDT-00004', name: 'DBBL Nexus', description: 'Dutch Bangla Nexus card', sequence: 4 },
           ],
         })
         console.log('[Seed] 4 card types created')

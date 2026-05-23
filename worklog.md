@@ -939,3 +939,202 @@ Stage Summary:
 - **Vercel deployment**: https://my-project-rho-ruddy.vercel.app — live in production
 - **Lint**: 0 errors
 - **Next Batch 4 targets**: Capacities, Payment Options, Card Types (Financial Configuration sector)
+
+---
+Task ID: 4-a
+Agent: Capacities Module Builder
+Task: Build Capacities module (CAP-00001) - API routes + UI component
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read segments-module.tsx and segments API routes as reference patterns
+- Read db-utils.ts to understand generateNextCode, notDeleted, activeNotDeleted, softDelete, createAuditLog
+- Read existing /api/capacities/route.ts (basic GET-only) and planned full CRUD rewrite
+- Overwrote /api/capacities/route.ts with full CRUD:
+  - GET: List with ?all=true (show all incl. inactive), ?search= (search by name/code/unit), uses activeNotDeleted() by default, notDeleted() when all=true. Includes _count for productCapacities relation.
+  - POST: Create capacity with auto-generated code using generateNextCode('Capacity') (prefix CAP). Wrapped in db.$transaction(). Validates name is required. After create, calls createAuditLog().
+  - PUT: Update capacity by body.id. Code is READ-ONLY (never updatable). Wrapped in $transaction(). Calls createAuditLog(). Value field parsed as float.
+  - DELETE: Soft-delete by ?id=. Checks for active productCapacities before deleting. Blocks if linked to active products. Uses softDelete() helper. Calls createAuditLog().
+- Created /api/capacities/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Fetch single capacity with _count for productCapacities. Returns 404 if not found or isDeleted.
+  - PUT: Update with $transaction(). Code read-only. Audit log. Value parsed as float.
+  - DELETE: Soft-delete. Checks productCapacities linkage first. Audit log.
+  - Uses Next.js 16 dynamic route pattern: { params }: { params: Promise<{ id: string }> }
+- Created /components/ims/capacities-module.tsx with complete CapacitiesModule component:
+  - Type definition: Capacity interface with id, code, name, value, unit, isActive, isDeleted, productCount, audit fields
+  - Custom data hook: useAllCapacities(url) following same pattern as useAllSegments
+  - Table columns: Sl, Code, Name, Value, Unit, Products, Status, Created Date, Actions (View, Edit, Delete)
+  - View Detail Dialog: Shows all fields including value, unit, product count, dates, created by
+  - Create/Edit Sheet (right-side drawer):
+    - Code: AUTO-GENERATED, READ-ONLY (shows "Auto-generated on save" for new, actual code for edit)
+    - Name: Required text field (placeholder: "e.g. 256GB, 1.5Ton, 320L, 85\"")
+    - Value: Numeric input (Float, default 0) — for the numeric portion
+    - Unit: Dropdown select with options: GB, TB, MB, Ton, kg, L, mL, kWh, W, inch, cm, mm, HP, %
+    - Active Status toggle switch
+    - Submit button with loading state (amber bg-amber-500)
+  - Delete Confirmation Dialog: AlertDialog with soft-delete warning. Shows product count warning if > 0.
+  - Triple Utility Bundle:
+    1. Import CSV: 3-step wizard (Upload → Column Mapping → Preview & Import). Drag-drop support. Template download. Column mapping for: name, value, unit. Validates name is required. Unit validation against UNIT_OPTIONS.
+    2. Export CSV: Client-side CSV generation with proper escaping. Headers: Code, Name, Value, Unit, Products, Status, Created Date.
+    3. Export PDF: Landscape A4 using jsPDF + autoTable. Navy header (#192A56 = [25,42,86]). Corporate header "Electronics Mart" + "Capacities Report". Page numbers.
+  - Search & Filters: Search by name/code/unit. Toggle show all (including inactive). Page size selector.
+  - Pagination: Client-side pagination with page size options [10, 25, 50, 100].
+  - Theme compliance:
+    - text-slate-900 dark:text-white for all headings
+    - Sheet header: bg-slate-900 dark:bg-slate-800 text-white
+    - Delete button: bg-rose-600 hover:bg-rose-700
+    - Add/Submit button: bg-amber-500 hover:bg-amber-600 text-white
+    - Status badges: Active = emerald, Inactive = amber
+    - Empty state with Gauge icon from lucide-react
+    - Loading skeleton
+  - All imports: lucide-react icons (Gauge for module icon), shadcn/ui components, sonner for toasts, jsPDF + autoTable for PDF export
+  - API integration: All CRUD operations call /api/capacities. Import CSV creates records one-by-one via POST. Refresh after each operation.
+- Updated /components/layout/app-sidebar.tsx:
+  - Added 'capacities' to NavItem type union
+  - Added Capacities sub-item under Basic Modules (icon: Gauge)
+  - Added 'capacities' to parentOf array for basic-modules
+- Updated /app/page.tsx:
+  - Imported CapacitiesModule from '@/components/ims/capacities-module'
+  - Added breadcrumb mapping for 'capacities' (Home > Basic Modules > Capacities)
+  - Added renderSection case for 'capacities' returning <CapacitiesModule />
+- Ran lint: 0 errors, only pre-existing warnings (9 warnings, all pre-existing)
+- Dev server running successfully with all routes registered
+
+Stage Summary:
+- **Capacities CRUD API** fully rewritten with atomic transactions, auto-code generation (CAP-00001), soft-delete, and audit logging
+- **Capacity Detail API** with GET/PUT/DELETE by ID, code read-only enforcement, product linkage checks
+- **CapacitiesModule UI** with complete data grid, create/edit sheet, view dialog, delete confirmation
+- **Triple Utility Bundle** fully implemented: Import CSV (drag-and-drop + mapping + staging + validation), Export CSV (client-side with escaping), Export PDF (jsPDF + autoTable with navy #192A56 header)
+- **Sidebar** updated with Capacities under Basic Modules section (Gauge icon)
+- **Page.tsx** updated with CapacitiesModule integration, breadcrumb mapping
+- Lint passes with 0 errors
+
+---
+Task ID: 4-b
+Agent: Payment Options Module Builder
+Task: Build Payment Options module (POP-00001) - API routes + UI component
+
+Work Log:
+- Read worklog.md for context on all previous agents work
+- Read segments-module.tsx as reference pattern for UI component structure, hooks, and Triple Utility Bundle
+- Read /api/segments/route.ts and /api/segments/[id]/route.ts as reference patterns for API routes
+- Read db-utils.ts for utility function signatures (generateNextCode, notDeleted, activeNotDeleted, softDelete, createAuditLog)
+- Read Prisma schema: PaymentOption model (id, code, name, description, charge, isActive, isDeleted, audit fields, payments relation)
+- Read Payment model: has paymentOptionId FK linking to PaymentOption
+- Created /src/app/api/payment-options/route.ts with full GET/POST/PUT/DELETE:
+  - GET: List payment options with ?all=true (notDeleted vs activeNotDeleted), ?search= (name/code/description), includes _count for payments as paymentCount
+  - POST: Create with auto-code POP-00001 via generateNextCode("PaymentOption"), validates name required, $transaction for atomicity, charge field parsed as Float (default 0), createAuditLog()
+  - PUT: Update by body.id, code is read-only, $transaction, charge parsed with parseFloat, allowedFields: name, description, charge, isActive, createAuditLog()
+  - DELETE: Soft-delete by ?id=, checks for active payments linked via db.payment.count with notDeleted() filter, blocks if linked, uses softDelete() helper, createAuditLog()
+- Created /src/app/api/payment-options/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Single payment option with _count for payments, returns 404 if not found or isDeleted
+  - PUT: Update with $transaction, code read-only enforcement, charge parsing, createAuditLog()
+  - DELETE: Soft-delete with active payment check, uses softDelete() helper, createAuditLog()
+  - Uses Next.js 16 params pattern: { params }: { params: Promise<{ id: string }> }
+- Created /src/components/ims/payment-options-module.tsx with complete PaymentOptionsModule component:
+  - PaymentOption type: id, code, name, description, charge, isActive, isDeleted, paymentCount, createdBy, createdDate, updatedBy, updatedDate
+  - Custom hook: useAllPaymentOptions(url) following same pattern as useAllSegments
+  - Table columns: Sl, Code, Name, Description, Charge, Payments, Status, Created Date, Actions (View, Edit, Delete)
+  - View Detail Dialog: Shows all fields including charge with Percent icon, payment count, dates, description
+  - Create/Edit Sheet (right-side drawer):
+    - Code: AUTO-GENERATED, READ-ONLY (shows "Auto-generated on save" for new, actual code for edit)
+    - Name: Required text field (placeholder: "e.g. Cash, bKash, Card, Bank Transfer, EMI")
+    - Description: Optional textarea
+    - Charge: Numeric input with Percent icon, step 0.01, default 0
+    - Active Status toggle switch
+    - Submit button with loading state (bg-amber-500)
+  - Delete Confirmation Dialog: AlertDialog with soft-delete warning, shows payment count if > 0
+  - Triple Utility Bundle:
+    1. Import CSV: 3-step wizard (Upload -> Column Mapping -> Preview & Import). Drag-drop support. Template download with name, description, charge columns. Column mapping for name (required), description, charge. Validates name required, charge numeric. Creates records one-by-one via POST.
+    2. Export CSV: Client-side CSV generation with proper escaping. Headers: Code, Name, Description, Charge, Payments, Status, Created Date.
+    3. Export PDF: Landscape A4 using jsPDF + autoTable. Navy header (#192A56 = [25,42,86]). Corporate header "Electronics Mart" + "Payment Options Report". 7-column table (Sl, Code, Name, Description, Charge, Payments, Status). Page numbers.
+  - Search & Filters: Search by name/code/description. Toggle show all (including inactive). Page size selector.
+  - Pagination: Client-side pagination with page size options [10, 25, 50, 100].
+  - Theme compliance:
+    - text-slate-900 dark:text-white for all headings
+    - Sheet header: bg-slate-900 dark:bg-slate-800 text-white
+    - Delete button: bg-rose-600 hover:bg-rose-700
+    - Add/Submit button: bg-amber-500 hover:bg-amber-600 text-white
+    - Status badges: Active = emerald, Inactive = amber
+    - Empty state with CreditCard icon from lucide-react
+    - Loading skeleton
+  - All imports: lucide-react (CreditCard, Percent, etc.), shadcn/ui components, sonner for toasts, jsPDF + autoTable for PDF
+  - API integration: All CRUD operations call /api/payment-options
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **Payment Options CRUD API** fully implemented at /api/payment-options/route.ts and /api/payment-options/[id]/route.ts
+- **Auto-code generation**: POP-00001 format via generateNextCode("PaymentOption"), read-only on edit
+- **Atomic transactions**: All write operations use $transaction for data integrity
+- **Soft-delete with audit logging**: All delete operations use softDelete() helper with createAuditLog() calls
+- **Charge field support**: Float type with parseFloat validation, default 0, step 0.01 in UI
+- **Payment linkage check**: Delete blocked if active payments reference the payment option
+- **PaymentOptionsModule UI** component created at /src/components/ims/payment-options-module.tsx
+- **Full CRUD**: Create (Sheet with "Add" button), Edit (Sheet with "Update" button), View (Dialog), Delete (AlertDialog)
+- **Triple Utility Bundle**: Import CSV (drag-and-drop + mapping + staging + validation), Export CSV (client-side with escaping), Export PDF (jsPDF + autoTable with navy header)
+- **Client-side pagination** with search across name/code/description
+- **Code field READ-ONLY** in both Create and Edit forms
+- Lint passes with 0 errors
+
+---
+Task ID: 4-c
+Agent: Card Types Module Builder
+Task: Build Card Types module (CDT-00001) - API routes + UI component
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read segments-module.tsx and segments API routes as reference pattern
+- Read Prisma schema for CardType model (code, name, description, sequence, isActive, isDeleted, audit fields, payments relation)
+- Read db-utils.ts for helper functions (generateNextCode, notDeleted, activeNotDeleted, softDelete, createAuditLog)
+- Read Payment model to understand cardTypeId FK relationship
+- Created /src/app/api/card-types/route.ts with full CRUD:
+  - GET: List card types with ?all=true (incl. inactive), ?search= (by name/code/description). Uses activeNotDeleted() by default, notDeleted() when all=true. Includes _count for payments. Ordered by sequence ASC, name ASC.
+  - POST: Create with auto-code CDT-00001 via generateNextCode('CardType') in $transaction. Validates name required. Calls createAuditLog().
+  - PUT: Update by body.id. Code is READ-ONLY. Uses $transaction. Calls createAuditLog(). Allowed fields: name, description, sequence, isActive.
+  - DELETE: Soft-delete by ?id=. Checks for active payments linked (payment where cardTypeId=id and notDeleted). Blocks if linked. Uses softDelete() helper. Calls createAuditLog().
+- Created /src/app/api/card-types/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Single card type with _count for payments. Returns 404 if not found or isDeleted.
+  - PUT: Update with $transaction. Code read-only enforcement. Audit logging.
+  - DELETE: Soft-delete with payment linkage check.
+  - All use Next.js 16 dynamic params pattern: { params }: { params: Promise<{ id: string }> }
+- Created /src/components/ims/card-types-module.tsx with complete CardTypesModule component:
+  - CardType interface with id, code, name, description, sequence, isActive, isDeleted, paymentCount, audit fields
+  - Custom useAllCardTypes(url) hook for data fetching
+  - Data Grid: Table with Sl, Code, Name, Description, Sequence, Payments, Status, Created Date, Actions (View, Edit, Delete)
+  - View Detail Dialog: Shows all fields including sequence, description, payment count, dates
+  - Create/Edit Sheet (right-side drawer):
+    - Code: AUTO-GENERATED, READ-ONLY (shows "Auto-generated on save" for new, actual code for edit)
+    - Name: Required (placeholder: "e.g. Visa, MasterCard, Amex, Debit Card, Credit Card")
+    - Description: Optional textarea
+    - Sequence: Numeric input (Int, default 0, step 1) with info text "Lower numbers appear first in dropdowns"
+    - Active Status toggle switch
+    - Submit button with loading state
+  - Delete Confirmation Dialog: AlertDialog with soft-delete warning. Shows payment count if > 0.
+  - Triple Utility Bundle:
+    - Import CSV: 3-step wizard (Upload → Column Mapping → Preview & Import). Drag-drop support. Template download. Column mapping for: name, description, sequence. Validates name is required.
+    - Export CSV: Client-side CSV generation with proper escaping. Headers: Code, Name, Description, Sequence, Payments, Status, Created Date.
+    - Export PDF: Landscape A4 using jsPDF + autoTable. Navy header (#192A56 = [25,42,86]). Corporate header "Electronics Mart" + "Card Types Report". Page numbers.
+  - Search & Filters: Search by name/code/description. Toggle show all (including inactive). Page size selector.
+  - Pagination: Client-side pagination with page size options [10, 25, 50, 100].
+  - Theme compliance: text-slate-900 dark:text-white headings, bg-slate-900 sheet header, bg-rose-600 delete, bg-amber-500 submit, emerald/amber status badges, CreditCard icon from lucide-react, loading skeleton, empty state
+- Updated /src/components/layout/app-sidebar.tsx:
+  - Added 'card-types' to NavItem type union
+  - Added Card Types as sub-item of Basic Modules section with CreditCard icon
+  - Added 'card-types' to parentOf array for basic-modules
+- Updated /src/app/page.tsx:
+  - Imported CardTypesModule from '@/components/ims/card-types-module'
+  - Added breadcrumb mapping for 'card-types' (Home > Basic Modules > Card Types)
+  - Added renderSection case for 'card-types' returning <CardTypesModule />
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **Card Types CRUD API** fully implemented with atomic transactions, auto-code generation (CDT-00001), soft-delete, and audit logging
+- **Card Type [id] API** with GET/PUT/DELETE by ID, using Next.js 16 dynamic params pattern
+- **CardTypesModule** component with complete data grid, create/edit sheet, view dialog, delete confirmation
+- **Triple Utility Bundle** implemented: Import CSV (drag-drop + mapping + staging), Export CSV (client-side with escaping), Export PDF (jsPDF + autoTable with navy header)
+- **Code field READ-ONLY** in both Create and Edit forms — auto-generated by server (CDT-00001 format)
+- **Sequence field** with numeric input and info text about dropdown ordering
+- **Payment linkage check** on delete — prevents deletion if active payments are linked
+- **Sidebar updated** with Card Types under Basic Modules section
+- **Page.tsx updated** with CardTypesModule integration
+- Lint passes with 0 errors

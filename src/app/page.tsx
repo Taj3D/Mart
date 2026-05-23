@@ -21,6 +21,9 @@ import { BrandsModule } from '@/components/ims/brands-module'
 import { WarehousesModule } from '@/components/ims/warehouses-module'
 import { UnitsModule } from '@/components/ims/units-module'
 import { SegmentsModule } from '@/components/ims/segments-module'
+import { CapacitiesModule } from '@/components/ims/capacities-module'
+import { PaymentOptionsModule } from '@/components/ims/payment-options-module'
+import { CardTypesModule } from '@/components/ims/card-types-module'
 import {
   InventorySection,
   ProductsSection,
@@ -58,6 +61,9 @@ const breadcrumbMap: Record<NavItem, Array<{ label: string; href?: string }>> = 
   warehouses: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Warehouses' }],
   units: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Units' }],
   segments: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Segments' }],
+  capacities: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Capacities' }],
+  'payment-options': [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Payment Options' }],
+  'card-types': [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Card Types' }],
   reports: [{ label: 'Home', href: '#' }, { label: 'Reports' }],
   settings: [{ label: 'Home', href: '#' }, { label: 'Settings' }],
 }
@@ -107,6 +113,12 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
       return <WarehousesModule />
     case 'segments':
       return <SegmentsModule />
+    case 'capacities':
+      return <CapacitiesModule />
+    case 'payment-options':
+      return <PaymentOptionsModule />
+    case 'card-types':
+      return <CardTypesModule />
     case 'staff':
       return <SettingsSection />
     case 'customers-suppliers':

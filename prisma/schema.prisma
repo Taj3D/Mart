@@ -483,6 +483,7 @@ model PaymentOption {
   code        String   @unique                                             // POP-00001
   name        String
   description String?
+  charge      Float    @default(0)                                          // Transaction charge/fee percentage
   isActive    Boolean  @default(true)
   isDeleted   Boolean  @default(false)
   createdBy   String?
@@ -490,8 +491,11 @@ model PaymentOption {
   updatedBy   String?
   updatedDate DateTime @updatedAt
 
+  payments Payment[]
+
   @@index([code])
   @@index([isDeleted])
+  @@index([charge])
 }
 
 /// CardType — Credit/debit card type master
@@ -500,6 +504,7 @@ model CardType {
   code        String   @unique                                             // CDT-00001
   name        String
   description String?
+  sequence    Int      @default(0)                                          // Display/routing order
   isActive    Boolean  @default(true)
   isDeleted   Boolean  @default(false)
   createdBy   String?
@@ -507,8 +512,11 @@ model CardType {
   updatedBy   String?
   updatedDate DateTime @updatedAt
 
+  payments Payment[]
+
   @@index([code])
   @@index([isDeleted])
+  @@index([sequence])
 }
 
 /// Customer — Clients who purchase electronics
@@ -1581,27 +1589,32 @@ model Invoice {
 
 /// Payment — Payment records
 model Payment {
-  id            String   @id @default(cuid())
-  code          String   @unique                                          // PAY-00001
-  invoiceId     String
-  amount        Float    @default(0)
-  paymentDate   DateTime @default(now())
-  method        String   @default("Cash")                                 // Cash, Card, BankTransfer, Check, Mobile, EMI
-  cardTypeId    String?
-  referenceNo   String?
-  notes         String?
-  isDeleted     Boolean  @default(false)
-  createdBy     String?
-  createdDate   DateTime @default(now())
-  updatedBy     String?
-  updatedDate   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  code            String   @unique                                          // PAY-00001
+  invoiceId       String
+  amount          Float    @default(0)
+  paymentDate     DateTime @default(now())
+  method          String   @default("Cash")                                 // Cash, Card, BankTransfer, Check, Mobile, EMI
+  paymentOptionId String?
+  cardTypeId      String?
+  referenceNo     String?
+  notes           String?
+  isDeleted       Boolean  @default(false)
+  createdBy       String?
+  createdDate     DateTime @default(now())
+  updatedBy       String?
+  updatedDate     DateTime @updatedAt
 
-  invoice Invoice @relation(fields: [invoiceId], references: [id])
+  invoice       Invoice       @relation(fields: [invoiceId], references: [id])
+  paymentOption PaymentOption? @relation(fields: [paymentOptionId], references: [id])
+  cardType      CardType?     @relation(fields: [cardTypeId], references: [id])
 
   @@index([code])
   @@index([invoiceId])
   @@index([paymentDate])
   @@index([method])
+  @@index([paymentOptionId])
+  @@index([cardTypeId])
   @@index([isDeleted])
 }
 

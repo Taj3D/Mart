@@ -59,6 +59,9 @@ export type NavItem =
   | 'units'
   | 'warehouses'
   | 'segments'
+  | 'capacities'
+  | 'payment-options'
+  | 'card-types'
   | 'staff'
   | 'customers-suppliers'
   | 'inventory-mgmt'
@@ -133,8 +136,11 @@ const sidebarItems: SidebarItem[] = [
       { key: 'units', label: 'Units', icon: Ruler },
       { key: 'warehouses', label: 'Godowns', icon: Warehouse },
       { key: 'segments', label: 'Segments', icon: PieChart },
+      { key: 'capacities', label: 'Capacities', icon: Gauge },
+      { key: 'payment-options', label: 'Payment Options', icon: DollarSign },
+      { key: 'card-types', label: 'Card Types', icon: CreditCard },
     ],
-    parentOf: ['companies', 'categories', 'colors', 'products', 'brands', 'units', 'warehouses', 'segments'],
+    parentOf: ['companies', 'categories', 'colors', 'products', 'brands', 'units', 'warehouses', 'segments', 'capacities', 'payment-options', 'card-types'],
   },
   // ── Staff ──
   {
