@@ -18,6 +18,9 @@ import { CompaniesModule } from '@/components/ims/companies-module'
 import { ColorsModule } from '@/components/ims/colors-module'
 import { CategoriesModule } from '@/components/ims/categories-module'
 import { BrandsModule } from '@/components/ims/brands-module'
+import { WarehousesModule } from '@/components/ims/warehouses-module'
+import { UnitsModule } from '@/components/ims/units-module'
+import { SegmentsModule } from '@/components/ims/segments-module'
 import {
   InventorySection,
   ProductsSection,
@@ -52,6 +55,9 @@ const breadcrumbMap: Record<NavItem, Array<{ label: string; href?: string }>> = 
   suppliers: [{ label: 'Home', href: '#' }, { label: 'Suppliers' }],
   inventory: [{ label: 'Home', href: '#' }, { label: 'Inventory' }],
   brands: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Brands' }],
+  warehouses: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Warehouses' }],
+  units: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Units' }],
+  segments: [{ label: 'Home', href: '#' }, { label: 'Basic Modules', href: '#' }, { label: 'Segments' }],
   reports: [{ label: 'Home', href: '#' }, { label: 'Reports' }],
   settings: [{ label: 'Home', href: '#' }, { label: 'Settings' }],
 }
@@ -76,6 +82,8 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
       return <CategoriesModule />
     case 'brands':
       return <BrandsModule />
+    case 'units':
+      return <UnitsModule />
     case 'sales':
       return <SalesSection />
     case 'purchase':
@@ -95,6 +103,10 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
       return <CompaniesModule />
     case 'colors':
       return <ColorsModule />
+    case 'warehouses':
+      return <WarehousesModule />
+    case 'segments':
+      return <SegmentsModule />
     case 'staff':
       return <SettingsSection />
     case 'customers-suppliers':

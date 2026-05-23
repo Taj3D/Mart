@@ -42,6 +42,7 @@ import {
   BookOpen,
   LineChart,
   Megaphone,
+  Ruler,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -55,6 +56,9 @@ export type NavItem =
   | 'colors'
   | 'products'
   | 'brands'
+  | 'units'
+  | 'warehouses'
+  | 'segments'
   | 'staff'
   | 'customers-suppliers'
   | 'inventory-mgmt'
@@ -126,9 +130,11 @@ const sidebarItems: SidebarItem[] = [
       { key: 'colors', label: 'Color', icon: Palette },
       { key: 'products', label: 'Products', icon: Package },
       { key: 'brands', label: 'Brands', icon: Tag },
-      // Future: Bank, Department, Godowns, Segment, Capacity, etc.
+      { key: 'units', label: 'Units', icon: Ruler },
+      { key: 'warehouses', label: 'Godowns', icon: Warehouse },
+      { key: 'segments', label: 'Segments', icon: PieChart },
     ],
-    parentOf: ['companies', 'categories', 'colors', 'products', 'brands'],
+    parentOf: ['companies', 'categories', 'colors', 'products', 'brands', 'units', 'warehouses', 'segments'],
   },
   // ── Staff ──
   {
