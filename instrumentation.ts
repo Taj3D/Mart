@@ -3,7 +3,7 @@ export async function register() {
     try {
       const { db } = await import('@/lib/db')
       const { hashPassword } = await import('@/lib/auth')
-
+      
       // Auto-seed admin user if not exists
       const existingAdmin = await db.user.findUnique({ where: { userName: 'admin' } })
       if (!existingAdmin) {

@@ -63,7 +63,7 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
       {/* Left: Logo + Brand */}
       <div className="flex items-center gap-2 mr-6">
         <Shield className="h-7 w-7 text-white/90" />
-        <span className="text-white font-bold text-lg tracking-wide">IMS ERP</span>
+        <span className="text-white font-bold text-lg tracking-wide">Electronics Mart</span>
       </div>
 
       {/* Center: Desktop Nav Links with animated underline */}
@@ -152,7 +152,7 @@ export function AppHeader({ activeItem, onNavigate, user, onLogout }: AppHeaderP
             <SheetHeader>
               <SheetTitle className="text-white flex items-center gap-2">
                 <Shield className="h-6 w-6 text-white/90" />
-                IMS ERP
+                Electronics Mart
               </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1 mt-4">

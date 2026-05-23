@@ -27,7 +27,7 @@ export async function POST() {
     const admin = await db.user.create({
       data: {
         userName: "admin",
-        email: "admin@electro-erp.com",
+        email: "admin@electronicsmart.com",
         passwordHash,
         fullName: "System Administrator",
         role: "Admin",
@@ -35,15 +35,34 @@ export async function POST() {
       },
     })
 
+    // Create emart.amit user if not exists
+    const existingEmart = await db.user.findUnique({
+      where: { userName: "emart.amit" },
+    })
+
+    if (!existingEmart) {
+      const emartPasswordHash = await hashPassword("Test_123")
+      await db.user.create({
+        data: {
+          userName: "emart.amit",
+          email: "amit@electronicsmart.com",
+          passwordHash: emartPasswordHash,
+          fullName: "Amit Manager",
+          role: "Admin",
+          isActive: true,
+        },
+      })
+    }
+
     // Create default company settings
     const existingCompany = await db.company.findFirst()
     if (!existingCompany) {
       await db.company.create({
         data: {
-          name: "ElectroMart Bangladesh",
+          name: "Electronics Mart",
           address: "52 Gulshan Avenue, Dhaka 1212",
           phone: "+880 2-8877665",
-          email: "info@electromart.com.bd",
+          email: "info@electronicsmart.com",
           currency: "BDT",
           financialYear: "2024-2025",
           isActive: true,
@@ -635,7 +654,7 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
-      message: "Database seeded successfully with Electronics inventory data. Admin credentials: admin / admin123",
+      message: "Database seeded successfully. Credentials: admin/admin123 or emart.amit/Test_123",
       user: {
         id: admin.id,
         userName: admin.userName,

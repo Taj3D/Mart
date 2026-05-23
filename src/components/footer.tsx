@@ -11,17 +11,13 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-[13px]">
             <p className="flex items-center gap-1.5 text-navy-100 dark:text-navy-200">
               <Shield className="h-4 w-4 text-amber-400" />
-              Developed by{' '}
+              Developed & Copyright by{' '}
               <span className="font-bold underline decoration-amber-400 decoration-2 underline-offset-2 text-white">
                 NextGen Digital Studio
               </span>
             </p>
-            <p className="text-center text-navy-200 dark:text-navy-300 underline decoration-navy-400 decoration-1 underline-offset-2">
-              Copyright &copy; {new Date().getFullYear()}{' '}
-              <span className="font-bold text-white">IMS</span>. All rights reserved.
-            </p>
             <div className="flex items-center gap-3 text-navy-300 dark:text-navy-400">
-              <span className="text-xs opacity-70">X-Mart Global ERP v10.1</span>
+              <span className="text-xs opacity-70">Electronics Mart v1.0</span>
             </div>
           </div>
         </div>

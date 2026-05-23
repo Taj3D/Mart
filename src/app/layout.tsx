@@ -20,9 +20,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "X-Mart Global ERP v10.1 — Inventory Management System",
-  description: "Enterprise Resource Planning Software — X-Mart Global ERP v10.1 — Developed by NextGen Digital Studio",
-  keywords: ["ERP", "IMS", "Inventory", "Management", "NextGen Digital Studio", "X-Mart"],
+  title: "Electronics Mart — Inventory Management System",
+  description: "Electronics Mart — Enterprise Inventory Management System — Developed by NextGen Digital Studio",
+  keywords: ["ERP", "IMS", "Electronics", "Inventory", "Management", "NextGen Digital Studio", "Electronics Mart"],
   authors: [{ name: "NextGen Digital Studio" }],
   icons: {
     icon: "/logo.svg",

@@ -74,8 +74,8 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
 // ================================================================
 
 function LoginForm() {
-  const [userName, setUserName] = React.useState('admin')
-  const [password, setPassword] = React.useState('admin123')
+  const [userName, setUserName] = React.useState('emart.amit')
+  const [password, setPassword] = React.useState('Test_123')
   const [showPassword, setShowPassword] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const [seeding, setSeeding] = React.useState(false)
@@ -116,7 +116,7 @@ function LoginForm() {
         // NextAuth v4 returns "CredentialsSignin" as generic error
         toast.error('Invalid username or password. Please check your credentials.')
       } else if (result?.ok) {
-        toast.success('Login successful! Welcome to X-Mart Global ERP')
+        toast.success('Login successful! Welcome to Electronics Mart')
       } else {
         toast.error('Login failed. Please try again.')
       }
@@ -135,8 +135,8 @@ function LoginForm() {
           <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-navy-600/50 border border-navy-500/30 mb-4">
             <Shield className="h-8 w-8 text-amber-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white">X-Mart Global ERP</h1>
-          <p className="text-navy-300 text-sm mt-1">Inventory Management System v10.1</p>
+          <h1 className="text-2xl font-bold text-white">Electronics Mart</h1>
+          <p className="text-navy-300 text-sm mt-1">Inventory Management System</p>
         </div>
 
         {/* Login Card */}
@@ -212,7 +212,7 @@ function LoginForm() {
                 {seeding ? 'Seeding Data...' : 'Seed Sample Data'}
               </Button>
               <p className="text-center text-navy-400 text-[11px] mt-2">
-                Default credentials: admin / admin123
+                Default credentials: emart.amit / Test_123
               </p>
             </div>
           </CardContent>
@@ -220,8 +220,7 @@ function LoginForm() {
 
         {/* Footer */}
         <div className="text-center mt-6 text-navy-400 text-xs">
-          <p>Developed by <span className="text-amber-400 font-semibold">NextGen Digital Studio</span></p>
-          <p className="mt-1">Copyright &copy; {new Date().getFullYear()} IMS. All rights reserved.</p>
+          <p>Developed & Copyright by <span className="text-amber-400 font-semibold">NextGen Digital Studio</span></p>
         </div>
       </div>
     </div>
@@ -251,7 +250,7 @@ export default function HomePage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-navy-800 via-navy-900 to-navy-950">
         <div className="text-center">
           <Loader2 className="h-8 w-8 text-amber-400 animate-spin mx-auto mb-3" />
-          <p className="text-navy-300 text-sm">Loading X-Mart Global ERP...</p>
+          <p className="text-navy-300 text-sm">Loading Electronics Mart...</p>
         </div>
       </div>
     )

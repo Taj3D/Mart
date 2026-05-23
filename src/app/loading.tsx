@@ -8,7 +8,7 @@ export default function Loading() {
           <Shield className="h-8 w-8 text-amber-400" />
         </div>
         <Loader2 className="h-8 w-8 text-amber-400 animate-spin mx-auto mb-3" />
-        <p className="text-navy-300 text-sm">Loading X-Mart Global ERP...</p>
+        <p className="text-navy-300 text-sm">Loading Electronics Mart...</p>
       </div>
     </div>
   )
