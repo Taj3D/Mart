@@ -905,3 +905,37 @@ Stage Summary:
 - Sidebar updated with "Godowns" under Basic Modules section
 - Lint passes with 0 errors
 
+
+---
+Task ID: Phase-3-Batch3
+Agent: Main Agent (Full-Stack Architect / Lead QA)
+Task: Phase 3 Batch 3 — Warehouses, Units, Segments Module Implementation + GitHub Push + Vercel Deploy
+
+Work Log:
+- Created GitHub repository Taj3D/Mart using PAT token
+- Force-pushed all Batch 2 code to main branch successfully
+- Rewrote /api/warehouses/route.ts with full CRUD (GET with search+all, POST with auto-code WHS-00001, PUT with code read-only, DELETE with soft-delete + stock check)
+- Rewrote /api/warehouses/[id]/route.ts with GET/PUT/DELETE, $transaction, audit logging, stock check
+- Rewrote /api/units/route.ts with full CRUD (GET with search+all, POST with auto-code UNT-00001, PUT, DELETE with product check)
+- Created /api/units/[id]/route.ts with GET/PUT/DELETE, $transaction, audit logging
+- Rewrote /api/segments/route.ts with full CRUD (GET with search+all, POST with auto-code SEG-00001, PUT, DELETE with productSegment check)
+- Created /api/segments/[id]/route.ts with GET/PUT/DELETE, $transaction, audit logging
+- Built warehouses-module.tsx (1496 lines): Data grid with type badges (General/ColdStorage/Hazardous), capacity tracking, address/manager/phone fields, triple utility bundle
+- Built units-module.tsx (1418 lines): Data grid with monospace symbol badges, product count, triple utility bundle
+- Built segments-module.tsx (1610 lines): Data grid with description truncation, product linkage count, triple utility bundle
+- Added vercel.json with correct build command (npx prisma generate && next build)
+- Updated sidebar: Added Segments (PieChart icon), Godowns (Warehouse icon), Units (Ruler icon) under Basic Modules
+- Updated page.tsx: Added SegmentsModule import, breadcrumb, and renderSection case
+- Lint check: 0 errors
+- Git pushed to Taj3D/Mart (commit 25c7b31 + 62496cc)
+- Vercel production deployment: SUCCESS — all 52 API routes compiled and deployed
+- Production URL: https://my-project-rho-ruddy.vercel.app
+
+Stage Summary:
+- **3 fully functional modules**: Warehouses (WHS-00001), Units (UNT-00001), Segments (SEG-00001)
+- **6 API route files** rewritten/created with atomic $transaction, auto-code generation, soft-delete, audit logging
+- **3 IMS module components** with Triple Utility Bundle (Import CSV, Export CSV, Export PDF)
+- **GitHub repository**: https://github.com/Taj3D/Mart — successfully pushed
+- **Vercel deployment**: https://my-project-rho-ruddy.vercel.app — live in production
+- **Lint**: 0 errors
+- **Next Batch 4 targets**: Capacities, Payment Options, Card Types (Financial Configuration sector)
