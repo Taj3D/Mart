@@ -290,6 +290,8 @@ model Company {
   updatedBy     String?
   updatedDate   DateTime @updatedAt
 
+  brands Brand[]
+
   @@index([code])
   @@index([name])
   @@index([isDeleted])
@@ -337,13 +339,14 @@ model Color {
   @@index([isDeleted])
 }
 
-/// Brand — Product brand master
+/// Brand — Product brand master with Company/Manufacturer relational linkage
 model Brand {
   id          String   @id @default(cuid())
   code        String   @unique                                             // BRD-00001
   name        String
   description String?
   logo        String?
+  companyId   String?                                                       // Link to Company/Manufacturer
   isActive    Boolean  @default(true)
   isDeleted   Boolean  @default(false)
   createdBy   String?
@@ -351,10 +354,12 @@ model Brand {
   updatedBy   String?
   updatedDate DateTime @updatedAt
 
+  company  Company?  @relation(fields: [companyId], references: [id])
   products Product[]
 
   @@index([code])
   @@index([name])
+  @@index([companyId])
   @@index([isDeleted])
 }
 

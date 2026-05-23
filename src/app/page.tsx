@@ -15,11 +15,12 @@ import { toast } from 'sonner'
 import { DashboardModule } from '@/components/ims/dashboard-module'
 import { InvestmentHeadsModule } from '@/components/ims/investment-heads-module'
 import { CompaniesModule } from '@/components/ims/companies-module'
+import { ColorsModule } from '@/components/ims/colors-module'
+import { CategoriesModule } from '@/components/ims/categories-module'
+import { BrandsModule } from '@/components/ims/brands-module'
 import {
   InventorySection,
   ProductsSection,
-  CategorySection,
-  BrandSection,
   SalesSection,
   PurchaseSection,
   CustomersSection,
@@ -72,9 +73,9 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
     case 'products':
       return <ProductsSection />
     case 'categories':
-      return <CategorySection />
+      return <CategoriesModule />
     case 'brands':
-      return <BrandSection />
+      return <BrandsModule />
     case 'sales':
       return <SalesSection />
     case 'purchase':
@@ -93,7 +94,7 @@ function renderSection(activeItem: NavItem, onNavigate: (section: string) => voi
     case 'basic-modules':
       return <CompaniesModule />
     case 'colors':
-      return <CategorySection />
+      return <ColorsModule />
     case 'staff':
       return <SettingsSection />
     case 'customers-suppliers':

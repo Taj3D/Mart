@@ -527,3 +527,206 @@ Stage Summary:
 - **API routes**: 6 new files with atomic $transaction, auto-code generation, soft-delete, audit logging
 - **Lint**: 0 errors
 - **Next Batch 2 targets**: Categories, Colors, Brands (Basic Modules sector)
+
+---
+Task ID: 3-a
+Agent: Categories Module Builder
+Task: Build Categories IMS Module with self-referencing tree, CRUD, and Triple Utilities
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read investment-heads-module.tsx as reference pattern for UI component structure, hooks, and Triple Utility Bundle
+- Read /api/categories/route.ts — GET (tree/flat with ?all=true, ?flat=true), POST (auto-code CAT-00001), PUT (code read-only), DELETE (soft-delete with child/product check)
+- Read /api/categories/[id]/route.ts — GET, PUT, DELETE by ID with same protections
+- Read page.tsx to understand integration point (categories NavItem currently renders CategorySection from erp/)
+- Read app-sidebar.tsx — categories already exists as NavItem under Basic Modules
+- Created /src/components/ims/categories-module.tsx with complete CategoriesModule component:
+  - **Self-referencing tree data grid** with expand/collapse per row, indentation by depth, tree toggle icons
+  - Title: "Existing Categories", Create button: "Create new" matching target site
+  - Table columns: Sl, Code, Name (with tree indentation), Parent Category, Products Count, Status, Actions (Eye | Edit | Delete)
+  - Search bar with 400ms debounce across name/code/parent
+  - "Show Inactive" toggle to include inactive categories
+  - Row count indicator showing filtered/total counts
+  - Expand All / Collapse All buttons for tree control
+  - **Create/Edit Sheet** (right side panel):
+    - Code: READ-ONLY, auto-generated, shows "Auto: CAT-XXXXX" hint for new records
+    - Name: Required text input
+    - Description: Optional textarea
+    - Parent Category: Searchable select dropdown (loads from /api/categories?flat=true&all=true)
+    - Active toggle switch (ToggleRight/ToggleLeft icons)
+    - "Add" button for create, "Update" button for edit
+  - **Deletion Protection**:
+    - When deleting a parent category, checks for child categories
+    - If child categories exist, prevents deletion with warning: "Cannot delete: category has N children. Please reassign children first."
+    - Also checks for active products before allowing delete
+  - **Triple Utility Bundle**:
+    1. Import CSV: Dialog with drag-and-drop file upload, CSV template download, column mapping (name, description, parentCategory), staging preview table, validation errors (empty names, parent not found), bulk import with success/failure summary
+    2. Export CSV: Client-side CSV generation with all columns (Code, Name, Description, Parent Category, Products Count, Status, Created Date), proper CSV escaping
+    3. Export PDF: Landscape A4 jsPDF + autoTable with "Electronics Mart" corporate header, "Categories Report" title, date, columns (Sl, Code, Name, Parent, Products, Status), navy header fill [25,42,86], alternating row colors, page numbers
+  - **Deep Navy Blue / Slate theme**: Section headers use text-slate-900 dark:text-white
+  - Sheet header: bg-slate-900 dark:bg-slate-800
+  - Loading skeletons, empty states, error states with retry
+  - Responsive design (mobile-friendly)
+- Updated /src/app/page.tsx:
+  - Imported CategoriesModule from '@/components/ims/categories-module'
+  - Changed categories NavItem case to render <CategoriesModule /> instead of <CategorySection />
+- Ran lint: 0 errors, only pre-existing warnings
+- Dev server running successfully
+
+Stage Summary:
+- **CategoriesModule** component created at /src/components/ims/categories-module.tsx
+- **Self-referencing tree hierarchy** with expand/collapse, indentation, tree toggle icons
+- **Full CRUD**: Create (Sheet with "Add" button), Edit (Sheet with "Update" button), View (Dialog),
+
+---
+Task ID: 3-b
+Agent: Colors Module Builder
+Task: Build Colors IMS Module with full CRUD API, hex codes, and Triple Utilities
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read investment-heads-module.tsx as reference pattern for UI component structure, hooks, and Triple Utility Bundle
+- Read /api/categories/route.ts and /api/categories/[id]/route.ts as API pattern reference
+- Read db-utils.ts for helper functions (generateNextCode, notDeleted, activeNotDeleted, softDelete, createAuditLog)
+- Read page.tsx for integration point (colors NavItem currently renders CategorySection placeholder)
+- Rewrote /api/colors/route.ts with full GET/POST/PUT/DELETE support:
+  - GET: List colors with notDeleted() filter, supports ?all=true for including inactive
+  - POST: Create color with auto-code generation (CLR-00001) inside $transaction, hex code validation (#RRGGBB format), audit logging
+  - PUT: Update color with $transaction, code read-only enforcement, hex code validation, audit logging
+  - DELETE: Soft-delete with softDelete() helper, audit logging
+- Created /api/colors/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Single color by ID with isDeleted check
+  - PUT: Update with transaction, audit log, code read-only enforcement, hex code validation
+  - DELETE: Soft-delete with audit log
+- Built /src/components/ims/colors-module.tsx with complete ColorsModule component:
+  - **Data Grid**: Table with Sl, Code, Name, Hex Code (with 24x24 color swatch preview), Status, Actions (Eye | Edit | Delete)
+  - Title: "Existing Colors", Create button: "Create new" matching target site
+  - Search bar with 400ms debounce across name/code/hexCode
+  - "Show Inactive" toggle to include inactive colors
+  - Row count indicator showing filtered/total counts
+  - **Create/Edit Sheet** (right side panel):
+    - Code: READ-ONLY, auto-generated, shows "Auto: CLR-XXXXX" hint for new records
+    - Name: Required text input
+    - Hex Code: Color picker input + text input showing hex value + live 24x24 color swatch preview
+    - Active toggle switch
+    - "Add" button for create, "Update" button for edit
+  - **View Detail Dialog**: Full color details with large color swatch preview, status badge (Active/Inactive), info grid
+  - **Delete AlertDialog**: Soft-delete messaging with confirmation
+  - **Triple Utility Bundle** (mandatory):
+    1. Import CSV: Dialog with drag-and-drop file upload, CSV template download, column mapping (name, hexCode), staging preview table with color swatch column, validation errors (empty names, invalid hex codes), bulk import with success/failure summary
+    2. Export CSV: Client-side CSV generation with all columns (Code, Name, Hex Code, Status, Created Date), proper CSV escaping
+    3. Export PDF: Landscape A4 jsPDF + autoTable with "Electronics Mart" corporate header, "Colors Report" title, date, columns (Sl, Code, Name, Hex Code, Status), navy header fill [25,42,86], alternating row colors, page numbers
+  - **Deep Navy Blue / Slate theme**: Section headers use text-slate-900 dark:text-white
+  - Sheet header: bg-slate-900 dark:bg-slate-800
+  - Loading skeletons, empty states, error states with retry
+  - Responsive design (mobile-friendly)
+- Updated /src/app/page.tsx:
+  - Imported ColorsModule from '@/components/ims/colors-module'
+  - Changed colors NavItem case to render <ColorsModule /> instead of <CategorySection /> placeholder
+  - Removed unused CategorySection import
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **ColorsModule** component created at /src/components/ims/colors-module.tsx
+- **Full CRUD API**: /api/colors (GET/POST/PUT/DELETE) and /api/colors/[id] (GET/PUT/DELETE) with atomic transactions, auto-code generation (CLR-00001), soft-delete, audit logging, hex code validation
+- **Color picker UI**: `<input type="color">` combined with text input and live 24x24 color swatch preview
+- **Full CRUD**: Create (Sheet with "Add" button), Edit (Sheet with "Update" button), View (Dialog with color swatch), Delete (AlertDialog with soft-delete)
+- **Triple Utility Bundle**: Import CSV (drag-and-drop + mapping + staging + hex validation), Export CSV (client-side with escaping), Export PDF (jsPDF + autoTable with navy header [25,42,86])
+- **Code field READ-ONLY** in both Create and Edit forms — auto-generated by server (CLR-00001)
+- Lint passes with 0 errors Delete (AlertDialog with child/product protection)
+- **Triple Utility Bundle**: Import CSV (drag-and-drop + mapping + staging + validation), Export CSV (client-side), Export PDF (jsPDF + autoTable with navy header)
+- **Code field READ-ONLY** — auto-generated by server (CAT-00001 format)
+- **Parent Category searchable select** loads from flat API with X clear button
+- **Deletion protection** blocks delete if child categories or active products exist
+- **page.tsx** updated to use CategoriesModule for 'categories' NavItem
+- Lint passes with 0 errors
+
+---
+Task ID: 3-c
+Agent: Brands Module Builder
+Task: Build Brands IMS Module with Company linkage, full CRUD API, and Triple Utilities
+
+Work Log:
+- Read worklog.md for context on all previous agents' work
+- Read investment-heads-module.tsx as reference pattern for UI component structure, hooks, and Triple Utility Bundle
+- Read categories/route.ts and categories/[id]/route.ts for API pattern
+- Read existing brands/route.ts (basic CRUD without companyId support)
+- Read companies/route.ts for company dropdown data source
+- Read Prisma Brand schema model (code, name, description, logo, companyId, isActive, isDeleted, audit fields, company relation, products relation)
+- Read db-utils.ts for utility function signatures (generateNextCode, notDeleted, activeNotDeleted, softDelete, createAuditLog)
+- Rewrote /api/brands/route.ts with full GET/POST/PUT/DELETE support:
+  - GET: List brands with notDeleted() filter, include company relation (name, code), _count for products, supports ?all=true (include inactive), ?search= (name/code/company search)
+  - POST: Create brand with auto-code (BRD-00001) inside $transaction, include companyId, audit logging
+  - PUT: Update brand with $transaction, code read-only enforcement, include companyId, audit logging
+  - DELETE: Soft-delete with product count check (prevents delete if active products linked), audit logging
+- Created /api/brands/[id]/route.ts with GET/PUT/DELETE by ID:
+  - GET: Single brand with company relation, product count
+  - PUT: Update with transaction, audit log, code read-only, companyId support
+  - DELETE: Soft-delete with audit log and product count check
+- Created /src/components/ims/brands-module.tsx with complete BrandsModule component:
+  - Title: "Existing Brands", Create button: "Create new"
+  - Data Grid: Table with Sl, Code, Name, Company/Manufacturer, Products Count, Status, Actions (Eye | Edit | Delete)
+  - Search bar with 400ms debounce across name/code/company
+  - "Show Inactive" toggle to include inactive brands
+  - Row count indicator showing filtered/total counts
+  - Create Sheet: Code (READ-ONLY, auto-generated, "Auto: BRD-XXXXX" hint), Name (required), Description (optional textarea), Company/Manufacturer (searchable select dropdown loading from /api/companies?all=true), Logo URL (optional), Active toggle switch, "Add" button
+  - Edit Sheet: Same fields, code read-only, "Update" button
+  - View Detail Dialog: Full brand details with company name, product count, status badge (Active/Inactive)
+  - Delete AlertDialog: Check for linked products before allowing delete, soft-delete messaging with confirmation
+  - Triple Utility Bundle:
+    1. Import CSV: Dialog with drag-and-drop file upload, CSV template download, column mapping (name, description, company), staging preview table, validation errors (empty names), bulk import with success/failure summary
+    2. Export CSV: Client-side CSV generation with all columns (Code, Name, Description, Company, Products Count, Status, Created Date)
+    3. Export PDF: Landscape A4 jsPDF + autoTable with "Electronics Mart" corporate header, "Brands Report" title, date, columns (Sl, Code, Name, Company, Products, Status), navy header fill [25,42,86], alternating row colors, page numbers
+  - Deep Navy Blue theme: section headers use text-slate-900 dark:text-white
+  - Sheet header: bg-slate-900 dark:bg-slate-800
+  - Loading skeletons, empty states, error states with retry button
+  - Responsive design
+- Updated /src/app/page.tsx:
+  - Imported BrandsModule from '@/components/ims/brands-module'
+  - Removed BrandSection import from @/components/erp
+  - Changed renderSection case for 'brands' to return <BrandsModule />
+- Ran lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- **Brands CRUD API** fully rewritten with atomic transactions, auto-code generation (BRD-00001), company relation, soft-delete, and audit logging
+- **Brands [id] API** created with GET/PUT/DELETE by ID, company relation, product count check on delete
+- **BrandsModule** component created at /src/components/ims/brands-module.tsx
+- **Full CRUD**: Create (Sheet with "Add" button), Edit (Sheet with "Update" button), View (Dialog), Delete (AlertDialog with product count check)
+- **Company linkage**: Searchable select dropdown in form, company name displayed in data grid and view dialog
+- **Triple Utility Bundle**: Import CSV (drag-and-drop + mapping + staging + validation), Export CSV (client-side with escaping), Export PDF (jsPDF + autoTable with navy header)
+- **Code field READ-ONLY** in both Create and Edit forms — auto-generated by server (BRD-00001)
+- **Search with 400ms debounce** across name/code/company
+- **Show Inactive toggle** with row count indicator (filtered/total)
+- Lint passes with 0 errors
+
+---
+Task ID: Phase-3-Batch2
+Agent: Main Agent (Full-Stack Architect / Lead QA)
+Task: Phase 3 Batch 2 — Categories, Colors, Brands Module Implementation
+
+Work Log:
+- Updated Prisma schema: Added companyId field to Brand model with Company relation, added brands relation to Company model, added @@index([companyId])
+- Ran db:push successfully — schema synced with 0 errors
+- Deployed 3 parallel subagents to build Categories, Colors, and Brands modules simultaneously
+- Categories module: Self-referencing tree with parent-child hierarchy, expand/collapse, searchable parent select, orphan prevention on delete, triple utility bundle
+- Colors module: Full CRUD API (was read-only GET), hex code with color picker + swatch preview, staging validation for hex codes, triple utility bundle
+- Brands module: Company/Manufacturer relational linkage via searchable select, full CRUD API with [id] route created, product count check on delete, triple utility bundle
+- Updated brands API to include company relation in GET responses and companyId in POST/PUT
+- All 3 modules integrated into page.tsx (categories, colors, brands NavItem routes)
+- Lint check: 0 errors, only pre-existing warnings
+- Dev server running successfully with all seed data
+
+Stage Summary:
+- **3 fully functional modules**: Categories (self-referencing tree), Colors (hex code config), Brands (Company linkage)
+- **5 new/rewritten API route files**: colors/route.ts (rewritten with full CRUD), colors/[id]/route.ts (new), brands/route.ts (rewritten with company relation), brands/[id]/route.ts (new)
+- **3 new IMS module components**: categories-module.tsx (1821 lines), colors-module.tsx (1437 lines), brands-module.tsx (1596 lines)
+- **3 Triple Utility Bundles**: Each module has Import CSV (drag-drop + staging + validation), Export CSV (client-side), Export PDF (jsPDF + autoTable with navy header)
+- **Auto-code generation**: CAT-00001, CLR-00001, BRD-00001 format enforced, read-only on edit
+- **Self-referencing Categories**: Parent-child tree with expand/collapse, orphan prevention on deletion
+- **Color hex codes**: Color picker + text input + live swatch preview, #RRGGBB validation
+- **Brand-Company linkage**: companyId FK with searchable select dropdown, company name in grid
+- **Soft-delete with audit logging**: All delete operations use softDelete() + createAuditLog()
+- **Atomic transactions**: All write operations use $transaction for data integrity
+- **Deep Navy Blue theme**: Consistent styling with Day/Night mode support
+- **Lint**: 0 errors
+- **Next Batch 3 targets**: Warehouses (Godowns), Units, Segments (Operational Logistics sector)
